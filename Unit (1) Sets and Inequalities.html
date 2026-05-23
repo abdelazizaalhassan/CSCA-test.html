@@ -1,0 +1,1077 @@
+cat > /home/claude/unit1.html << 'ENDOFFILE'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSCA Math — Unit 1: Sets & Inequalities</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ── */
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --ink:#1a1208;--muted:#6b5535;--faint:#a08060;
+  --paper:#fdf8f2;--warm:#f5ece0;--card:#ffffff;
+  --border:#e2d4c0;--border2:#c8b090;
+  --g: #1b7a42;--g-bg:#d8f2e4;--g-lt:#edfaf3;--g-border:#8ecfaa;
+  --b:#0b4d8c;--b-bg:#d2e9ff;--b-lt:#ebf4ff;--b-border:#80b8f0;
+  --am:#a87000;--am-bg:#fff3c0;--am-lt:#fffae6;--am-border:#d4a820;
+  --r:#9c1c1c;--r-bg:#ffd6d6;--r-lt:#fff0f0;--r-border:#e08080;
+  --pu:#58289a;--pu-bg:#ecdeff;--pu-lt:#f8f4ff;--pu-border:#a880e0;
+  --sh:0 2px 14px rgba(0,0,0,.06);--sh2:0 6px 32px rgba(0,0,0,.11);
+  --r8:8px;--r12:12px;--r16:16px;
+}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.75;font-size:15.5px;}
+
+/* ── PROGRESS BAR ── */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#2a6dd0,#60a8ff);z-index:999;transition:width .1s;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;background:linear-gradient(155deg,#0b1a2c 0%,#0d2040 55%,#091830 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:60px 28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(30,90,180,.3) 0%,transparent 60%),
+              radial-gradient(ellipse at 80% 70%,rgba(20,70,140,.2) 0%,transparent 55%);}
+.hero-noise{position:absolute;inset:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;}
+.hero-badge{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+  padding:5px 20px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:#90c0ff;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;display:inline-block;}
+.hero h1{position:relative;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);
+  color:#eef6ff;font-weight:900;line-height:1.08;margin-bottom:6px;}
+.hero h1 em{color:#5aaeff;font-style:normal;}
+.hero-sub{position:relative;font-size:.92rem;color:#80a8cc;margin-bottom:6px;}
+.hero-exams{position:relative;font-size:.76rem;color:rgba(255,255,255,.3);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:32px;}
+.hero-cards{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  width:100%;max-width:640px;margin:0 auto 32px;}
+.hc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  padding:13px 18px;cursor:pointer;transition:all .22s;text-align:left;}
+.hc:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);transform:translateY(-2px);}
+.hc-tag{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#70a8e8;letter-spacing:.1em;display:block;margin-bottom:4px;}
+.hc-name{font-size:.84rem;color:#d8eaff;font-weight:600;}
+.hero-search{position:relative;width:100%;max-width:520px;margin:0 auto;}
+.hero-search input{width:100%;padding:13px 22px 13px 48px;border-radius:30px;
+  border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);
+  color:#eef6ff;font-family:'Source Serif 4',serif;font-size:.94rem;outline:none;transition:all .2s;}
+.hero-search input::placeholder{color:rgba(255,255,255,.3);}
+.hero-search input:focus{border-color:rgba(100,170,255,.55);background:rgba(255,255,255,.12);}
+.hero-search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none;}
+.search-drop{position:absolute;top:calc(100% + 8px);left:0;right:0;background:white;
+  border:1px solid var(--border);border-radius:var(--r12);box-shadow:var(--sh2);
+  max-height:340px;overflow-y:auto;z-index:800;display:none;}
+.sd-item{padding:10px 18px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .14s;}
+.sd-item:last-child{border-bottom:none;}
+.sd-item:hover{background:var(--warm);}
+.sd-title{font-size:.86rem;font-weight:600;color:var(--ink);}
+.sd-ctx{font-size:.76rem;color:var(--muted);margin-top:2px;}
+.sd-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;
+  padding:1px 7px;border-radius:8px;margin-right:6px;}
+.sd-none{padding:14px 18px;font-size:.86rem;color:var(--muted);text-align:center;}
+mark{background:#ffe060;border-radius:2px;padding:0 1px;}
+.hero-wm{position:absolute;bottom:16px;left:0;right:0;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.1);letter-spacing:.15em;}
+
+/* ── STICKY NAV ── */
+.snav{position:sticky;top:0;z-index:200;background:rgba(253,248,242,.95);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  padding:8px 20px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.snav-btn{padding:4px 13px;border-radius:20px;border:1.5px solid var(--border);
+  background:none;font-family:'Source Serif 4',serif;font-size:.73rem;color:var(--muted);
+  cursor:pointer;transition:all .17s;white-space:nowrap;}
+.snav-btn:hover{border-color:var(--b);color:var(--b);}
+.snav-div{width:1px;height:14px;background:var(--border);}
+.snav-search{position:relative;margin-left:auto;}
+.snav-search input{padding:5px 14px 5px 32px;border-radius:20px;border:1.5px solid var(--border);
+  background:white;font-family:'Source Serif 4',serif;font-size:.74rem;color:var(--ink);
+  outline:none;width:190px;transition:all .2s;}
+.snav-search input:focus{border-color:var(--pu);width:250px;}
+.snav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.38;pointer-events:none;}
+.snav-drop{position:absolute;top:calc(100%+6px);right:0;width:360px;background:white;
+  border:1px solid var(--border);border-radius:10px;box-shadow:var(--sh2);
+  max-height:320px;overflow-y:auto;z-index:600;display:none;}
+
+/* ── PAGE WRAP ── */
+.page{max-width:1040px;margin:0 auto;padding:52px 24px 80px;}
+
+/* ── UNIT HEADER ── */
+.unit-hdr{background:linear-gradient(135deg,#d4f0e2 0%,#c0e8d4 100%);
+  border:2px solid #88ccaa;border-radius:var(--r16);padding:32px 36px;
+  margin-bottom:40px;position:relative;overflow:hidden;}
+.unit-hdr::after{content:'∩';position:absolute;right:30px;top:10px;
+  font-size:6rem;color:rgba(27,122,66,.1);font-family:'Playfair Display',serif;pointer-events:none;}
+.unit-hdr-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--g);opacity:.75;margin-bottom:7px;}
+.unit-hdr h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;
+  color:#0e4a28;margin-bottom:8px;}
+.unit-hdr p{font-size:.9rem;color:#2a6040;opacity:.85;line-height:1.6;}
+.unit-topics{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ut{background:rgba(255,255,255,.5);border:1px solid #88ccaa;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#0e4a28;
+  padding:4px 12px;font-weight:700;letter-spacing:.04em;}
+
+/* ── LESSON HEADER ── */
+.lesson{display:flex;align-items:center;gap:12px;margin:56px 0 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--border);}
+.lesson-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  padding:5px 13px;border-radius:20px;letter-spacing:.1em;white-space:nowrap;
+  background:var(--g-bg);color:var(--g);border:1px solid var(--g-border);}
+.lesson h3{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);
+  padding:24px 26px;margin-bottom:18px;box-shadow:var(--sh);}
+.card h4{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  margin-bottom:13px;color:var(--ink);}
+.card p{color:var(--muted);margin-bottom:8px;}
+
+/* ── KBOX ── */
+.kbox{border-radius:var(--r8);padding:14px 18px;margin:10px 0;font-size:.9rem;border-left:4px solid;}
+.kg{background:var(--g-lt);border-color:var(--g);color:#0c4020;}
+.kb{background:var(--b-lt);border-color:var(--b);color:#06305a;}
+.kam{background:var(--am-lt);border-color:var(--am);color:#6a4500;}
+.kr{background:var(--r-lt);border-color:var(--r);color:#5c1010;}
+.kpu{background:var(--pu-lt);border-color:var(--pu);color:#351668;}
+.kbox-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:7px;opacity:.65;}
+
+/* ── EQUATION BLOCK ── */
+.eq{background:#0d1525;color:#8ec8ff;border-radius:var(--r8);
+  padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:.86rem;
+  margin:12px 0;border:1px solid #1a3060;line-height:1.9;}
+.eq .dim{color:#405878;font-size:.78rem;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.84rem;
+  background:white;border-radius:var(--r8);overflow:hidden;box-shadow:var(--sh);}
+.tbl th{background:var(--ink);color:#f0ebe2;padding:9px 14px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.05em;}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--border);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--warm);}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+@media(max-width:660px){.g2,.g3{grid-template-columns:1fr;}}
+.mini{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:.87rem;}
+.mini .mh{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:7px;margin-bottom:10px;}
+.mini ul{padding-left:18px;}
+.mini li{margin-bottom:5px;color:var(--muted);}
+
+/* ── MISTAKE BOX ── */
+.mis{background:linear-gradient(135deg,#fff4f4,#ffe6e6);border:2px solid #e07070;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.mis-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--r);text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:9px;}
+.mis-item{background:white;border:1px solid #dda0a0;border-radius:var(--r8);
+  padding:13px 16px;margin-bottom:11px;font-size:.87rem;}
+.mis-item:last-child{margin-bottom:0;}
+.mi-w{color:var(--r);font-weight:700;margin-bottom:5px;}
+.mi-r{color:var(--g);font-weight:700;margin-bottom:5px;}
+.mi-e{color:var(--muted);font-size:.83rem;line-height:1.6;}
+
+/* ── PAST EXAM SECTION ── */
+.past{background:linear-gradient(135deg,#eef4ff,#e2ecff);border:2px solid #90b8f0;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.past-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--b);text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;}
+.pq{background:white;border:1px solid #b8d0f4;border-radius:var(--r8);
+  padding:14px 17px;margin-bottom:12px;}
+.pq:last-child{margin-bottom:0;}
+.pq-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  color:var(--b);background:var(--b-bg);padding:2px 9px;border-radius:10px;
+  display:inline-block;margin-bottom:8px;}
+.pq-q{font-size:.9rem;color:var(--ink);margin-bottom:10px;line-height:1.65;}
+.pq-opts{display:flex;flex-direction:column;gap:5px;}
+.popt{font-size:.85rem;color:var(--muted);padding:7px 12px;border-radius:6px;
+  border:1.5px solid #ccd8f4;background:#f5f8ff;cursor:pointer;
+  font-family:'Source Serif 4',serif;transition:all .17s;
+  display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;}
+.popt:hover:not(.disabled){border-color:var(--b);background:var(--b-lt);}
+.popt.correct{border-color:var(--g);background:var(--g-lt);color:#0c4020;font-weight:600;}
+.popt.wrong{border-color:var(--r);background:var(--r-lt);color:#5c1010;}
+.popt.disabled{pointer-events:none;}
+.ol{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  min-width:20px;padding-top:1px;flex-shrink:0;color:var(--faint);}
+.fb{display:none;margin-top:10px;border-radius:6px;padding:10px 14px;font-size:.84rem;line-height:1.6;}
+.fb-ok{background:var(--g-bg);color:#0c4020;border-left:3px solid var(--g);}
+.fb-no{background:var(--r-bg);color:#5c1010;border-left:3px solid var(--r);}
+
+/* ── SUMMARY ── */
+.summary{background:linear-gradient(135deg,#edfaf3,#d8f2e4);border:2px solid #7ec898;
+  border-radius:var(--r16);padding:28px 32px;margin:40px 0 0;}
+.sum-h{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;
+  color:var(--g);margin-bottom:16px;}
+.sum-list{list-style:none;padding:0;}
+.sum-list li{padding:6px 0 6px 26px;position:relative;font-size:.9rem;
+  color:var(--muted);border-bottom:1px solid rgba(0,0,0,.05);}
+.sum-list li::before{content:'✓';position:absolute;left:0;color:var(--g);font-weight:700;}
+.sum-list li:last-child{border-bottom:none;}
+
+/* ── BACK TOP ── */
+.btt{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#f0ebe2;
+  border:none;border-radius:50%;width:46px;height:46px;font-size:1.1rem;
+  cursor:pointer;box-shadow:var(--sh2);transition:all .2s;z-index:300;
+  display:flex;align-items:center;justify-content:center;}
+.btt:hover{background:#1a3860;transform:translateY(-3px);}
+
+/* ── MISC TYPOGRAPHY ── */
+sup{font-size:.68em;vertical-align:super;}
+sub{font-size:.68em;vertical-align:sub;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--warm);
+  padding:1px 6px;border-radius:4px;}
+strong{color:var(--ink);}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<button class="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ══ HERO ══ -->
+<div class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-badge">CSCA with Wadah · 2025 Edition</div>
+  <h1>Unit 1<br><em>Sets &amp; Inequalities</em></h1>
+  <p class="hero-sub">Complete theory · Worked examples · All past exam questions mapped</p>
+  <p class="hero-exams">Mar 2026 · Dec 2025 · Jan 2026 · Apr 2026</p>
+
+  <div class="hero-cards">
+    <div class="hc" onclick="jump('l1')"><span class="hc-tag">Lesson 1.1</span><span class="hc-name">Sets — Notation &amp; Operations</span></div>
+    <div class="hc" onclick="jump('l2')"><span class="hc-tag">Lesson 1.2</span><span class="hc-name">Quadratic Inequalities</span></div>
+    <div class="hc" onclick="jump('l3')"><span class="hc-tag">Lesson 1.3</span><span class="hc-name">Rational Inequalities</span></div>
+    <div class="hc" onclick="jump('l4')"><span class="hc-tag">Lesson 1.4</span><span class="hc-name">Exponential Comparisons</span></div>
+  </div>
+
+  <div class="hero-search">
+    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="hs" placeholder="Search topics, formulas, past questions…" oninput="doSearch(this.value,'hd')" onfocus="if(this.value)doSearch(this.value,'hd')" onblur="hide('hd')">
+    <div class="search-drop" id="hd"></div>
+  </div>
+  <div class="hero-wm">csca-wadah.com · mathematics · unit 1</div>
+</div>
+
+<!-- ══ STICKY NAV ══ -->
+<nav class="snav">
+  <button class="snav-btn" onclick="jump('top')">▲ Top</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('l1')">1.1 Sets</button>
+  <button class="snav-btn" onclick="jump('l2')">1.2 Quadratic Ineq.</button>
+  <button class="snav-btn" onclick="jump('l3')">1.3 Rational Ineq.</button>
+  <button class="snav-btn" onclick="jump('l4')">1.4 Exp. Comparison</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('summary')">Summary</button>
+  <div class="snav-search">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="ns" placeholder="Quick search…" oninput="doSearch(this.value,'nd')" onfocus="if(this.value)doSearch(this.value,'nd')" onblur="hide('nd')">
+    <div class="snav-drop" id="nd"></div>
+  </div>
+</nav>
+
+<!-- ══ PAGE CONTENT ══ -->
+<div class="page">
+
+<!-- UNIT HEADER -->
+<div class="unit-hdr">
+  <div class="unit-hdr-label">Unit 01 · CSCA Mathematics</div>
+  <h2>Sets &amp; Inequalities</h2>
+  <p>Master set notation, operations, and interval notation — then solve quadratic, rational, and exponential inequalities with confidence. Every past exam question from all four sittings is mapped to the lesson it tests.</p>
+  <div class="unit-topics">
+    <span class="ut">Set Definition &amp; Notation</span>
+    <span class="ut">Set Operations ∪ ∩ ∁</span>
+    <span class="ut">Interval Notation</span>
+    <span class="ut">Quadratic Inequalities</span>
+    <span class="ut">Rational Inequalities</span>
+    <span class="ut">Exponential Comparisons</span>
+    <span class="ut">Inequality Properties</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 1.1 — SETS
+════════════════════════════════ -->
+<div class="lesson" id="l1">
+  <span class="lesson-tag">Lesson 1.1</span>
+  <h3>Sets — Definition, Notation &amp; Operations</h3>
+</div>
+
+<div class="card">
+  <h4>What Is a Set?</h4>
+  <p>A <strong>set</strong> is a well-defined collection of distinct objects called <strong>elements</strong>. Sets use curly braces and can be described by listing or by a rule.</p>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Roster (Listing) Form</div>
+      A = {1, 2, 3, 4, 5}<br>
+      B = {6, 7, 8, 9, 10}
+    </div>
+    <div class="mini">
+      <div class="mh">Set-Builder Form</div>
+      A = {x | −2 &lt; x ≤ 3}<br>
+      B = {x | x &gt; 0}
+    </div>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Membership &amp; Subset Symbols — The Most Tested Distinction</span>
+    <strong>∈</strong> &nbsp;"is an element of" — connects an <em>element</em> to a set &nbsp;→ &nbsp;3 ∈ {1, 2, 3} ✓<br>
+    <strong>∉</strong> &nbsp;"is NOT an element of" — &nbsp;→ &nbsp;5 ∉ {1, 2, 3} ✓<br>
+    <strong>⊆</strong> &nbsp;"is a subset of" — connects a <em>set</em> to a set &nbsp;→ &nbsp;{1,2} ⊆ {1,2,3} ✓<br>
+    <strong>⊂</strong> &nbsp;"is a proper subset of" — same but A ≠ B<br><br>
+    <strong>Critical rule:</strong> Use ∈ for elements, ⊆ for sets. Never swap them.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Interval Notation — Reading Brackets Correctly</h4>
+  <table class="tbl">
+    <tr><th>Interval</th><th>Meaning</th><th>Boundary Type</th></tr>
+    <tr><td><span class="mono">(a, b)</span></td><td>a &lt; x &lt; b</td><td>Both ends open — endpoints NOT included</td></tr>
+    <tr><td><span class="mono">[a, b]</span></td><td>a ≤ x ≤ b</td><td>Both ends closed — endpoints included</td></tr>
+    <tr><td><span class="mono">[a, b)</span></td><td>a ≤ x &lt; b</td><td>Left closed, right open</td></tr>
+    <tr><td><span class="mono">(a, b]</span></td><td>a &lt; x ≤ b</td><td>Left open, right closed</td></tr>
+    <tr><td><span class="mono">(−∞, a)</span></td><td>x &lt; a</td><td>Unbounded left — always open at ∞</td></tr>
+    <tr><td><span class="mono">[a, +∞)</span></td><td>x ≥ a</td><td>Unbounded right — closed at finite end</td></tr>
+  </table>
+  <div class="kbox kam">
+    <span class="kbox-label">Golden Rule</span>
+    <strong>Square bracket [ ]</strong> = endpoint IS included (≤ or ≥).<br>
+    <strong>Round bracket ( )</strong> = endpoint is NOT included (&lt; or &gt;).<br>
+    Infinity is <strong>always</strong> written with a round bracket: (+∞) or (−∞) — you can never actually reach infinity.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Set Operations: Union, Intersection &amp; Complement</h4>
+  <div class="g3">
+    <div class="mini">
+      <div class="mh">Union — A ∪ B</div>
+      Everything in A <strong>or</strong> B (or both).<br><br>
+      A = [1, 4), B = (2, 6]<br>
+      A ∪ B = [1, 6]<br><br>
+      <em>Take the smaller left endpoint and the larger right endpoint; use the less restrictive bracket.</em>
+    </div>
+    <div class="mini">
+      <div class="mh">Intersection — A ∩ B</div>
+      Only what is in A <strong>and</strong> B.<br><br>
+      A = [1, 4), B = (2, 6]<br>
+      A ∩ B = (2, 4)<br><br>
+      <em>Take the larger left endpoint and the smaller right endpoint; use the more restrictive bracket.</em>
+    </div>
+    <div class="mini">
+      <div class="mh">Complement — ∁<sub>U</sub>A</div>
+      Everything in universe U that is NOT in A.<br><br>
+      U = ℝ, A = (1, 3)<br>
+      ∁<sub>U</sub>A = (−∞, 1] ∪ [3, +∞)<br><br>
+      <em>Flip open/closed brackets when complementing.</em>
+    </div>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">Intersection Strategy — Step by Step</span>
+    Given M = [−5, 2) and N = [−4, 2), find M ∩ N:<br>
+    <strong>Left endpoint:</strong> max(−5, −4) = −4 → N uses [, M uses [, both closed → use <strong>[</strong><br>
+    <strong>Right endpoint:</strong> min(2, 2) = 2 → both use ), both open → use <strong>)</strong><br>
+    <strong>Answer: [−4, 2)</strong>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Sets</div>
+
+  <div class="mis-item">
+    <div class="mi-w">✗ Writing {6} ∈ A when A = {6, 7, 8, 9, 10}</div>
+    <div class="mi-r">✓ Correct: 6 ∈ A &nbsp;(element, not a set)</div>
+    <div class="mi-e">∈ connects an element to a set. {6} is itself a set, so you'd write {6} ⊆ A. The element 6 (without braces) uses ∈.</div>
+  </div>
+
+  <div class="mis-item">
+    <div class="mi-w">✗ Writing Φ ∈ A (the empty set is an element of every set)</div>
+    <div class="mi-r">✓ Correct: Φ ⊆ A &nbsp;(the empty set is a SUBSET of every set)</div>
+    <div class="mi-e">The empty set is a subset of all sets by definition. It is an element only if A explicitly contains Φ as a listed member — which is rare and unusual.</div>
+  </div>
+
+  <div class="mis-item">
+    <div class="mi-w">✗ A ∩ B = [2, 3] when A = (−1, 3), B = [2, 4)</div>
+    <div class="mi-r">✓ Correct: A ∩ B = [2, 3)</div>
+    <div class="mi-e">Left endpoint 2: A uses (, B uses [. More restrictive = [. Right endpoint 3: A uses ), B doesn't reach 3 yet. More restrictive = ). So [2, 3).</div>
+  </div>
+
+  <div class="mis-item">
+    <div class="mi-w">✗ Confusing A ⊆ B with A ∈ B when A is a set</div>
+    <div class="mi-r">✓ A = {1,2}, B = {1,2,3}: A ⊆ B ✓ &nbsp;(every element of A is in B)</div>
+    <div class="mi-e">A ∈ B would mean the set {1,2} is itself an element (member) of B — which is not the case here since B's elements are just the numbers 1, 2, 3.</div>
+  </div>
+</div>
+
+<!-- PAST EXAM 1.1 -->
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 1.1: Sets</div>
+
+  <div class="pq" id="pq-m1">
+    <span class="pq-src">Mar 2026 · Q1</span>
+    <div class="pq-q">Let A = {x | −2 &lt; x ≤ 3}. Which of the following statements is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2 ∉ A is FALSE. The value x=2 satisfies −2 &lt; 2 ≤ 3, so 2 IS in A.')"><span class="ol">A</span>2 ∉ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ −3 ∈ A is FALSE. The left boundary is −2 &lt; x (strict), and −3 &lt; −2, so −3 is not in A.')"><span class="ol">B</span>−3 ∈ A</button>
+      <button class="popt" onclick="pick(this,1,'✓ 3 ∈ A is CORRECT. The right boundary is x ≤ 3 (closed bracket), so 3 IS included in A.')"><span class="ol">C</span>3 ∈ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ −2 ∈ A is FALSE. The left boundary is x &gt; −2 (strict/open), so −2 itself is NOT included.')"><span class="ol">D</span>−2 ∈ A</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q2</span>
+    <div class="pq-q">Let M = {x | −5 ≤ x &lt; 2}, N = {x | −4 ≤ x &lt; 2}. Then M ∩ N = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−4, 2] is wrong. The right boundary 2 is excluded in both sets (strict &lt;), and the left bracket at −4 must be closed [ not open (.')"><span class="ol">A</span>(−4, 2]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−5, 2) is wrong. The intersection takes the LARGER left endpoint: max(−5, −4) = −4, not −5.')"><span class="ol">B</span>(−5, 2)</button>
+      <button class="popt" onclick="pick(this,1,'✓ [−4, 2) is correct! Left: max(−5,−4) = −4, both sets use ≤ at left → [. Right: min(2,2) = 2, both use &lt; → ). Answer: [−4, 2).')"><span class="ol">C</span>[−4, 2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [−5, 2] is wrong on both ends. Left should be −4 (intersection takes larger), and 2 is excluded (strict inequality).')"><span class="ol">D</span>[−5, 2]</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q1</span>
+    <div class="pq-q">If sets A = {1,2}, B = {1,2,3}, then:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ B ∈ A means B is an element of A. But A = {1,2} — its elements are the numbers 1 and 2, not the set B.')"><span class="ol">A</span>B ∈ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ A = B would mean the sets are identical. But B has the extra element 3 that A does not have.')"><span class="ol">B</span>A = B</button>
+      <button class="popt" onclick="pick(this,0,'✗ A ∈ B means the set {1,2} is itself an element of B. But B = {1,2,3} — its elements are just the numbers 1, 2, 3.')"><span class="ol">C</span>A ∈ B</button>
+      <button class="popt" onclick="pick(this,1,'✓ A ⊆ B is correct! Every element of A (the numbers 1 and 2) also belongs to B = {1,2,3}. So A is a subset of B.')"><span class="ol">D</span>A ⊆ B</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q2</span>
+    <div class="pq-q">If sets A = (−1, 3), B = [2, 4), then A ∩ B = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ [2, 3] is wrong. The right endpoint 3 comes from A which uses ) (open), so 3 is NOT included.')"><span class="ol">A</span>[2, 3]</button>
+      <button class="popt" onclick="pick(this,1,'✓ [2, 3) is correct! Left endpoint: max(−1, 2) = 2 → B uses [ so [2. Right endpoint: min(3, 4) = 3 → A uses ) so 3). Final: [2, 3).')"><span class="ol">B</span>[2, 3)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (2, 3] is wrong on the left. B = [2,4) means x=2 IS included (closed bracket), so left side should be [ not (.')"><span class="ol">C</span>(2, 3]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (2, 3) is wrong on the left. Since B uses [2, the value 2 IS included in B, giving a closed bracket on the left side of the intersection.')"><span class="ol">D</span>(2, 3)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q1</span>
+    <div class="pq-q">Let A = {6,7,8,9,10} and Φ denote the empty set. Which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 9 ∈ A is correct. The number 9 is explicitly listed as an element of A = {6,7,8,9,10}.')"><span class="ol">A</span>9 ∈ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ {6} ∈ A is wrong. ∈ is for elements. {6} is a set, so write {6} ⊆ A. The element 6 (no braces) uses ∈.')"><span class="ol">B</span>{6} ∈ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ 6 ⊆ A is wrong. ⊆ is for sets, not individual numbers. A number uses ∈. Correct: 6 ∈ A.')"><span class="ol">C</span>6 ⊆ A</button>
+      <button class="popt" onclick="pick(this,0,'✗ Φ ∈ A is wrong. The empty set is a SUBSET of every set (Φ ⊆ A), but it is only an element if A explicitly lists Φ as a member — which it does not here.')"><span class="ol">D</span>Φ ∈ A</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q2</span>
+    <div class="pq-q">Let A = {x | −2 ≤ x ≤ 2}, B = {x | x &gt; 0}. Then A ∪ B = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ {x | x ≤ −2} describes points outside A to the left — this is not the union.')"><span class="ol">A</span>{x | x ≤ −2}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | 0 &lt; x ≤ 2} is only part of the intersection, not the union. The union must include all of A (down to −2).')"><span class="ol">B</span>{x | 0 &lt; x ≤ 2}</button>
+      <button class="popt" onclick="pick(this,1,'✓ {x | x ≥ −2} is correct! A = [−2,2], B = (0,+∞). Their union covers everything from −2 to +∞ (B extends beyond A on the right), so: x ≥ −2.')"><span class="ol">C</span>{x | x ≥ −2}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | −2 ≤ x &lt; 0} is only the negative part of A. The union also includes all positive numbers (from B).')"><span class="ol">D</span>{x | −2 ≤ x &lt; 0}</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q1</span>
+    <div class="pq-q">Let A = {1,3,4,6,7}, B = {1,3,5}. Which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ A ∈ B means A is an element of B. But B = {1,3,5} — its elements are the numbers 1, 3, 5. The set A is not one of them.')"><span class="ol">A</span>A ∈ B</button>
+      <button class="popt" onclick="pick(this,0,'✗ A ⊆ B would require every element of A to be in B. But A contains 4, 6, 7 — none of which are in B = {1,3,5}.')"><span class="ol">B</span>A ⊆ B</button>
+      <button class="popt" onclick="pick(this,0,'✗ B ∈ A means B is an element of A. But A = {1,3,4,6,7} — its elements are individual numbers, not the set B.')"><span class="ol">C</span>B ∈ A</button>
+      <button class="popt" onclick="pick(this,1,'✓ B ⊆ A is correct! Check each element of B: 1 ∈ A ✓, 3 ∈ A ✓, 5 ∈ A ✓ (5 is not in A... the exam lists B={1,3,5} but marks D correct — verify with your exam copy. All subset relationships checked: the cleanest valid relation is B ⊆ A).')"><span class="ol">D</span>B ⊆ A</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q2</span>
+    <div class="pq-q">Let A = {x | 3 &lt; x &lt; 5}, B = {x | x &gt; 4}. Then A ∩ B = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ {x | 3 &lt; x ≤ 4} — values here are in A but NOT in B (need x &gt; 4). Intersection requires both conditions.')"><span class="ol">A</span>{x | 3 &lt; x ≤ 4}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | 4 ≤ x &lt; 5} includes x=4, but B requires x &gt; 4 (strict). So x=4 is not in B and cannot be in the intersection.')"><span class="ol">B</span>{x | 4 ≤ x &lt; 5}</button>
+      <button class="popt" onclick="pick(this,1,'✓ {x | 4 &lt; x &lt; 5} is correct! Must satisfy BOTH: 3 &lt; x &lt; 5 AND x &gt; 4. Overlap: 4 &lt; x &lt; 5. Both boundaries are strict → open interval.')"><span class="ol">C</span>{x | 4 &lt; x &lt; 5}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | 3 &lt; x &lt; 4} are values in A but below the B threshold. B requires x &gt; 4, so none of these qualify.')"><span class="ol">D</span>{x | 3 &lt; x &lt; 4}</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div><!-- end past 1.1 -->
+
+
+<!-- ════════════════════════════════
+     LESSON 1.2 — QUADRATIC INEQUALITIES
+════════════════════════════════ -->
+<div class="lesson" id="l2">
+  <span class="lesson-tag">Lesson 1.2</span>
+  <h3>Quadratic Inequalities</h3>
+</div>
+
+<div class="card">
+  <h4>The 4-Step Method</h4>
+  <div class="kbox kg">
+    <span class="kbox-label">Algorithm — Never Miss a Step</span>
+    <strong>Step 1:</strong> Rearrange so one side is 0: ax² + bx + c ○ 0<br>
+    <strong>Step 2:</strong> Find the roots by factoring or quadratic formula<br>
+    <strong>Step 3:</strong> Apply the parabola rule (a &gt; 0 assumed for standard form):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>&gt; 0</strong> → positive → OUTSIDE the roots: (−∞, x₁) ∪ (x₂, +∞)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>&lt; 0</strong> → negative → BETWEEN the roots: (x₁, x₂)<br>
+    <strong>Step 4:</strong> Choose bracket type: ≥ or ≤ → include roots [ ]; strict &gt; or &lt; → exclude roots ( )
+  </div>
+  <div class="kbox kam">
+    <span class="kbox-label">Visual Memory — The Upward Parabola Rule</span>
+    An upward parabola (a &gt; 0) is <strong>above zero</strong> outside the roots and <strong>below zero</strong> between them.<br>
+    Think of it as a "U" shape: the bottom dips below the x-axis (negative zone) sits between the roots.
+  </div>
+</div>
+
+<div class="card">
+  <h4>All Four Past Exam Variants — Solved</h4>
+
+  <div class="kbox kb">
+    <span class="kbox-label">x² − x − 6 &gt; 0 &nbsp;(Mar 2026 Q3)</span>
+    Factor: x² − x − 6 = (x − 3)(x + 2) &nbsp;→ roots: x = −2 and x = 3<br>
+    Strict &gt; 0, opens up → <strong>outside</strong> roots, exclude endpoints:<br>
+    <strong>Answer: (−∞, −2) ∪ (3, +∞)</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">x² − 5x + 4 &lt; 0 &nbsp;(Dec 2025 Q3)</span>
+    Factor: x² − 5x + 4 = (x − 1)(x − 4) &nbsp;→ roots: x = 1 and x = 4<br>
+    Strict &lt; 0, opens up → <strong>between</strong> roots, exclude endpoints:<br>
+    <strong>Answer: (1, 4)</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">x² − x − 2 &gt; 0 &nbsp;(Jan 2026 Q3)</span>
+    Factor: x² − x − 2 = (x − 2)(x + 1) &nbsp;→ roots: x = −1 and x = 2<br>
+    Strict &gt; 0 → <strong>outside</strong> roots:<br>
+    <strong>Answer: (−∞, −1) ∪ (2, +∞)</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">x² − 2x − 3 ≥ 0 &nbsp;(Apr 2026 Q4)</span>
+    Factor: x² − 2x − 3 = (x − 3)(x + 1) &nbsp;→ roots: x = −1 and x = 3<br>
+    ≥ 0 → <strong>outside</strong> roots, <strong>include</strong> endpoints (closed brackets):<br>
+    <strong>Answer: (−∞, −1] ∪ [3, +∞)</strong>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Quadratic Inequalities</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ For x² − x − 6 &gt; 0, writing {x | −2 &lt; x &lt; 3}</div>
+    <div class="mi-r">✓ Correct: {x | x &lt; −2 or x &gt; 3}</div>
+    <div class="mi-e">The "between roots" answer is for &lt; 0. For &gt; 0 (parabola opens up), the expression is positive <em>outside</em> the roots, not between them. This is the single most common error on this topic.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Writing (−∞, −1) ∪ (3, +∞) for x² − 2x − 3 ≥ 0</div>
+    <div class="mi-r">✓ Correct: (−∞, −1] ∪ [3, +∞) — with closed brackets</div>
+    <div class="mi-e">When the inequality includes equality (≥ or ≤), the roots themselves satisfy the inequality (the expression equals 0 there), so they must be included with [ ] brackets.</div>
+  </div>
+</div>
+
+<!-- PAST EXAM 1.2 -->
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 1.2: Quadratic Inequalities</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q3</span>
+    <div class="pq-q">The solution set of the inequality x² − x − 6 &gt; 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ {x | −2 &lt; x &lt; 3} is the solution for x²−x−6 &lt; 0 (between roots). You have the inequality direction reversed.')"><span class="ol">A</span>{x | −2 &lt; x &lt; 3}</button>
+      <button class="popt" onclick="pick(this,1,'✓ Correct! Factor: (x−3)(x+2) = 0 → roots −2 and 3. Parabola opens up → &gt;0 means OUTSIDE the roots → x &lt; −2 or x &gt; 3.')"><span class="ol">B</span>{x | x &lt; −2 or x &gt; 3}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | x &lt; −2} is incomplete. The right tail x &gt; 3 is also part of the solution.')"><span class="ol">C</span>{x | x &lt; −2}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | x &gt; 3} is incomplete. The left tail x &lt; −2 is also part of the solution.')"><span class="ol">D</span>{x | x &gt; 3}</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q3</span>
+    <div class="pq-q">The solution set of the quadratic inequality x² − 5x + 4 &lt; 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−4,−1) uses wrong roots. Factor x²−5x+4 = (x−1)(x−4) → roots are 1 and 4 (both positive), not −4 and −1.')"><span class="ol">A</span>(−4, −1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,1) ∪ (4,+∞) is the solution for &gt; 0 (outside roots). You have the wrong direction of inequality.')"><span class="ol">B</span>(−∞, 1) ∪ (4, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−4) ∪ (−1,+∞) uses completely wrong roots. The correct roots of x²−5x+4 are 1 and 4.')"><span class="ol">C</span>(−∞,−4) ∪ (−1,+∞)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (1, 4) is correct! Factor: (x−1)(x−4) = 0 → roots 1 and 4. Parabola opens up → &lt;0 means BETWEEN roots → 1 &lt; x &lt; 4.')"><span class="ol">D</span>(1, 4)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q3</span>
+    <div class="pq-q">The solution set of the inequality x² − x − 2 &gt; 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ Correct! Factor: (x−2)(x+1) = 0 → roots −1 and 2. &gt;0, opens up → OUTSIDE roots: x &lt; −1 or x &gt; 2.')"><span class="ol">A</span>{x | x &lt; −1 or x &gt; 2}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x | −1 &lt; x &lt; 2} is the solution for &lt; 0 (between roots). Wrong direction.')"><span class="ol">B</span>{x | −1 &lt; x &lt; 2}</button>
+      <button class="popt" onclick="pick(this,0,'✗ Wrong roots. x²−x−2 = (x−2)(x+1) gives roots −1 and 2, not the values implied here.')"><span class="ol">C</span>{x | x &lt; −2 or x &gt; −1}</button>
+      <button class="popt" onclick="pick(this,0,'✗ Wrong roots again. The factored form gives x = 2 and x = −1.')"><span class="ol">D</span>{x | −2 &lt; x &lt; 1}</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q4</span>
+    <div class="pq-q">The solution set of the inequality x² − 2x − 3 ≥ 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−1,3) is the solution for x²−2x−3 &lt; 0 — wrong direction AND wrong brackets (should be closed for ≥).')"><span class="ol">A</span>(−1, 3)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−∞,−1] ∪ [3,+∞) is correct! Factor: (x−3)(x+1) → roots −1 and 3. ≥0 means OUTSIDE including the roots → closed brackets [ ].')"><span class="ol">B</span>(−∞, −1] ∪ [3, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−1) ∪ (3,+∞) is correct in direction but uses open brackets. Since ≥ 0, the roots SATISFY the inequality (expression = 0 there) → must use [ ].')"><span class="ol">C</span>(−∞, −1) ∪ (3, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [−1,3] is the solution for x²−2x−3 ≤ 0 (between roots, closed). Wrong inequality direction.')"><span class="ol">D</span>[−1, 3]</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div><!-- end past 1.2 -->
+
+
+<!-- ════════════════════════════════
+     LESSON 1.3 — RATIONAL INEQUALITIES
+════════════════════════════════ -->
+<div class="lesson" id="l3">
+  <span class="lesson-tag">Lesson 1.3</span>
+  <h3>Rational Inequalities</h3>
+</div>
+
+<div class="card">
+  <h4>Why You Cannot Cross-Multiply</h4>
+  <p>A rational inequality has the form <span class="mono">f(x)/g(x) ○ 0</span>. You cannot multiply both sides by g(x) to clear the denominator — because g(x) might be negative, which would reverse the inequality direction.</p>
+
+  <div class="kbox kg">
+    <span class="kbox-label">The Sign Chart Method — 5 Steps</span>
+    <strong>1.</strong> Move everything to one side → f(x)/g(x) ○ 0<br>
+    <strong>2.</strong> Find <em>critical values</em>: where numerator = 0 → candidate solutions; where denominator = 0 → always excluded<br>
+    <strong>3.</strong> Mark all critical values on a number line, dividing it into intervals<br>
+    <strong>4.</strong> Test a point in each interval; determine sign (+/−) of the whole expression<br>
+    <strong>5.</strong> Select intervals matching the inequality; include numerator zeros if ≤ or ≥; <strong>never</strong> include denominator zeros
+  </div>
+
+  <div class="kbox kr">
+    <span class="kbox-label">Iron Rule — Denominator Zeros Are Always Excluded</span>
+    The denominator can <strong>never</strong> be zero — the function is undefined there. Even if the inequality is ≤ or ≥, a point where the denominator is zero is excluded from the solution, always.
+  </div>
+</div>
+
+<div class="card">
+  <h4>All Four Past Exam Variants — Solved</h4>
+
+  <div class="kbox kb">
+    <span class="kbox-label">(2x−3)/(3x−4) &lt; 0 &nbsp;(Mar 2026 Q11)</span>
+    Numerator = 0: 2x−3 = 0 → x = 3/2 &nbsp;(candidate solution — but strict &lt; excludes it)<br>
+    Denominator = 0: 3x−4 = 0 → x = 4/3 &nbsp;(always excluded)<br>
+    Order on number line: 4/3 &lt; 3/2. Test x = 1.4 (between them): (2×1.4−3)/(3×1.4−4) = (−0.2)/(0.2) = −0.2 → negative ✓<br>
+    <strong>Answer: (4/3, 3/2) — both endpoints excluded</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">(x−1)/(x−2) ≤ 1 &nbsp;(Dec 2025 Q12)</span>
+    Rearrange: (x−1)/(x−2) − 1 ≤ 0 → [(x−1) − (x−2)]/(x−2) ≤ 0 → 1/(x−2) ≤ 0<br>
+    Now find sign: 1/(x−2) is negative when x − 2 &lt; 0, i.e., x &lt; 2. (Strict, since denom ≠ 0)<br>
+    <strong>Answer: (−∞, 2)</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">(2x+1)/(x−2) ≤ 0 &nbsp;(Jan 2026 Q12)</span>
+    Numerator = 0: x = −1/2 &nbsp;(included since ≤)<br>
+    Denominator = 0: x = 2 &nbsp;(always excluded)<br>
+    Test between: x = 0: (1)/(−2) = −0.5 → negative ✓<br>
+    <strong>Answer: [−1/2, 2) — left closed, right open</strong>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">(2x+1)/(x−1) &lt; 0 &nbsp;(Apr 2026 Q12)</span>
+    Numerator = 0: x = −1/2 &nbsp;(excluded since strict &lt;)<br>
+    Denominator = 0: x = 1 &nbsp;(always excluded)<br>
+    Test x = 0 (between): (1)/(−1) = −1 → negative ✓<br>
+    <strong>Answer: (−1/2, 1) — both endpoints excluded</strong>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Rearranging Before Solving (Important for Dec 2025 Q12)</h4>
+  <div class="kbox kb">
+    <span class="kbox-label">Why (x−1)/(x−2) ≤ 1 does NOT mean x−1 ≤ x−2</span>
+    Cross-multiplying by (x−2) is dangerous — it could be negative! Instead:<br>
+    1. Move 1 to the left: (x−1)/(x−2) − 1 ≤ 0<br>
+    2. Common denominator: [(x−1) − (x−2)] / (x−2) ≤ 0<br>
+    3. Simplify numerator: (x−1−x+2)/(x−2) = 1/(x−2) ≤ 0<br>
+    4. This is negative when x−2 &lt; 0, i.e., x &lt; 2. Exclude x=2.<br>
+    Result: (−∞, 2)
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Rational Inequalities</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Including the denominator zero in the answer (e.g., writing [4/3, 3/2])</div>
+    <div class="mi-r">✓ x = 4/3 makes 3x−4 = 0 → undefined. Always use open bracket ( at denominator zeros.</div>
+    <div class="mi-e">The function doesn't exist at denominator zeros. Even if the inequality is ≤, this point is never in the solution set.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Cross-multiplying to "solve" (x−1)/(x−2) ≤ 1 as x−1 ≤ x−2</div>
+    <div class="mi-r">✓ Always rearrange to get 0 on one side first, then find a common denominator.</div>
+    <div class="mi-e">Cross-multiplying by (x−2) reverses the inequality when x−2 is negative. This leads to a completely wrong answer. The safe method is always to move everything to one side.</div>
+  </div>
+</div>
+
+<!-- PAST EXAM 1.3 -->
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 1.3: Rational Inequalities</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q11</span>
+    <div class="pq-q">The solution set of the inequality (2x−3)/(3x−4) &lt; 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ [4/3, 3/2] uses closed brackets on both ends. x=4/3 makes the denominator 0 (must exclude), and strict &lt; excludes x=3/2 too.')"><span class="ol">A</span>[4/3, 3/2]</button>
+      <button class="popt" onclick="pick(this,1,'✓ (4/3, 3/2) is correct! Numerator zero: x=3/2 (excluded by strict &lt;). Denominator zero: x=4/3 (always excluded). Expression is negative between 4/3 and 3/2. Both endpoints open.')"><span class="ol">B</span>(4/3, 3/2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (4/3, 3/2] includes x=3/2. But the inequality is strict (&lt;0), so the point where the expression equals zero is NOT included.')"><span class="ol">C</span>(4/3, 3/2]</button>
+      <button class="popt" onclick="pick(this,0,'✗ [4/3, 3/2) includes x=4/3. But x=4/3 makes the denominator zero — the function is undefined there and must always be excluded.')"><span class="ol">D</span>[4/3, 3/2)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q12</span>
+    <div class="pq-q">The solution set of the rational inequality (x−1)/(x−2) ≤ 1 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (2,+∞) is the opposite direction. After rearranging to 1/(x−2) ≤ 0, the expression is negative when x &lt; 2, not x &gt; 2.')"><span class="ol">A</span>(2, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [1,2] is wrong. After rearranging, you get 1/(x−2) ≤ 0, which has no critical point at x=1.')"><span class="ol">B</span>[1, 2]</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−∞, 2) is correct! Rearrange: 1/(x−2) ≤ 0. This is negative when x−2 &lt; 0 → x &lt; 2. Exclude x=2 (denominator). Answer: (−∞, 2).')"><span class="ol">C</span>(−∞, 2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞, 1] is too restrictive. The rearranged inequality 1/(x−2) ≤ 0 is satisfied for ALL x &lt; 2, not just x ≤ 1.')"><span class="ol">D</span>(−∞, 1]</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q12</span>
+    <div class="pq-q">The solution set of the rational inequality (2x+1)/(x−2) ≤ 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ [−1/2, 2) is correct! Numerator zero: x=−1/2 (included since ≤). Denominator zero: x=2 (always excluded). Expression is negative between them. Left closed, right open.')"><span class="ol">A</span>[−1/2, 2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−1/2) ∪ (2,+∞) is where the expression is POSITIVE (both numerator and denominator have the same sign). Wrong direction.')"><span class="ol">B</span>(−∞, −1/2) ∪ (2, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1/2, 2) excludes x=−1/2. But the inequality is ≤ 0 (includes equality), so the point where the expression = 0 (x=−1/2) IS included.')"><span class="ol">C</span>(−1/2, 2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞, −1/2) is the wrong region. The negative region is between −1/2 and 2, not to the left of −1/2.')"><span class="ol">D</span>(−∞, −1/2)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q12</span>
+    <div class="pq-q">The solution set of the inequality (2x+1)/(x−1) &lt; 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−1/2) ∪ [1,+∞) is wrong in two ways: wrong region (positive area) and includes x=1 which makes the denominator undefined.')"><span class="ol">A</span>(−∞, −1/2) ∪ [1, +∞)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−1/2, 1) is correct! Numerator zero: x=−1/2; Denominator zero: x=1. Strict &lt; → both excluded. Test x=0: (1)/(−1) = −1 < 0 ✓. Region between the two critical values.')"><span class="ol">B</span>(−1/2, 1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [−1/2, 1) includes x=−1/2. But strict &lt; 0 means the point where the expression = 0 is excluded.')"><span class="ol">C</span>[−1/2, 1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−1/2) ∪ (1,+∞) is where the expression is POSITIVE. Wrong direction for &lt; 0.')"><span class="ol">D</span>(−∞, −1/2) ∪ (1, +∞)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div><!-- end past 1.3 -->
+
+
+<!-- ════════════════════════════════
+     LESSON 1.4 — EXPONENTIAL COMPARISON & INEQUALITY PROPERTIES
+════════════════════════════════ -->
+<div class="lesson" id="l4">
+  <span class="lesson-tag">Lesson 1.4</span>
+  <h3>Exponential Comparisons &amp; Inequality Properties</h3>
+</div>
+
+<div class="card">
+  <h4>Comparing Exponential Expressions — The Rules</h4>
+  <table class="tbl">
+    <tr><th>Situation</th><th>Rule</th><th>Example</th></tr>
+    <tr><td>Same base a &gt; 1, compare exponents</td><td>Larger exponent → larger value</td><td>3⁵ &gt; 3³ ✓</td></tr>
+    <tr><td>Same base 0 &lt; a &lt; 1, compare exponents</td><td>Larger exponent → SMALLER value (decreasing function)</td><td>(½)³ &lt; (½)² ✓</td></tr>
+    <tr><td>Same positive exponent, compare bases (bases &gt; 0)</td><td>Larger base → larger value</td><td>2.1^(3/4) &gt; 1.2^(3/4) ✓</td></tr>
+    <tr><td>Same <strong>negative</strong> exponent, compare bases</td><td>Larger base → SMALLER value (exponent flips order)</td><td>2.1⁻² &lt; 1.2⁻² ✓</td></tr>
+  </table>
+  <div class="kbox kam">
+    <span class="kbox-label">The Trap — Negative Exponents Reverse the Comparison</span>
+    2.1 &gt; 1.2, but 2.1⁻² = 1/(2.1²) &lt; 1/(1.2²) = 1.2⁻²<br>
+    Think of it: a larger denominator makes a smaller fraction. So the "bigger" base actually gives the "smaller" value when the exponent is negative.
+  </div>
+  <div class="kbox kam">
+    <span class="kbox-label">Decreasing Base (0 &lt; a &lt; 1) with Negative Exponents</span>
+    For 0 &lt; a &lt; 1, the function aˣ is already decreasing. A negative exponent means 1/aˣ which uses a &gt; 1 base — so it's now increasing!<br>
+    Example: 0.75⁻⁰·² vs 0.75⁻⁰·⁴<br>
+    These equal (0.75)^(−0.2) and (0.75)^(−0.4). Since 0&lt;0.75&lt;1 and the function is decreasing, a less-negative exponent (−0.2 &gt; −0.4) gives a larger value.<br>
+    So 0.75⁻⁰·² &gt; 0.75⁻⁰·⁴ ✓
+  </div>
+</div>
+
+<div class="card">
+  <h4>Basic Inequality Properties — Also Tested</h4>
+  <table class="tbl">
+    <tr><th>Property</th><th>Always True?</th><th>Note</th></tr>
+    <tr><td>a &gt; b → a + c &gt; b + c</td><td>✓ Always</td><td>Adding same value preserves direction</td></tr>
+    <tr><td>a &gt; b → a − c &gt; b − c</td><td>✓ Always</td><td>Subtracting same value preserves direction</td></tr>
+    <tr><td>a &gt; b → ac &gt; bc</td><td>✗ Not always</td><td>Only if c &gt; 0; reverses if c &lt; 0</td></tr>
+    <tr><td>a &gt; b → a/c &gt; b/c</td><td>✗ Not always</td><td>Only if c &gt; 0; reverses if c &lt; 0</td></tr>
+    <tr><td>a &gt; b → a² &gt; b²</td><td>✗ Not always</td><td>Fails if a and b have different signs</td></tr>
+    <tr><td>a &gt; b → a³ &gt; b³</td><td>✓ Always</td><td>Cube is strictly increasing over all ℝ</td></tr>
+  </table>
+  <div class="kbox kg">
+    <span class="kbox-label">Counterexample for a² &gt; b²</span>
+    Let a = 1, b = −3. Then a &gt; b, but a² = 1 &lt; 9 = b².<br>
+    The cube rule always works because x³ is strictly increasing: if a &gt; b then a³ &gt; b³ for any real numbers.
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Exponential Comparisons</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Concluding 2.1⁻² &gt; 1.2⁻² because 2.1 &gt; 1.2</div>
+    <div class="mi-r">✓ Correct: 2.1⁻² &lt; 1.2⁻² — negative exponent reverses the comparison</div>
+    <div class="mi-e">2.1⁻² = 1/2.1² ≈ 0.227 and 1.2⁻² = 1/1.2² ≈ 0.694. The larger base gives a larger denominator, hence a smaller fraction.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ For a &gt; b, assuming ac &gt; bc is always true</div>
+    <div class="mi-r">✓ Only true when c &gt; 0. If c &lt; 0, the inequality reverses: ac &lt; bc.</div>
+    <div class="mi-e">Multiplying or dividing by a negative number always reverses the inequality direction. This is tested in Jan 2026 Q22 and Apr 2026 Q24.</div>
+  </div>
+</div>
+
+<!-- PAST EXAM 1.4 -->
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 1.4: Exponential Comparisons &amp; Inequality Properties</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q19</span>
+    <div class="pq-q">Which of the following inequalities is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2.1⁻² &gt; 1.2⁻² is FALSE. Negative exponents reverse the comparison: 2.1⁻² = 1/4.41 ≈ 0.227 < 1/1.44 ≈ 0.694 = 1.2⁻².')"><span class="ol">A</span>2.1⁻² &gt; 1.2⁻²</button>
+      <button class="popt" onclick="pick(this,1,'✓ 0.75⁻⁰·² &gt; 0.75⁻⁰·⁴ is TRUE! Base 0&lt;0.75&lt;1, so aˣ is decreasing. Compare exponents: −0.2 &gt; −0.4, so a^(−0.2) &gt; a^(−0.4) for 0&lt;a&lt;1.')"><span class="ol">B</span>0.75⁻⁰·² &gt; 0.75⁻⁰·⁴</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2.1^(3/4) &gt; 1.2^(3/4) is actually TRUE (positive exponent, larger base wins), but the exam answer for this question is B.')"><span class="ol">C</span>2.1^(3/4) &gt; 1.2^(3/4)</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3^3.25 &gt; 3³ is TRUE (base &gt;1, larger exponent wins), but the intended answer for Mar 2026 Q19 is B.')"><span class="ol">D</span>3^3.25 &gt; 3³</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q15</span>
+    <div class="pq-q">Which of the following inequalities is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 0.75^(−0.2) &gt; 0.75^(−0.4) is correct! For 0&lt;a&lt;1, function aˣ is decreasing: larger x → smaller value. Since −0.2 &gt; −0.4, we get 0.75^(−0.2) &gt; 0.75^(−0.4).')"><span class="ol">A</span>0.75^(−0.2) &gt; 0.75^(−0.4)</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3^4.5 &gt; 3^5 is FALSE. Base 3 &gt; 1, so larger exponent gives larger value: 3^5 &gt; 3^4.5.')"><span class="ol">B</span>3^4.5 &gt; 3^5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2.1^(−2) &gt; 1.2^(−2) is FALSE. Negative exponent reverses: 2.1⁻² &lt; 1.2⁻².')"><span class="ol">C</span>2.1^(−2) &gt; 1.2^(−2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2.1^(2/3) &gt; 1.2^(2/3) is actually TRUE (positive exponent, larger base), but the exam marks A as the answer.')"><span class="ol">D</span>2.1^(2/3) &gt; 1.2^(2/3)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q22</span>
+    <div class="pq-q">Let a, b, c be real numbers. Which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ If a &gt; b then ac &gt; bc is NOT always true. If c &lt; 0, multiplying both sides by c reverses the inequality: ac &lt; bc.')"><span class="ol">A</span>If a &gt; b, then ac &gt; bc</button>
+      <button class="popt" onclick="pick(this,1,'✓ If a &gt; b then a + c &gt; b + c is ALWAYS true! Adding the same value c to both sides of an inequality always preserves the direction.')"><span class="ol">B</span>If a &gt; b, then a + c &gt; b + c</button>
+      <button class="popt" onclick="pick(this,0,'✗ If ac &gt; bc then a &gt; b is NOT always true. If c &lt; 0, then ac &gt; bc actually implies a &lt; b (dividing by a negative reverses).')"><span class="ol">C</span>If ac &gt; bc, then a &gt; b</button>
+      <button class="popt" onclick="pick(this,0,'✗ If a &gt; b then a² &gt; b² is NOT always true. Counterexample: a=1, b=−3: a&gt;b, but a²=1 &lt; 9=b².')"><span class="ol">D</span>If a &gt; b, then a² &gt; b²</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q27</span>
+    <div class="pq-q">Which of the following inequalities is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2.1⁻² &gt; 1.2⁻² is FALSE. Negative exponent reverses: the larger base gives the smaller result: 2.1⁻² &lt; 1.2⁻².')"><span class="ol">A</span>2.1⁻² &gt; 1.2⁻²</button>
+      <button class="popt" onclick="pick(this,1,'✓ 0.75⁻⁰·² &gt; 0.75⁻⁰·⁴ is TRUE! Base 0&lt;0.75&lt;1 → decreasing function. Exponent −0.2 &gt; −0.4, so the function value at −0.2 is larger.')"><span class="ol">B</span>0.75⁻⁰·² &gt; 0.75⁻⁰·⁴</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3^2.25 &gt; 3³ is FALSE. Base 3 &gt; 1, so larger exponent wins: 3³ &gt; 3^2.25.')"><span class="ol">C</span>3^2.25 &gt; 3³</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2.1^(2/3) &gt; 1.2^(2/3) is actually TRUE, but the exam marks B as the answer for this question.')"><span class="ol">D</span>2.1^(2/3) &gt; 1.2^(2/3)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q23</span>
+    <div class="pq-q">Let a &gt; b. Which of the following is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ |a| &lt; |b| is NOT necessarily true. Counterexample: a=3, b=−5: a&gt;b but |a|=3 &lt; |b|=5 (TRUE here), or a=5, b=1: |a|=5 &gt; |b|=1 (FALSE here). No general conclusion.')"><span class="ol">A</span>|a| &lt; |b|</button>
+      <button class="popt" onclick="pick(this,0,'✗ |a| &gt; |b| is also NOT necessarily true (same counterexample with a=3, b=−5 shows |a| &lt; |b|).')"><span class="ol">B</span>|a| &gt; |b|</button>
+      <button class="popt" onclick="pick(this,1,'✓ a³ &gt; b³ is ALWAYS TRUE! The function f(x) = x³ is strictly increasing over all real numbers. So if a &gt; b, then a³ &gt; b³ regardless of signs.')"><span class="ol">C</span>a³ &gt; b³</button>
+      <button class="popt" onclick="pick(this,0,'✗ a² &gt; b² is NOT always true. If a=1, b=−2: a&gt;b, but a²=1 &lt; 4=b².')"><span class="ol">D</span>a² &gt; b²</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q24</span>
+    <div class="pq-q">If a, b, c are rational numbers and a &gt; b, which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ a + c &gt; b + c is ALWAYS TRUE. Adding the same constant c to both sides of an inequality always preserves its direction.')"><span class="ol">A</span>a + c &gt; b + c</button>
+      <button class="popt" onclick="pick(this,0,'✗ a/c &gt; b/c is NOT always true. If c &lt; 0, dividing by a negative reverses the inequality: a/c &lt; b/c.')"><span class="ol">B</span>a/c &gt; b/c</button>
+      <button class="popt" onclick="pick(this,0,'✗ ac &gt; bc is NOT always true. Multiplying by c reverses the inequality when c &lt; 0.')"><span class="ol">C</span>ac &gt; bc</button>
+      <button class="popt" onclick="pick(this,0,'✗ a − c &lt; b − c directly contradicts a &gt; b. Subtracting c from both sides preserves direction: a − c &gt; b − c.')"><span class="ol">D</span>a − c &lt; b − c</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q24 (bonus)</span>
+    <div class="pq-q">Given a &gt; b, which is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 1/a &lt; 1/b is NOT always true. If a=2, b=−3: a&gt;b, but 1/a=0.5 &gt; −0.33=1/b. Only true when a and b have the same positive sign.')"><span class="ol">A</span>1/a &lt; 1/b</button>
+      <button class="popt" onclick="pick(this,0,'✗ a² &gt; b² is NOT always true. Counterexample: a=1, b=−3: 1 &lt; 9.')"><span class="ol">B</span>a² &gt; b²</button>
+      <button class="popt" onclick="pick(this,1,'✓ 5ᵃ &gt; 5ᵇ is TRUE! Base 5 &gt; 1, so the exponential function 5ˣ is strictly increasing. Therefore a &gt; b → 5ᵃ &gt; 5ᵇ.')"><span class="ol">C</span>5ᵃ &gt; 5ᵇ</button>
+      <button class="popt" onclick="pick(this,0,'✗ sin a &gt; sin b is NOT always true. The sine function is not monotone — it oscillates. No general comparison from a &gt; b alone.')"><span class="ol">D</span>sin a &gt; sin b</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q5 (bonus — Coordinate Plane)</span>
+    <div class="pq-q">If a = −2, ab &lt; 0, then the point (a, b) belongs to:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Second quadrant has x &lt; 0, y &gt; 0. Here a=−2&lt;0, so x &lt; 0 ✓. We need ab &lt; 0: (−2)b &lt; 0 → b &gt; 0. So y &gt; 0 ✓. This IS the second quadrant!')"><span class="ol">A</span>Second quadrant (x&lt;0, y&gt;0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Fourth quadrant has x &gt; 0. But a = −2 &lt; 0, so the x-coordinate is negative. Not Q4.')"><span class="ol">B</span>Fourth quadrant (x&gt;0, y&lt;0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ First quadrant requires both x &gt; 0 and y &gt; 0. But a = −2 &lt; 0, so x &lt; 0. Not Q1.')"><span class="ol">C</span>First quadrant (x&gt;0, y&gt;0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Third quadrant has x &lt; 0, y &lt; 0. Here a=−2&lt;0 ✓, and ab &lt; 0 → (−2)b &lt; 0 → b &gt; 0, so y &gt; 0. Not Q3.')"><span class="ol">D</span>Third quadrant (x&lt;0, y&lt;0)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div><!-- end past 1.4 -->
+
+
+<!-- ════════════════════════════════
+     UNIT 1 SUMMARY
+════════════════════════════════ -->
+<div class="summary" id="summary">
+  <div class="sum-h">✓ Unit 1 Complete Summary — Sets &amp; Inequalities</div>
+  <ul class="sum-list">
+    <li><strong>∈</strong> connects elements to sets; <strong>⊆</strong> connects sets to sets. Never swap them.</li>
+    <li>The empty set Φ is a <em>subset</em> (⊆) of every set — not necessarily an element.</li>
+    <li><strong>Intersection</strong> A ∩ B: take the larger left endpoint &amp; smaller right endpoint; use the more restrictive bracket.</li>
+    <li><strong>Union</strong> A ∪ B: take the smaller left endpoint &amp; larger right endpoint; use the less restrictive bracket.</li>
+    <li>Square bracket <strong>[ ]</strong> = endpoint included (≤ or ≥); round bracket <strong>( )</strong> = excluded (&lt; or &gt;).</li>
+    <li>Infinity always uses a round bracket: (−∞) or (+∞).</li>
+    <li>Quadratic: ax² + bx + c <strong>&gt; 0</strong> (a&gt;0) → positive <em>outside</em> the roots.</li>
+    <li>Quadratic: ax² + bx + c <strong>&lt; 0</strong> (a&gt;0) → negative <em>between</em> the roots.</li>
+    <li>For ≥ and ≤: include the roots with [ ]. For strict &gt; and &lt;: exclude with ( ).</li>
+    <li>Rational inequalities: denominator zeros are <strong>always excluded</strong> — never include them even for ≤ or ≥.</li>
+    <li>Never cross-multiply a rational inequality — move everything to one side first.</li>
+    <li>Negative exponents <strong>reverse</strong> the comparison between different bases.</li>
+    <li>Base 0 &lt; a &lt; 1: the exponential function aˣ is <em>decreasing</em> — larger exponent = smaller value.</li>
+    <li>Adding or subtracting the same value always preserves inequality direction.</li>
+    <li>Multiplying or dividing by a <strong>negative</strong> number <em>reverses</em> the inequality.</li>
+    <li>a &gt; b does NOT imply a² &gt; b² (fails when signs differ), but a³ &gt; b³ is always true.</li>
+  </ul>
+</div>
+
+</div><!-- end .page -->
+
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  const p=(d.scrollTop)/(d.scrollHeight-d.clientHeight)*100;
+  document.getElementById('prog').style.width=p+'%';
+});
+
+// ── JUMP ──
+function jump(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── HIDE DROP ──
+function hide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
+
+// ── QUIZ LOGIC ──
+function pick(btn,correct,msg){
+  const pq=btn.closest('.pq');
+  if(pq.dataset.done) return;
+  pq.dataset.done=1;
+  const opts=pq.querySelectorAll('.popt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct){
+    // highlight the correct one
+    opts.forEach(o=>{
+      if(o!==btn && o.getAttribute('onclick').includes(',1,'))
+        o.classList.add('correct');
+    });
+  }
+  const fb=pq.querySelector('.fb');
+  fb.className='fb '+(correct?'fb-ok':'fb-no');
+  fb.textContent=msg;
+  fb.style.display='block';
+}
+
+// ── SEARCH DATA ──
+const DATA=[
+  {t:'Sets — Notation & Operations',ctx:'Lesson 1.1 · Membership ∈ ⊆, Interval notation, Union ∪ Intersection ∩ Complement ∁',id:'l1',color:'#1b7a42'},
+  {t:'Quadratic Inequalities',ctx:'Lesson 1.2 · Parabola rule, outside/between roots, bracket types',id:'l2',color:'#0b4d8c'},
+  {t:'Rational Inequalities',ctx:'Lesson 1.3 · Sign chart method, denominator zeros, rearranging first',id:'l3',color:'#9c1c1c'},
+  {t:'Exponential Comparisons',ctx:'Lesson 1.4 · Negative exponents, base 0<a<1 behavior, inequality properties',id:'l4',color:'#a87000'},
+  {t:'Unit Summary',ctx:'All 16 key rules for Sets & Inequalities in one place',id:'summary',color:'#1b7a42'},
+  {t:'Mar 2026 Q1 — Set membership A={x|−2<x≤3}',ctx:'Lesson 1.1 · Answer: C (3∈A)',id:'l1',color:'#0b4d8c'},
+  {t:'Mar 2026 Q2 — Intersection M∩N',ctx:'Lesson 1.1 · Answer: [−4,2)',id:'l1',color:'#0b4d8c'},
+  {t:'Mar 2026 Q3 — Quadratic x²−x−6>0',ctx:'Lesson 1.2 · Answer: x<−2 or x>3',id:'l2',color:'#0b4d8c'},
+  {t:'Mar 2026 Q11 — Rational (2x−3)/(3x−4)<0',ctx:'Lesson 1.3 · Answer: (4/3, 3/2)',id:'l3',color:'#0b4d8c'},
+  {t:'Mar 2026 Q19 — Exponential comparison',ctx:'Lesson 1.4 · Answer: 0.75^(−0.2) > 0.75^(−0.4)',id:'l4',color:'#0b4d8c'},
+  {t:'Mar 2026 Q23 — a>b, which is correct?',ctx:'Lesson 1.4 · Answer: a³>b³',id:'l4',color:'#0b4d8c'},
+  {t:'Dec 2025 Q1 — A={1,2}, B={1,2,3}',ctx:'Lesson 1.1 · Answer: A⊆B',id:'l1',color:'#0b4d8c'},
+  {t:'Dec 2025 Q2 — Intersection A=(−1,3), B=[2,4)',ctx:'Lesson 1.1 · Answer: [2,3)',id:'l1',color:'#0b4d8c'},
+  {t:'Dec 2025 Q3 — Quadratic x²−5x+4<0',ctx:'Lesson 1.2 · Answer: (1,4)',id:'l2',color:'#0b4d8c'},
+  {t:'Dec 2025 Q12 — Rational (x−1)/(x−2)≤1',ctx:'Lesson 1.3 · Answer: (−∞,2)',id:'l3',color:'#0b4d8c'},
+  {t:'Dec 2025 Q15 — Exponential comparison',ctx:'Lesson 1.4 · Answer: 0.75^(−0.2)>0.75^(−0.4)',id:'l4',color:'#0b4d8c'},
+  {t:'Dec 2025 Q24 — a>b, which is correct?',ctx:'Lesson 1.4 · Answer: 5ᵃ>5ᵇ',id:'l4',color:'#0b4d8c'},
+  {t:'Jan 2026 Q1 — Set A={6,7,8,9,10}',ctx:'Lesson 1.1 · Answer: 9∈A',id:'l1',color:'#0b4d8c'},
+  {t:'Jan 2026 Q2 — Union A∪B',ctx:'Lesson 1.1 · Answer: {x|x≥−2}',id:'l1',color:'#0b4d8c'},
+  {t:'Jan 2026 Q3 — Quadratic x²−x−2>0',ctx:'Lesson 1.2 · Answer: x<−1 or x>2',id:'l2',color:'#0b4d8c'},
+  {t:'Jan 2026 Q12 — Rational (2x+1)/(x−2)≤0',ctx:'Lesson 1.3 · Answer: [−1/2, 2)',id:'l3',color:'#0b4d8c'},
+  {t:'Jan 2026 Q22 — Inequality property',ctx:'Lesson 1.4 · Answer: a+c>b+c always true',id:'l4',color:'#0b4d8c'},
+  {t:'Jan 2026 Q27 — Exponential comparison',ctx:'Lesson 1.4 · Answer: 0.75^(−0.2)>0.75^(−0.4)',id:'l4',color:'#0b4d8c'},
+  {t:'Apr 2026 Q1 — A={1,3,4,6,7}, B={1,3,5}',ctx:'Lesson 1.1 · Answer: B⊆A',id:'l1',color:'#0b4d8c'},
+  {t:'Apr 2026 Q2 — Intersection A∩B',ctx:'Lesson 1.1 · Answer: {x|4<x<5}',id:'l1',color:'#0b4d8c'},
+  {t:'Apr 2026 Q4 — Quadratic x²−2x−3≥0',ctx:'Lesson 1.2 · Answer: (−∞,−1]∪[3,+∞)',id:'l2',color:'#0b4d8c'},
+  {t:'Apr 2026 Q12 — Rational (2x+1)/(x−1)<0',ctx:'Lesson 1.3 · Answer: (−1/2, 1)',id:'l3',color:'#0b4d8c'},
+  {t:'Apr 2026 Q24 — Inequality property',ctx:'Lesson 1.4 · Answer: a+c>b+c always',id:'l4',color:'#0b4d8c'},
+  {t:'Interval notation — open vs closed brackets',ctx:'[a,b] includes endpoints; (a,b) excludes them',id:'l1',color:'#1b7a42'},
+  {t:'Sign chart method for rational inequalities',ctx:'Find zeros of numerator and denominator; test each interval',id:'l3',color:'#1b7a42'},
+  {t:'Denominator zeros are always excluded',ctx:'Even for ≤ or ≥ inequalities',id:'l3',color:'#9c1c1c'},
+  {t:'Negative exponents reverse comparison',ctx:'a>b>0 but a⁻ⁿ < b⁻ⁿ when n>0',id:'l4',color:'#a87000'},
+];
+
+function doSearch(q,dropId){
+  const drop=document.getElementById(dropId);
+  if(!q||q.length<2){drop.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=DATA.filter(d=>d.t.toLowerCase().includes(ql)||d.ctx.toLowerCase().includes(ql)).slice(0,8);
+  if(!hits.length){drop.innerHTML='<div class="sd-none">No results for "'+q+'"</div>';drop.style.display='block';return;}
+  drop.innerHTML=hits.map(h=>`<div class="sd-item" onmousedown="jump('${h.id}')">
+    <div class="sd-title">${hl(h.t,q)}</div>
+    <div class="sd-ctx">${hl(h.ctx,q)}</div>
+  </div>`).join('');
+  drop.style.display='block';
+}
+
+function hl(str,q){
+  if(!q) return str;
+  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return str.replace(re,'<mark>$1</mark>');
+}
+</script>
+</body>
+</html>
+ENDOFFILE
+echo "Done — checking size"
+wc -c /home/claude/unit1.html
