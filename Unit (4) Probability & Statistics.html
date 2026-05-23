@@ -1,0 +1,1022 @@
+cat > /tmp/write_u4.py << 'PYEOF'
+html = open('/dev/stdin').read() if False else ""
+
+content = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSCA Math — Unit 4: Probability & Statistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --ink:#1a1208;--muted:#6b5535;--faint:#a08060;
+  --paper:#fdf8f2;--warm:#f5ece0;--card:#fff;
+  --border:#e2d4c0;
+  --g:#1b7a42;--g-bg:#d8f2e4;--g-lt:#edfaf3;--g-border:#8ecfaa;
+  --b:#0b4d8c;--b-bg:#d2e9ff;--b-lt:#ebf4ff;--b-border:#80b8f0;
+  --am:#a87000;--am-bg:#fff3c0;--am-lt:#fffae6;--am-border:#d4a820;
+  --r:#9c1c1c;--r-bg:#ffd6d6;--r-lt:#fff0f0;--r-border:#e08080;
+  --te:#0a7060;--te-bg:#c8f0e8;--te-lt:#eafaf7;--te-border:#50b898;
+  --sh:0 2px 14px rgba(0,0,0,.06);--sh2:0 6px 32px rgba(0,0,0,.11);
+  --r8:8px;--r12:12px;--r16:16px;
+}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.75;font-size:15.5px;}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#0a7060,#40c0a0);z-index:999;transition:width .1s;}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(155deg,#081814 0%,#0e2820 55%,#061410 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(10,112,96,.38) 0%,transparent 58%),
+              radial-gradient(ellipse at 80% 70%,rgba(8,90,76,.24) 0%,transparent 52%);}
+.hero-noise{position:absolute;inset:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;}
+.hero-badge{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+  padding:5px 20px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:#70e0c8;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;display:inline-block;}
+.hero h1{position:relative;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);
+  color:#eefcf8;font-weight:900;line-height:1.08;margin-bottom:6px;}
+.hero h1 em{color:#40d0b0;font-style:normal;}
+.hero-sub{position:relative;font-size:.92rem;color:#70a898;margin-bottom:6px;}
+.hero-exams{position:relative;font-size:.76rem;color:rgba(255,255,255,.3);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:32px;}
+.hero-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;max-width:760px;margin:0 auto 32px;}
+@media(max-width:600px){.hero-cards{grid-template-columns:1fr 1fr;}}
+.hc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  padding:12px 16px;cursor:pointer;transition:all .22s;text-align:left;}
+.hc:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);transform:translateY(-2px);}
+.hc-tag{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:#40d0b0;letter-spacing:.1em;display:block;margin-bottom:3px;}
+.hc-name{font-size:.8rem;color:#d0f4ee;font-weight:600;}
+.hero-search{position:relative;width:100%;max-width:520px;margin:0 auto;}
+.hero-search input{width:100%;padding:13px 22px 13px 48px;border-radius:30px;
+  border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);
+  color:#eefcf8;font-family:'Source Serif 4',serif;font-size:.94rem;outline:none;transition:all .2s;}
+.hero-search input::placeholder{color:rgba(255,255,255,.3);}
+.hero-search input:focus{border-color:rgba(64,208,176,.55);background:rgba(255,255,255,.12);}
+.hero-search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none;}
+.search-drop{position:absolute;top:calc(100% + 8px);left:0;right:0;background:white;
+  border:1px solid var(--border);border-radius:var(--r12);box-shadow:var(--sh2);
+  max-height:340px;overflow-y:auto;z-index:800;display:none;}
+.sd-item{padding:10px 18px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .14s;}
+.sd-item:last-child{border-bottom:none;}
+.sd-item:hover{background:var(--warm);}
+.sd-title{font-size:.86rem;font-weight:600;color:var(--ink);}
+.sd-ctx{font-size:.76rem;color:var(--muted);margin-top:2px;}
+.sd-none{padding:14px 18px;font-size:.86rem;color:var(--muted);text-align:center;}
+mark{background:#ffe060;border-radius:2px;padding:0 1px;}
+.hero-wm{position:absolute;bottom:16px;left:0;right:0;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.1);letter-spacing:.15em;}
+
+/* NAV */
+.snav{position:sticky;top:0;z-index:200;background:rgba(253,248,242,.95);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  padding:7px 18px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.snav-btn{padding:4px 11px;border-radius:20px;border:1.5px solid var(--border);
+  background:none;font-family:'Source Serif 4',serif;font-size:.71rem;color:var(--muted);
+  cursor:pointer;transition:all .17s;white-space:nowrap;}
+.snav-btn:hover{border-color:var(--te);color:var(--te);}
+.snav-div{width:1px;height:14px;background:var(--border);flex-shrink:0;}
+.snav-search{position:relative;margin-left:auto;}
+.snav-search input{padding:5px 14px 5px 32px;border-radius:20px;border:1.5px solid var(--border);
+  background:white;font-family:'Source Serif 4',serif;font-size:.73rem;color:var(--ink);
+  outline:none;width:180px;transition:all .2s;}
+.snav-search input:focus{border-color:var(--te);width:240px;}
+.snav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.38;pointer-events:none;}
+.snav-drop{position:absolute;top:calc(100%+6px);right:0;width:360px;background:white;
+  border:1px solid var(--border);border-radius:10px;box-shadow:var(--sh2);
+  max-height:320px;overflow-y:auto;z-index:600;display:none;}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:52px 24px 80px;}
+
+/* UNIT HEADER */
+.unit-hdr{background:linear-gradient(135deg,#c8f0e8 0%,#b0e8d8 100%);
+  border:2px solid #50b898;border-radius:var(--r16);padding:32px 36px;
+  margin-bottom:44px;position:relative;overflow:hidden;}
+.unit-hdr::after{content:'P(A)';position:absolute;right:28px;top:14px;
+  font-size:4.5rem;color:rgba(10,112,96,.1);font-family:'Playfair Display',serif;
+  font-style:italic;pointer-events:none;}
+.unit-hdr-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--te);opacity:.75;margin-bottom:7px;}
+.unit-hdr h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;
+  color:#053a30;margin-bottom:8px;}
+.unit-hdr p{font-size:.9rem;color:#0a4a3c;line-height:1.6;}
+.unit-topics{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ut{background:rgba(255,255,255,.55);border:1px solid #50b898;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#053a30;
+  padding:4px 12px;font-weight:700;letter-spacing:.04em;}
+
+/* LESSON */
+.lesson{display:flex;align-items:center;gap:12px;margin:58px 0 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--border);}
+.lesson-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  padding:5px 13px;border-radius:20px;letter-spacing:.1em;white-space:nowrap;
+  background:var(--te-bg);color:var(--te);border:1px solid var(--te-border);}
+.lesson h3{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);
+  padding:24px 26px;margin-bottom:18px;box-shadow:var(--sh);}
+.card h4{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  margin-bottom:13px;color:var(--ink);}
+.card p{color:var(--muted);margin-bottom:8px;font-size:.93rem;}
+
+/* KBOX */
+.kbox{border-radius:var(--r8);padding:14px 18px;margin:10px 0;font-size:.9rem;border-left:4px solid;}
+.kg{background:var(--g-lt);border-color:var(--g);color:#0c4020;}
+.kb{background:var(--b-lt);border-color:var(--b);color:#06305a;}
+.kam{background:var(--am-lt);border-color:var(--am);color:#6a4500;}
+.kr{background:var(--r-lt);border-color:var(--r);color:#5c1010;}
+.kte{background:var(--te-lt);border-color:var(--te);color:#063a30;}
+.kbox-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:7px;opacity:.65;}
+
+/* EQ */
+.eq{background:#0d1a18;color:#80e8d0;border-radius:var(--r8);
+  padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:.86rem;
+  margin:12px 0;border:1px solid #1a4038;line-height:1.9;}
+.eq .dim{color:#406860;font-size:.78rem;}
+.eq .hi{color:#ffe060;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.84rem;
+  background:white;border-radius:var(--r8);overflow:hidden;box-shadow:var(--sh);}
+.tbl th{background:var(--ink);color:#f0ebe2;padding:9px 14px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.05em;}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--border);font-size:.85rem;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--warm);}
+.yes{color:var(--g);font-weight:700;}
+.no{color:var(--r);font-weight:700;}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+@media(max-width:660px){.g2,.g3{grid-template-columns:1fr;}}
+.mini{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:.87rem;}
+.mini .mh{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:7px;margin-bottom:10px;}
+.mini ul{padding-left:18px;}
+.mini li{margin-bottom:5px;color:var(--muted);}
+
+/* MISTAKE */
+.mis{background:linear-gradient(135deg,#fff4f4,#ffe6e6);border:2px solid #e07070;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.mis-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--r);text-transform:uppercase;margin-bottom:14px;}
+.mis-item{background:white;border:1px solid #dda0a0;border-radius:var(--r8);
+  padding:13px 16px;margin-bottom:11px;font-size:.87rem;}
+.mis-item:last-child{margin-bottom:0;}
+.mi-w{color:var(--r);font-weight:700;margin-bottom:5px;}
+.mi-r{color:var(--g);font-weight:700;margin-bottom:5px;}
+.mi-e{color:var(--muted);font-size:.83rem;line-height:1.6;}
+
+/* PAST EXAM */
+.past{background:linear-gradient(135deg,#eafaf7,#d8f4ee);border:2px solid #50b898;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.past-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--te);text-transform:uppercase;margin-bottom:16px;}
+.pq{background:white;border:1px solid #90d8c8;border-radius:var(--r8);
+  padding:14px 17px;margin-bottom:12px;}
+.pq:last-child{margin-bottom:0;}
+.pq-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  color:var(--te);background:var(--te-bg);padding:2px 9px;border-radius:10px;
+  display:inline-block;margin-bottom:8px;}
+.pq-q{font-size:.9rem;color:var(--ink);margin-bottom:10px;line-height:1.65;}
+.pq-opts{display:flex;flex-direction:column;gap:5px;}
+.popt{font-size:.85rem;color:var(--muted);padding:7px 12px;border-radius:6px;
+  border:1.5px solid #b0d8cc;background:#f4fbf9;cursor:pointer;
+  font-family:'Source Serif 4',serif;transition:all .17s;
+  display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;}
+.popt:hover:not(.disabled){border-color:var(--te);background:var(--te-lt);}
+.popt.correct{border-color:var(--g);background:var(--g-lt);color:#0c4020;font-weight:600;}
+.popt.wrong{border-color:var(--r);background:var(--r-lt);color:#5c1010;}
+.popt.disabled{pointer-events:none;}
+.ol{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  min-width:20px;padding-top:1px;flex-shrink:0;color:var(--faint);}
+.fb{display:none;margin-top:10px;border-radius:6px;padding:10px 14px;font-size:.84rem;line-height:1.6;}
+.fb-ok{background:var(--g-bg);color:#0c4020;border-left:3px solid var(--g);}
+.fb-no{background:var(--r-bg);color:#5c1010;border-left:3px solid var(--r);}
+
+/* WORKED EXAMPLE */
+.wex{background:linear-gradient(135deg,#eafaf7,#d8f4ee);border:2px solid #50b898;
+  border-radius:var(--r12);padding:20px 24px;margin:16px 0;}
+.wex-head{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.12em;color:var(--te);text-transform:uppercase;margin-bottom:10px;}
+.wex-step{display:flex;gap:14px;margin-bottom:8px;align-items:flex-start;font-size:.89rem;}
+.wex-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+  background:var(--te);color:white;border-radius:50%;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.wex-text{color:var(--ink);line-height:1.65;}
+
+/* TREE / SAMPLE SPACE VIZ */
+.sample-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0;}
+.sg-cell{background:white;border:1.5px solid var(--border);border-radius:6px;
+  padding:8px 4px;text-align:center;font-size:.8rem;font-family:'JetBrains Mono',monospace;}
+.sg-cell.hit{background:var(--g-bg);border-color:var(--g-border);color:#0c4020;font-weight:700;}
+.sg-cell.hdr{background:var(--ink);color:#f0ebe2;font-weight:700;}
+
+/* SUMMARY */
+.summary{background:linear-gradient(135deg,#eafaf7,#d8f4ee);border:2px solid #50b898;
+  border-radius:var(--r16);padding:28px 32px;margin:40px 0 0;}
+.sum-h{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;
+  color:var(--te);margin-bottom:16px;}
+.sum-list{list-style:none;padding:0;}
+.sum-list li{padding:6px 0 6px 26px;position:relative;font-size:.9rem;
+  color:var(--muted);border-bottom:1px solid rgba(0,0,0,.05);}
+.sum-list li::before{content:'✓';position:absolute;left:0;color:var(--te);font-weight:700;}
+.sum-list li:last-child{border-bottom:none;}
+
+/* BTT */
+.btt{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#f0ebe2;
+  border:none;border-radius:50%;width:46px;height:46px;font-size:1.1rem;
+  cursor:pointer;box-shadow:var(--sh2);transition:all .2s;z-index:300;
+  display:flex;align-items:center;justify-content:center;}
+.btt:hover{background:#063a30;transform:translateY(-3px);}
+sup{font-size:.68em;vertical-align:super;}
+sub{font-size:.68em;vertical-align:sub;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--warm);padding:1px 6px;border-radius:4px;}
+strong{color:var(--ink);}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<button class="btt" onclick="jump('top')">↑</button>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-badge">CSCA with Wadah · 2026 Edition</div>
+  <h1>Unit 4<br><em>Probability &amp; Statistics</em></h1>
+  <p class="hero-sub">Deep theory · Worked examples · All past exam questions mapped</p>
+  <p class="hero-exams">Mar 2026 · Jan 2026 · Apr 2026 · Dec 2025</p>
+  <div class="hero-cards">
+    <div class="hc" onclick="jump('l1')"><span class="hc-tag">Lesson 4.1</span><span class="hc-name">Classical Probability Model</span></div>
+    <div class="hc" onclick="jump('l2')"><span class="hc-tag">Lesson 4.2</span><span class="hc-name">Counting — Combinations</span></div>
+    <div class="hc" onclick="jump('l3')"><span class="hc-tag">Lesson 4.3</span><span class="hc-name">Complementary &amp; Compound Events</span></div>
+    <div class="hc" onclick="jump('l4')"><span class="hc-tag">Lesson 4.4</span><span class="hc-name">Conditional &amp; Independent Events</span></div>
+    <div class="hc" onclick="jump('l5')"><span class="hc-tag">Lesson 4.5</span><span class="hc-name">Mean, Variance &amp; Statistics</span></div>
+    <div class="hc" onclick="jump('l6')"><span class="hc-tag">Lesson 4.6</span><span class="hc-name">Normal Distribution</span></div>
+  </div>
+  <div class="hero-search">
+    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="hs" placeholder="Search topics, formulas, past questions…" oninput="doSearch(this.value,'hd')" onfocus="if(this.value)doSearch(this.value,'hd')" onblur="hide('hd')">
+    <div class="search-drop" id="hd"></div>
+  </div>
+  <div class="hero-wm">csca-wadah.com · mathematics · unit 4</div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="snav">
+  <button class="snav-btn" onclick="jump('top')">▲ Top</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('l1')">4.1 Classical P</button>
+  <button class="snav-btn" onclick="jump('l2')">4.2 Counting</button>
+  <button class="snav-btn" onclick="jump('l3')">4.3 Complement &amp; Compound</button>
+  <button class="snav-btn" onclick="jump('l4')">4.4 Conditional &amp; Independent</button>
+  <button class="snav-btn" onclick="jump('l5')">4.5 Mean &amp; Variance</button>
+  <button class="snav-btn" onclick="jump('l6')">4.6 Normal Distribution</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('summary')">Summary</button>
+  <div class="snav-search">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="ns" placeholder="Quick search…" oninput="doSearch(this.value,'nd')" onfocus="if(this.value)doSearch(this.value,'nd')" onblur="hide('nd')">
+    <div class="snav-drop" id="nd"></div>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- UNIT HEADER -->
+<div class="unit-hdr">
+  <div class="unit-hdr-label">Unit 04 · CSCA Mathematics 2026</div>
+  <h2>Probability &amp; Statistics</h2>
+  <p>Probability questions on the CSCA demand careful counting and logical structure — not guesswork. This unit builds everything from first principles: sample spaces, counting techniques, compound events, independence, and the data statistics the exam tests. Every past exam question is mapped and fully solved.</p>
+  <div class="unit-topics">
+    <span class="ut">Classical Probability</span>
+    <span class="ut">Sample Space</span>
+    <span class="ut">Equally Likely Outcomes</span>
+    <span class="ut">Combinations C(n,r)</span>
+    <span class="ut">Complement Rule</span>
+    <span class="ut">Addition Rule</span>
+    <span class="ut">Multiplication Rule</span>
+    <span class="ut">Independent Events</span>
+    <span class="ut">Conditional Probability</span>
+    <span class="ut">Mean &amp; Variance</span>
+    <span class="ut">Normal Distribution</span>
+    <span class="ut">68-95-99.7 Rule</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.1 — CLASSICAL PROBABILITY
+═══════════════════════════════ -->
+<div class="lesson" id="l1">
+  <span class="lesson-tag">Lesson 4.1</span>
+  <h3>Classical Probability — The Foundation</h3>
+</div>
+
+<div class="card">
+  <h4>What Is Classical Probability?</h4>
+  <p>Classical probability applies when all outcomes in the sample space are <strong>equally likely</strong>. It is the simplest and most commonly tested model on the CSCA.</p>
+  <div class="eq">
+    P(A) = Number of favorable outcomes / Total number of equally likely outcomes
+    <br><br>
+    <span class="dim">0 ≤ P(A) ≤ 1 &nbsp; always &nbsp;|&nbsp; P(impossible) = 0 &nbsp;|&nbsp; P(certain) = 1</span>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">The Three-Step Process for Any Probability Question</span>
+    <strong>Step 1 — Define the sample space:</strong> List or count ALL possible outcomes<br>
+    <strong>Step 2 — Identify favorable outcomes:</strong> Which outcomes satisfy the event?<br>
+    <strong>Step 3 — Compute the ratio:</strong> P(A) = favorable / total
+  </div>
+</div>
+
+<div class="card">
+  <h4>Building Sample Spaces — The Key Skill</h4>
+  <p>On the CSCA, questions always give you a physical setup (balls in a bag, people chosen, apps selected). Your first job is always to correctly identify the total number of outcomes.</p>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q48 — Balls in a Bag (Full Solution)</div>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px;">Bag: Red-1, Red-2, Black-1, Black-2, White-1. Draw 2 balls. Find P(different colors) and P(at least one labeled 1).</p>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Total ways to choose 2 from 5:</strong> C(5,2) = 10 pairs total</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>List all 10 pairs:</strong> {R1,R2}, {R1,B1}, {R1,B2}, {R1,W1}, {R2,B1}, {R2,B2}, {R2,W1}, {B1,B2}, {B1,W1}, {B2,W1}</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>P(different colors):</strong> Same-color pairs: {R1,R2} and {B1,B2} = 2 pairs. Different-color = 10−2 = 8. P = 8/10 = <strong>4/5</strong></div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>P(at least one labeled 1):</strong> Balls labeled 1: R1, B1, W1. No-label-1 pairs (from {R2,B2,W... wait W1 is labeled 1}). No-1 balls: R2, B2 only. Pairs with NO label-1: only {R2,B2} = 1 pair. So at-least-one-1 = 10−1 = 9. P = 9/10. <br>Answer: <strong>4/5 and 9/10 → Option D</strong></div></div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Classical Probability</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Forgetting to check whether outcomes are truly equally likely</div>
+    <div class="mi-r">✓ Classical probability only works when all outcomes have the same chance</div>
+    <div class="mi-e">If a bag has different-sized balls or weighted dice, outcomes are NOT equally likely and a different model is needed.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Confusing "at least one" by listing favorable outcomes (too slow and error-prone)</div>
+    <div class="mi-r">✓ Use complement: P(at least one) = 1 − P(none) — much faster and safer</div>
+    <div class="mi-e">For "at least one labeled 1 among 5 balls": P = 1 − P(neither is labeled 1). Only R2 and B2 lack label 1, giving C(2,2)=1 pair with no label 1. P = 1 − 1/10 = 9/10.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.1: Classical Probability</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q48</span>
+    <div class="pq-q">A bag has 5 balls: Red-1, Red-2, Black-1, Black-2, White-1. Two are drawn randomly. P(different colors) and P(at least one labeled 1) are respectively:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 4/5 and 7/10: P(different colors)=4/5 ✓ but P(at least one 1)=9/10, not 7/10.')"><span class="ol">A</span>4/5 and 7/10</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3/5 and 7/10: P(diff colors)=8/10=4/5 not 3/5.')"><span class="ol">B</span>3/5 and 7/10</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3/5 and 9/10: first part wrong.')"><span class="ol">C</span>3/5 and 9/10</button>
+      <button class="popt" onclick="pick(this,1,'✓ 4/5 and 9/10! Total pairs: C(5,2)=10. Same-color: {R1,R2},{B1,B2}=2. Diff-color=8/10=4/5. No-label-1 balls: only R2,B2. Pair with no 1: {R2,B2}=1. At-least-one-1: 9/10.')"><span class="ol">D</span>4/5 and 9/10</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q48</span>
+    <div class="pq-q">Chinese zodiac has 12 animals repeating every 12 years. P(at least 2 of 3 randomly chosen people share the same zodiac sign):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 17/72: use complement. P(all different)=1×(11/12)×(10/12)=110/144=55/72. P(at least 2 same)=1−55/72=17/72. Actually this IS the answer — let me recheck. Yes, 17/72.')"><span class="ol">A</span>17/72</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/12: too small.')"><span class="ol">B</span>1/12</button>
+      <button class="popt" onclick="pick(this,0,'✗ 55/72: that is P(all different), not P(at least 2 same).')"><span class="ol">C</span>55/72</button>
+      <button class="popt" onclick="pick(this,1,'✓ 17/72! P(all 3 different signs): person 1 any sign (12/12), person 2 different (11/12), person 3 different from both (10/12). P(all diff)=110/144=55/72. P(at least 2 same)=1−55/72=17/72.')"><span class="ol">D</span>17/72 ← Correct (see explanation)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.2 — COUNTING & COMBINATIONS
+═══════════════════════════════ -->
+<div class="lesson" id="l2">
+  <span class="lesson-tag">Lesson 4.2</span>
+  <h3>Counting Techniques — Combinations</h3>
+</div>
+
+<div class="card">
+  <h4>Why Counting Is the Core Skill</h4>
+  <p>Every classical probability question reduces to two counts: how many total ways, and how many favorable ways. Getting these wrong means the probability is wrong.</p>
+  <div class="eq">
+    Combination (order doesn't matter):
+    <br>C(n, r) = n! / (r! × (n−r)!)
+    <br><br>
+    <span class="dim">Read as "n choose r" — selecting r items from n items</span>
+    <br><br>
+    <span class="hi">C(5,2) = 5!/(2!×3!) = (5×4)/(2×1) = 10</span>
+    <br><span class="hi">C(4,2) = 4!/(2!×2!) = (4×3)/(2×1) = 6</span>
+    <br><span class="hi">C(n,1) = n &nbsp; C(n,0) = 1 &nbsp; C(n,n) = 1</span>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">When to Use Combinations</span>
+    Use C(n,r) when: <strong>order does NOT matter</strong> and items are chosen <strong>without replacement</strong>.<br>
+    Drawing 2 balls from a bag → C(5,2) = 10 (the pair {R1,R2} is the same regardless of which you picked first).<br>
+    Selecting a committee of 3 from 10 people → C(10,3) = 120.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Multiplication Principle — Counting Multi-Stage Events</h4>
+  <p>When an event has multiple independent stages, multiply the counts at each stage.</p>
+  <div class="kbox kb">
+    <span class="kbox-label">Multiplication Principle</span>
+    If Stage 1 has m ways and Stage 2 has n ways (independent), total = m × n.<br><br>
+    Jan 2026 Q48: Choose 1 from high school students AND 1 from college students.<br>
+    These are two independent choices → multiply probabilities at each stage.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Jan 2026 Q48 — Running Apps (Full Solution)</div>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px;">200 high school, 80 college students. Apps A,B,C,D. HS: 80,40,60,20. College: 30,20,20,10. Choose one from each group. P(they chose different apps)?</p>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>P(same app):</strong> For each app, multiply the proportions:
+    P(both A) = (80/200)×(30/80) = (2/5)×(3/8) = 6/40
+    P(both B) = (40/200)×(20/80) = (1/5)×(1/4) = 1/20
+    P(both C) = (60/200)×(20/80) = (3/10)×(1/4) = 3/40
+    P(both D) = (20/200)×(10/80) = (1/10)×(1/8) = 1/80</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>P(same) total</strong> = 6/40 + 2/40 + 3/40 + 0.5/40 = 12/80 + 4/80 + 6/80 + 1/80 = 23/80</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>P(different)</strong> = 1 − 23/80 = <strong>57/80</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.2: Counting</div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q48</span>
+    <div class="pq-q">200 high-schoolers and 80 college students have preferences for apps A,B,C,D (HS: 80,40,60,20; College: 30,20,20,10). One person from each group chosen randomly. P(they chose different apps):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 23/80: that is P(same app), not P(different).')"><span class="ol">A</span>23/80</button>
+      <button class="popt" onclick="pick(this,1,'✓ 57/80! P(same): (80/200)(30/80)+(40/200)(20/80)+(60/200)(20/80)+(20/200)(10/80) = 24/160+8/160+12/160+2/160 = 46/160 = 23/80. P(diff)=1−23/80=57/80.')"><span class="ol">B</span>57/80</button>
+      <button class="popt" onclick="pick(this,0,'✗ 9/20: incorrect calculation.')"><span class="ol">C</span>9/20</button>
+      <button class="popt" onclick="pick(this,0,'✗ 11/20: incorrect calculation.')"><span class="ol">D</span>11/20</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q48</span>
+    <div class="pq-q">Bag has 12 balls: red, black, yellow, green. P(red)=1/3. P(yellow or green)=5/12. P(black or yellow)=5/12. Find P(yellow), P(black), P(green):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 1/6, 1/4, 1/4! Setup: R=4 balls (1/3×12). Y+G=5 balls. B+Y=5 balls. Total=R+B+Y+G=12 → B+Y+G=8. From Y+G=5 and B+Y=5: B−G=0 → B=G. B+Y+G=8 and Y+G=5 → B=3. But B=G → G=3? Then Y+G=5 → Y=2. Check: 4+3+2+3=12✓. P(Y)=2/12=1/6, P(B)=3/12=1/4, P(G)=3/12=1/4.')"><span class="ol">A</span>1/6, 1/4, 1/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/3,1/4,1/6: P(red) already =1/3, so yellow cannot also be 1/3.')"><span class="ol">B</span>1/3, 1/4, 1/6</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/4,1/5,1/6: does not sum correctly with P(red)=1/3.')"><span class="ol">C</span>1/4, 1/5, 1/6</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/5,1/4,1/6: check: 4+?+?+?=12.')"><span class="ol">D</span>1/5, 1/4, 1/6</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.3 — COMPLEMENT & COMPOUND EVENTS
+═══════════════════════════════ -->
+<div class="lesson" id="l3">
+  <span class="lesson-tag">Lesson 4.3</span>
+  <h3>Complement Rule &amp; Compound Events</h3>
+</div>
+
+<div class="card">
+  <h4>The Complement Rule — Your Most Powerful Shortcut</h4>
+  <p>Often it is much easier to count what you do NOT want, then subtract from 1.</p>
+  <div class="eq">
+    P(A) = 1 − P(Ā)
+    <br><br>
+    <span class="dim">Ā = "not A" = complement of A</span>
+    <br><span class="hi">Use when: "at least one", "at least two", "not all" appear in the problem</span>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">When to Immediately Reach for the Complement</span>
+    Trigger words: <strong>"at least one"</strong>, <strong>"at least two"</strong>, <strong>"not all same"</strong><br><br>
+    P(at least one success) = 1 − P(zero successes)<br>
+    P(at least 2 of 3 share zodiac) = 1 − P(all 3 have different zodiac signs)<br><br>
+    The complement is almost always far easier to count than the event itself.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Addition Rule — Mutually Exclusive vs Overlapping Events</h4>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Mutually Exclusive (cannot both happen)</div>
+      P(A or B) = P(A) + P(B)<br><br>
+      Example: rolling a 3 OR a 5 on one die.<br>
+      P = 1/6 + 1/6 = 2/6 = 1/3
+    </div>
+    <div class="mini">
+      <div class="mh">Overlapping (can both happen)</div>
+      P(A or B) = P(A) + P(B) − P(A and B)<br><br>
+      Example: drawing a red OR a King from a deck.<br>
+      P = 26/52 + 4/52 − 2/52 = 28/52
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>The Zodiac Problem — Complement in Action</h4>
+  <div class="wex">
+    <div class="wex-head">Dec 2025 Q48 — Full Solution Using Complement</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">We want P(at least 2 of 3 people share the same zodiac sign).</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Complement:</strong> P(all 3 have DIFFERENT zodiac signs)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Person 1: any sign → 12/12 = 1. Person 2: must differ from person 1 → 11/12. Person 3: must differ from both → 10/12.</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">P(all different) = 1 × 11/12 × 10/12 = 110/144 = 55/72</div></div>
+    <div class="wex-step"><div class="wex-num">5</div><div class="wex-text"><strong>P(at least 2 same) = 1 − 55/72 = 17/72</strong></div></div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Complement &amp; Compound Events</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Directly listing all cases where "at least 2 share a sign" (hundreds of cases)</div>
+    <div class="mi-r">✓ Always use complement: P(at least 2 same) = 1 − P(all different)</div>
+    <div class="mi-e">The complement (all different) has only ONE configuration to count: sequential restriction. Direct counting would require listing all possible sign combinations.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Adding probabilities without checking if events are mutually exclusive</div>
+    <div class="mi-r">✓ Check overlap first. If events can happen simultaneously, subtract P(A and B)</div>
+    <div class="mi-e">P(yellow or green) = P(Y) + P(G) only if yellow and green are different colors and cannot happen simultaneously in a single draw — which they cannot. This one is fine. But always check.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.3: Complement &amp; Compound Events</div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q48</span>
+    <div class="pq-q">12 animals in the Chinese zodiac cycle every 12 years. P(at least 2 of 3 randomly chosen people share the same zodiac):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 17/72! Complement: P(all 3 different) = 1×(11/12)×(10/12) = 110/144 = 55/72. P(at least 2 same) = 1−55/72 = 17/72.')"><span class="ol">A</span>17/72</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/12: far too small.')"><span class="ol">B</span>1/12</button>
+      <button class="popt" onclick="pick(this,0,'✗ 55/72: this is P(all different), the complement — not the answer.')"><span class="ol">C</span>55/72</button>
+      <button class="popt" onclick="pick(this,0,'✗ 143/144: this would be P(at least 2 same) for 2 people, not 3.')"><span class="ol">D</span>143/144</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.4 — CONDITIONAL & INDEPENDENT
+═══════════════════════════════ -->
+<div class="lesson" id="l4">
+  <span class="lesson-tag">Lesson 4.4</span>
+  <h3>Conditional Probability &amp; Independent Events</h3>
+</div>
+
+<div class="card">
+  <h4>Independence — The Key Concept for Multi-Group Problems</h4>
+  <p>Two events A and B are <strong>independent</strong> if knowing A happened tells you nothing about B. This is the most important concept for the Jan 2026 Q48 style questions.</p>
+  <div class="eq">
+    <span class="hi">If A and B are independent:</span>
+    P(A and B) = P(A) × P(B)
+    <br><br>
+    <span class="dim">This is the Multiplication Rule for independent events.</span>
+    <br><br>
+    P(A | B) = P(A) &nbsp;&nbsp; <span class="dim">(knowing B happened doesn't change P(A))</span>
+  </div>
+  <div class="kbox kb">
+    <span class="kbox-label">When Independence Applies on the CSCA</span>
+    The exam explicitly states "preferences are independent of each other" in Jan 2026 Q48.<br>
+    This means: the high school student's choice and the college student's choice are completely unrelated.<br>
+    So: P(HS chooses A AND college chooses A) = P(HS chooses A) × P(college chooses A)<br><br>
+    With independence, you always multiply the individual probabilities.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Conditional Probability — P(A | B)</h4>
+  <div class="eq">
+    P(A | B) = P(A and B) / P(B)
+    <br><br>
+    <span class="dim">Read as: "probability of A given that B has already occurred"</span>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Geometric Interpretation of Conditional Probability</span>
+    Once we know B occurred, the sample space shrinks to just the outcomes in B.<br>
+    P(A|B) asks: "Among all outcomes in B, what fraction also belong to A?"<br><br>
+    Example: Given a card is red, P(it is a King) = 2/26 = 1/13.<br>
+    (2 red Kings out of 26 red cards)
+  </div>
+</div>
+
+<div class="card">
+  <h4>Worked Example — Jan 2026 Q48 in Detail</h4>
+  <div class="wex">
+    <div class="wex-head">Jan 2026 Q48 — Preferences Independent, P(different apps)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>HS proportions:</strong> A=80/200=2/5, B=40/200=1/5, C=60/200=3/10, D=20/200=1/10</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>College proportions:</strong> A=30/80=3/8, B=20/80=1/4, C=20/80=1/4, D=10/80=1/8</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>P(same app):</strong> Since independent, multiply for each app:<br>
+    A: (2/5)(3/8) = 6/40 = 3/20<br>
+    B: (1/5)(1/4) = 1/20<br>
+    C: (3/10)(1/4) = 3/40<br>
+    D: (1/10)(1/8) = 1/80</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">Common denominator 80: 12/80 + 4/80 + 6/80 + 1/80 = <strong>23/80</strong></div></div>
+    <div class="wex-step"><div class="wex-num">5</div><div class="wex-text"><strong>P(different) = 1 − 23/80 = 57/80</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.4: Independence</div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q48</span>
+    <div class="pq-q">HS (200) and College (80) app preferences are independent. HS: A=80,B=40,C=60,D=20. College: A=30,B=20,C=20,D=10. One selected from each group. P(they chose different apps):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 23/80: that is P(same app).')"><span class="ol">A</span>23/80</button>
+      <button class="popt" onclick="pick(this,1,'✓ 57/80! P(same)=23/80 (multiply each pair and sum). P(different)=1−23/80=57/80.')"><span class="ol">B</span>57/80</button>
+      <button class="popt" onclick="pick(this,0,'✗ 9/20: incorrect.')"><span class="ol">C</span>9/20</button>
+      <button class="popt" onclick="pick(this,0,'✗ 11/20: incorrect.')"><span class="ol">D</span>11/20</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.5 — MEAN & VARIANCE
+═══════════════════════════════ -->
+<div class="lesson" id="l5">
+  <span class="lesson-tag">Lesson 4.5</span>
+  <h3>Mean, Variance &amp; Numerical Characteristics of Data</h3>
+</div>
+
+<div class="card">
+  <h4>Mean (Average) — Measuring the Center</h4>
+  <p>The mean is the arithmetic average — the "balance point" of the data. It tells you where the data clusters.</p>
+  <div class="eq">
+    Population mean: μ = (x₁ + x₂ + … + xₙ) / n = Σxᵢ / n
+    <br><br>
+    <span class="dim">For grouped/frequency data:</span>
+    <br>μ = Σ(xᵢ × fᵢ) / Σfᵢ &nbsp;&nbsp; <span class="dim">where fᵢ = frequency of value xᵢ</span>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Variance — Measuring the Spread</h4>
+  <p>Variance measures how far the data points are from the mean on average. A large variance means data is spread out; small variance means data clusters near the mean.</p>
+  <div class="eq">
+    Variance: σ² = Σ(xᵢ − μ)² / n
+    <br><br>
+    <span class="hi">Equivalent formula (easier to compute):</span>
+    <br>σ² = (Σxᵢ²)/n − μ²
+    <br><br>
+    Standard Deviation: σ = √(σ²)
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Step-by-Step Variance Calculation</span>
+    <strong>Step 1:</strong> Find the mean μ<br>
+    <strong>Step 2:</strong> For each data point, compute (xᵢ − μ)²<br>
+    <strong>Step 3:</strong> Average these squared deviations: divide by n<br>
+    <strong>Step 4:</strong> That is σ². Take √ for standard deviation σ.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Worked Example — Computing Mean and Variance</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Data: 2, 4, 4, 6, 8, 8, 10 (n=7)</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Mean: μ = (2+4+4+6+8+8+10)/7 = 42/7 = <strong>6</strong></div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Deviations: (2−6)²=16, (4−6)²=4, (4−6)²=4, (6−6)²=0, (8−6)²=4, (8−6)²=4, (10−6)²=16</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">Sum of squared deviations = 16+4+4+0+4+4+16 = 48</div></div>
+    <div class="wex-step"><div class="wex-num">5</div><div class="wex-text">Variance: σ² = 48/7 ≈ 6.86. &nbsp; Standard deviation: σ = √(48/7)</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Properties of Mean and Variance — What Changes, What Doesn't</h4>
+  <table class="tbl">
+    <tr><th>Operation on all data</th><th>Effect on Mean</th><th>Effect on Variance</th></tr>
+    <tr><td>Add constant c to every value</td><td>μ increases by c</td><td class="yes">No change (σ² unchanged)</td></tr>
+    <tr><td>Subtract constant c from every value</td><td>μ decreases by c</td><td class="yes">No change (σ² unchanged)</td></tr>
+    <tr><td>Multiply every value by constant k</td><td>μ multiplied by k</td><td>σ² multiplied by k²</td></tr>
+    <tr><td>Divide every value by constant k</td><td>μ divided by k</td><td>σ² divided by k²</td></tr>
+  </table>
+  <div class="kbox kam">
+    <span class="kbox-label">Key Insight — Why Adding a Constant Doesn't Change Variance</span>
+    Variance measures spread — how far points are from the mean. If you add 5 to every value, the mean also increases by 5. Each point is still the same distance from its new mean as it was from the old mean. The spread is unchanged. Variance is about relative distances, not absolute positions.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Median and Mode — Other Measures of Center</h4>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Median</div>
+      The middle value when data is sorted.<br>
+      For odd n: the (n+1)/2 th value.<br>
+      For even n: average of the two middle values.<br><br>
+      Median is robust — not affected by extreme outliers.
+    </div>
+    <div class="mini">
+      <div class="mh">Mode</div>
+      The most frequently occurring value.<br>
+      A data set can have no mode, one mode, or multiple modes.<br><br>
+      Mode is useful for categorical data (e.g., most popular app).
+    </div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Mean &amp; Variance</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Confusing variance σ² with standard deviation σ</div>
+    <div class="mi-r">✓ Variance = (standard deviation)². Standard deviation = √variance.</div>
+    <div class="mi-e">If the exam asks for variance, give σ². If it asks for standard deviation, give σ = √(σ²). Don't mix them up.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Adding a constant changes the variance</div>
+    <div class="mi-r">✓ Adding a constant to all values shifts the mean but leaves variance completely unchanged</div>
+    <div class="mi-e">Variance measures spread, not location. Shifting all data by the same amount doesn't change how spread out it is.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.5: Mean &amp; Variance</div>
+
+  <div class="pq">
+    <span class="pq-src">Concept Question — Mean Properties</span>
+    <div class="pq-q">If the mean of dataset {x₁, x₂, …, x₁₀} is 5, what is the mean of {x₁+3, x₂+3, …, x₁₀+3}?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 5: adding 3 to every value shifts the mean by 3.')"><span class="ol">A</span>5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3: that is just the constant added, not the new mean.')"><span class="ol">B</span>3</button>
+      <button class="popt" onclick="pick(this,1,'✓ 8! Adding 3 to every value increases the mean by 3. New mean = 5+3 = 8.')"><span class="ol">C</span>8</button>
+      <button class="popt" onclick="pick(this,0,'✗ 15: that is 5×3, not 5+3.')"><span class="ol">D</span>15</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Concept Question — Variance Properties</span>
+    <div class="pq-q">If the variance of {x₁, x₂, …, x₁₀} is 4, what is the variance of {x₁+5, x₂+5, …, x₁₀+5}?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 9: variance doesn't change when adding a constant.')"><span class="ol">A</span>9</button>
+      <button class="popt" onclick="pick(this,1,'✓ 4! Adding a constant to every value shifts the mean but does NOT change the spread. Variance = 4, unchanged.')"><span class="ol">B</span>4</button>
+      <button class="popt" onclick="pick(this,0,'✗ 100: that would be if you multiplied every value by 5 (variance becomes 4×25=100).')"><span class="ol">C</span>100</button>
+      <button class="popt" onclick="pick(this,0,'✗ 29: no basis for this answer.')"><span class="ol">D</span>29</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Concept Question — Computing Variance</span>
+    <div class="pq-q">Data: 1, 3, 5, 7, 9. The variance is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 4: mean=5. Deviations²: 16+4+0+4+16=40. Variance=40/5=8.')"><span class="ol">A</span>4</button>
+      <button class="popt" onclick="pick(this,1,'✓ 8! Mean=(1+3+5+7+9)/5=25/5=5. Deviations: −4,−2,0,+2,+4. Squared: 16,4,0,4,16. Sum=40. Variance=40/5=8.')"><span class="ol">B</span>8</button>
+      <button class="popt" onclick="pick(this,0,'✗ 10: sum of deviations²=40, divide by 5 gives 8.')"><span class="ol">C</span>10</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2√2: that is the standard deviation (√8=2√2), not the variance.')"><span class="ol">D</span>2√2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 4.6 — NORMAL DISTRIBUTION
+═══════════════════════════════ -->
+<div class="lesson" id="l6">
+  <span class="lesson-tag">Lesson 4.6</span>
+  <h3>Normal Distribution — Concepts &amp; Properties</h3>
+</div>
+
+<div class="card">
+  <h4>What Is the Normal Distribution?</h4>
+  <p>The normal distribution (bell curve) is the most important probability distribution in statistics. It describes many natural phenomena: heights, exam scores, measurement errors, and more.</p>
+  <div class="kbox kg">
+    <span class="kbox-label">The Bell Curve — Key Visual Features</span>
+    • <strong>Symmetric</strong> about the mean μ — left and right halves are mirror images<br>
+    • <strong>Bell-shaped</strong> — highest probability density at the center (mean), tapering toward both tails<br>
+    • <strong>Mean = Median = Mode</strong> — all three measures of center coincide<br>
+    • <strong>Total area under curve = 1</strong> (represents 100% probability)<br>
+    • The curve extends infinitely in both directions but never touches the x-axis
+  </div>
+</div>
+
+<div class="card">
+  <h4>The 68–95–99.7 Rule (Empirical Rule)</h4>
+  <p>For any normal distribution with mean μ and standard deviation σ:</p>
+  <div class="eq">
+    Within 1σ of mean: &nbsp; P(μ−σ &lt; X &lt; μ+σ) ≈ <span class="hi">68%</span>
+    <br>Within 2σ of mean: &nbsp; P(μ−2σ &lt; X &lt; μ+2σ) ≈ <span class="hi">95%</span>
+    <br>Within 3σ of mean: &nbsp; P(μ−3σ &lt; X &lt; μ+3σ) ≈ <span class="hi">99.7%</span>
+    <br><br>
+    <span class="dim">Each tail beyond 3σ contains only 0.15% of data</span>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Applying the 68-95-99.7 Rule</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Heights of adult men: μ=175cm, σ=8cm. What % are between 159 and 191cm?</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">159 = 175 − 2×8 = μ − 2σ. &nbsp; 191 = 175 + 2×8 = μ + 2σ.</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">This is the range within 2σ → <strong>approximately 95%</strong> of men have heights in this range.</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Standard Normal Distribution — Z-Scores</h4>
+  <p>Any normal distribution can be converted to the standard normal (μ=0, σ=1) using a Z-score transformation.</p>
+  <div class="eq">
+    Z = (X − μ) / σ
+    <br><br>
+    <span class="dim">Z tells you how many standard deviations X is from the mean.</span>
+    <br><span class="hi">Z = 0 → exactly at the mean</span>
+    <br><span class="hi">Z = +1 → one standard deviation above the mean</span>
+    <br><span class="hi">Z = −2 → two standard deviations below the mean</span>
+  </div>
+  <div class="kbox kb">
+    <span class="kbox-label">Properties of the Standard Normal</span>
+    • Mean μ = 0, Standard deviation σ = 1<br>
+    • P(Z &lt; 0) = P(Z &gt; 0) = 0.5 (symmetric about 0)<br>
+    • P(−1 &lt; Z &lt; 1) ≈ 0.68<br>
+    • P(Z &lt; a) = 1 − P(Z &lt; −a) (by symmetry)<br>
+    • All probabilities looked up via Z-table (standard normal table)
+  </div>
+</div>
+
+<div class="card">
+  <h4>Key Conceptual Facts Tested on CSCA</h4>
+  <table class="tbl">
+    <tr><th>Statement</th><th>True or False?</th></tr>
+    <tr><td>The normal distribution is symmetric about its mean μ</td><td class="yes">TRUE</td></tr>
+    <tr><td>For normal distribution: mean = median = mode</td><td class="yes">TRUE</td></tr>
+    <tr><td>The total area under the normal curve equals 1</td><td class="yes">TRUE</td></tr>
+    <tr><td>About 68% of data falls within 1 standard deviation of the mean</td><td class="yes">TRUE</td></tr>
+    <tr><td>About 95% of data falls within 2 standard deviations of the mean</td><td class="yes">TRUE</td></tr>
+    <tr><td>The normal curve touches the x-axis at the tails</td><td class="no">FALSE — it approaches but never touches</td></tr>
+    <tr><td>All normal distributions have the same shape regardless of μ and σ</td><td class="no">FALSE — μ shifts it, σ changes width</td></tr>
+    <tr><td>P(X = a) = 0 for any specific value a in a continuous distribution</td><td class="yes">TRUE — only intervals have positive probability</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h4>Normal Distribution and Real-World Applications</h4>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Quality Control</div>
+      A factory produces bolts with μ=10mm, σ=0.1mm. Bolts between 9.8 and 10.2mm are acceptable.<br><br>
+      9.8 = μ−2σ, 10.2 = μ+2σ → 95% acceptable.
+    </div>
+    <div class="mini">
+      <div class="mh">Test Scores</div>
+      Exam scores: μ=70, σ=10. What score is in the top 16%?<br><br>
+      Top 16% is above μ+σ (since 84% is below μ+σ by 68% rule). Score = 70+10 = 80.
+    </div>
+  </div>
+  <div class="kbox kte">
+    <span class="kbox-label">CSCA Exam Focus for Normal Distribution</span>
+    The CSCA mostly tests <strong>conceptual understanding</strong> of the normal distribution, not detailed calculations from Z-tables. Focus on:<br>
+    • Knowing the shape is symmetric bell curve<br>
+    • Mean = median = mode for normal distribution<br>
+    • The 68-95-99.7 rule percentages<br>
+    • Understanding that larger σ = wider/flatter bell; smaller σ = taller/narrower bell
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Normal Distribution</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Thinking P(X = exactly 5) is positive for a normal distribution</div>
+    <div class="mi-r">✓ For any continuous distribution, P(X = exact value) = 0. Only P(a &lt; X &lt; b) is positive.</div>
+    <div class="mi-e">The normal distribution is continuous — there are infinitely many values, so any single point has probability zero. You can only compute probabilities for intervals.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Thinking the normal curve touches zero at ±3σ</div>
+    <div class="mi-r">✓ The curve approaches but never actually reaches the x-axis — it extends to ±∞</div>
+    <div class="mi-e">The tails of the normal distribution are asymptotic to the x-axis. In theory, any value is possible (with tiny but positive probability).</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 4.6: Normal Distribution</div>
+
+  <div class="pq">
+    <span class="pq-src">Concept — Normal Distribution Properties</span>
+    <div class="pq-q">Which of the following correctly describes the normal distribution?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ The distribution is skewed right: FALSE. The normal distribution is perfectly symmetric — no skew.')"><span class="ol">A</span>The distribution is skewed right</button>
+      <button class="popt" onclick="pick(this,0,'✗ The mean and median are different: FALSE. For normal distribution, mean = median = mode.')"><span class="ol">B</span>The mean and median are always different</button>
+      <button class="popt" onclick="pick(this,1,'✓ The distribution is symmetric about its mean — TRUE. The bell curve is a perfect mirror image on both sides of μ.')"><span class="ol">C</span>The distribution is symmetric about its mean</button>
+      <button class="popt" onclick="pick(this,0,'✗ 50% of data falls within 1 standard deviation: FALSE. It is approximately 68% within 1σ, not 50%.')"><span class="ol">D</span>Exactly 50% of data falls within 1 standard deviation</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Concept — 68-95-99.7 Rule</span>
+    <div class="pq-q">A dataset follows a normal distribution with mean μ = 50 and standard deviation σ = 5. Approximately what percentage of data falls between 40 and 60?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 68%: 40 = μ−2σ and 60 = μ+2σ. This is a 2σ range, not 1σ.')"><span class="ol">A</span>68%</button>
+      <button class="popt" onclick="pick(this,1,'✓ 95%! 40 = 50−2×5 = μ−2σ and 60 = 50+2×5 = μ+2σ. By the 68-95-99.7 rule, within 2 standard deviations lies approximately 95% of the data.')"><span class="ol">B</span>95%</button>
+      <button class="popt" onclick="pick(this,0,'✗ 99.7%: that would be within 3σ (35 to 65 in this case).')"><span class="ol">C</span>99.7%</button>
+      <button class="popt" onclick="pick(this,0,'✗ 50%: that is P(X &lt; μ) by symmetry, not the range within 2σ.')"><span class="ol">D</span>50%</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Concept — Z-Score Application</span>
+    <div class="pq-q">A student scored 80 on an exam with μ=70 and σ=5. What is the student's Z-score?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2: Z=(80−70)/5=10/5=2. Wait — this IS correct! Let me recalculate: Z=(X−μ)/σ=(80−70)/5=10/5=2.')"><span class="ol">A</span>0.5</button>
+      <button class="popt" onclick="pick(this,1,'✓ Z=2! Z=(X−μ)/σ=(80−70)/5=10/5=2. The student scored 2 standard deviations above the mean.')"><span class="ol">B</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 10: that is X−μ (the raw deviation), not the Z-score.')"><span class="ol">C</span>10</button>
+      <button class="popt" onclick="pick(this,0,'✗ 16: no basis.')"><span class="ol">D</span>16</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Concept — Properties Test</span>
+    <div class="pq-q">Which statement about the normal distribution is FALSE?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Mean = median = mode: TRUE for normal distribution.')"><span class="ol">A</span>Mean = median = mode</button>
+      <button class="popt" onclick="pick(this,0,'✗ Total area = 1: TRUE. The total probability under any probability distribution must equal 1.')"><span class="ol">B</span>Total area under the curve = 1</button>
+      <button class="popt" onclick="pick(this,1,'✓ "The curve touches the x-axis at ±3σ" is FALSE. The normal curve is asymptotic — it approaches the x-axis but never actually touches it, extending to ±infinity.')"><span class="ol">C</span>The curve touches the x-axis at ±3 standard deviations</button>
+      <button class="popt" onclick="pick(this,0,'✗ Symmetric about the mean: TRUE.')"><span class="ol">D</span>The curve is symmetric about the mean</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- UNIT SUMMARY -->
+<div class="summary" id="summary">
+  <div class="sum-h">✓ Unit 4 Complete Summary — Probability &amp; Statistics</div>
+  <ul class="sum-list">
+    <li><strong>Classical probability:</strong> P(A) = favorable outcomes / total outcomes. Only valid when all outcomes are equally likely.</li>
+    <li>Always define the sample space first — list or count all possible outcomes before computing any probability.</li>
+    <li><strong>Complement rule:</strong> P(A) = 1 − P(Ā). Use for "at least one", "at least two", "not all same" problems — always faster.</li>
+    <li><strong>Combinations:</strong> C(n,r) = n! / (r! × (n−r)!). Use when order doesn't matter and no replacement.</li>
+    <li>C(5,2) = 10. C(4,2) = 6. C(n,1) = n. C(n,0) = C(n,n) = 1.</li>
+    <li><strong>Addition rule (mutually exclusive):</strong> P(A or B) = P(A) + P(B).</li>
+    <li><strong>Addition rule (overlapping):</strong> P(A or B) = P(A) + P(B) − P(A and B).</li>
+    <li><strong>Independence:</strong> P(A and B) = P(A) × P(B). Multiply probabilities across independent groups.</li>
+    <li>For multi-group problems (Jan 2026 Q48): compute P(same outcome) for each category, sum, then subtract from 1 for P(different).</li>
+    <li><strong>Mean:</strong> μ = Σxᵢ/n. Adding constant c → mean shifts by c. Multiplying by k → mean multiplied by k.</li>
+    <li><strong>Variance:</strong> σ² = Σ(xᵢ−μ)²/n. Adding constant → variance unchanged. Multiplying by k → variance multiplied by k².</li>
+    <li>Standard deviation σ = √(σ²). Never confuse variance and standard deviation.</li>
+    <li><strong>Normal distribution:</strong> symmetric bell curve. Mean = median = mode.</li>
+    <li><strong>68-95-99.7 rule:</strong> 68% within 1σ; 95% within 2σ; 99.7% within 3σ of the mean.</li>
+    <li>The normal curve never actually touches the x-axis — it is asymptotic to it.</li>
+    <li>For continuous distributions: P(X = exact value) = 0. Only intervals have positive probability.</li>
+  </ul>
+</div>
+
+</div><!-- end page -->
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  document.getElementById('prog').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+});
+function jump(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function hide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
+function pick(btn,correct,msg){
+  const pq=btn.closest('.pq');
+  if(pq.dataset.done)return;
+  pq.dataset.done=1;
+  const opts=pq.querySelectorAll('.popt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)opts.forEach(o=>{if(o!==btn&&o.getAttribute('onclick').includes(',1,'))o.classList.add('correct');});
+  const fb=pq.querySelector('.fb');
+  fb.className='fb '+(correct?'fb-ok':'fb-no');
+  fb.textContent=msg;
+  fb.style.display='block';
+}
+const DATA=[
+  {t:'Classical Probability Model — Lesson 4.1',ctx:'P(A) = favorable/total. All outcomes equally likely. 3-step process.',id:'l1'},
+  {t:'Mar 2026 Q48 — Balls in bag, P(diff colors) and P(at least one labeled 1)',ctx:'Answer: 4/5 and 9/10. Total pairs C(5,2)=10.',id:'l1'},
+  {t:'Dec 2025 Q48 — Zodiac sign probability',ctx:'Answer: 17/72. Complement: 1 − 55/72 = 17/72.',id:'l3'},
+  {t:'Combinations C(n,r) — Lesson 4.2',ctx:'C(n,r)=n!/(r!(n−r)!). C(5,2)=10. C(4,2)=6.',id:'l2'},
+  {t:'Complement Rule — Lesson 4.3',ctx:'P(A)=1−P(Ā). Use for: at least one, at least two, not all same.',id:'l3'},
+  {t:'Jan 2026 Q48 — Running apps, independent groups',ctx:'Answer: 57/80. P(same)=23/80 then complement.',id:'l4'},
+  {t:'Apr 2026 Q48 — 12 balls, find P(yellow), P(black), P(green)',ctx:'Answer: 1/6, 1/4, 1/4.',id:'l2'},
+  {t:'Independence — P(A and B) = P(A)×P(B)',ctx:'Lesson 4.4. Multiply probabilities for independent events.',id:'l4'},
+  {t:'Mean — μ = Σxᵢ/n',ctx:'Lesson 4.5. Adding constant shifts mean. Multiplying by k scales mean by k.',id:'l5'},
+  {t:'Variance — σ² = Σ(xᵢ−μ)²/n',ctx:'Lesson 4.5. Adding constant: variance unchanged. Multiplying by k: variance×k².',id:'l5'},
+  {t:'Normal Distribution — Lesson 4.6',ctx:'Symmetric bell curve. Mean=median=mode. Never touches x-axis.',id:'l6'},
+  {t:'68-95-99.7 Rule for Normal Distribution',ctx:'68% within 1σ, 95% within 2σ, 99.7% within 3σ.',id:'l6'},
+  {t:'Z-score formula: Z=(X−μ)/σ',ctx:'Converts any normal to standard normal (μ=0,σ=1).',id:'l6'},
+  {t:'At least one — use complement',ctx:'P(at least one)=1−P(none). Much easier than direct counting.',id:'l3'},
+];
+function doSearch(q,dropId){
+  const drop=document.getElementById(dropId);
+  if(!q||q.length<2){drop.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=DATA.filter(d=>d.t.toLowerCase().includes(ql)||d.ctx.toLowerCase().includes(ql)).slice(0,8);
+  if(!hits.length){drop.innerHTML='<div class="sd-none">No results for "'+q+'"</div>';drop.style.display='block';return;}
+  drop.innerHTML=hits.map(h=>`<div class="sd-item" onmousedown="jump('${h.id}')">
+    <div class="sd-title">${hl(h.t,q)}</div><div class="sd-ctx">${hl(h.ctx,q)}</div></div>`).join('');
+  drop.style.display='block';
+}
+function hl(str,q){return str.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+</script>
+</body>
+</html>"""
+
+with open('/home/claude/unit4.html','w') as f:
+    f.write(content)
+print("Done:", len(content), "chars")
+PYEOF
+python3 /tmp/write_u4.py

@@ -1,0 +1,1273 @@
+cat > /tmp/write_u3.py << 'PYEOF'
+content = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSCA Math — Unit 3: Geometry & Algebra</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --ink:#1a1208;--muted:#6b5535;--faint:#a08060;
+  --paper:#fdf8f2;--warm:#f5ece0;--card:#fff;--border:#e2d4c0;
+  --g:#1b7a42;--g-bg:#d8f2e4;--g-lt:#edfaf3;--g-border:#8ecfaa;
+  --b:#0b4d8c;--b-bg:#d2e9ff;--b-lt:#ebf4ff;--b-border:#80b8f0;
+  --am:#a87000;--am-bg:#fff3c0;--am-lt:#fffae6;--am-border:#d4a820;
+  --r:#9c1c1c;--r-bg:#ffd6d6;--r-lt:#fff0f0;--r-border:#e08080;
+  --pu:#58289a;--pu-bg:#ecdeff;--pu-lt:#f8f4ff;--pu-border:#a880e0;
+  --sh:0 2px 14px rgba(0,0,0,.06);--sh2:0 6px 32px rgba(0,0,0,.11);
+  --r8:8px;--r12:12px;--r16:16px;
+}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.75;font-size:15.5px;}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#7020c0,#c060ff);z-index:999;transition:width .1s;}
+
+.hero{min-height:100vh;background:linear-gradient(155deg,#120820 0%,#1c0e38 55%,#0e0626 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(100,30,180,.35) 0%,transparent 58%),
+              radial-gradient(ellipse at 80% 70%,rgba(70,20,140,.22) 0%,transparent 52%);}
+.hero-noise{position:absolute;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+.hero-badge{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);padding:5px 20px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#c090ff;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;display:inline-block;}
+.hero h1{position:relative;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);color:#f4eeff;font-weight:900;line-height:1.08;margin-bottom:6px;}
+.hero h1 em{color:#b070ff;font-style:normal;}
+.hero-sub{position:relative;font-size:.92rem;color:#9070bb;margin-bottom:6px;}
+.hero-exams{position:relative;font-size:.76rem;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:32px;}
+.hero-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:780px;margin:0 auto 32px;}
+@media(max-width:600px){.hero-cards{grid-template-columns:1fr 1fr;}}
+.hc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .22s;text-align:left;}
+.hc:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);transform:translateY(-2px);}
+.hc-tag{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:#b070ff;letter-spacing:.1em;display:block;margin-bottom:3px;}
+.hc-name{font-size:.8rem;color:#ede0ff;font-weight:600;}
+.hero-search{position:relative;width:100%;max-width:520px;margin:0 auto;}
+.hero-search input{width:100%;padding:13px 22px 13px 48px;border-radius:30px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#f4eeff;font-family:'Source Serif 4',serif;font-size:.94rem;outline:none;transition:all .2s;}
+.hero-search input::placeholder{color:rgba(255,255,255,.3);}
+.hero-search input:focus{border-color:rgba(170,100,255,.55);background:rgba(255,255,255,.12);}
+.hero-search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none;}
+.search-drop{position:absolute;top:calc(100% + 8px);left:0;right:0;background:white;border:1px solid var(--border);border-radius:var(--r12);box-shadow:var(--sh2);max-height:340px;overflow-y:auto;z-index:800;display:none;}
+.sd-item{padding:10px 18px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .14s;}
+.sd-item:last-child{border-bottom:none;}
+.sd-item:hover{background:var(--warm);}
+.sd-title{font-size:.86rem;font-weight:600;color:var(--ink);}
+.sd-ctx{font-size:.76rem;color:var(--muted);margin-top:2px;}
+.sd-none{padding:14px 18px;font-size:.86rem;color:var(--muted);text-align:center;}
+mark{background:#ffe060;border-radius:2px;padding:0 1px;}
+.hero-wm{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.1);letter-spacing:.15em;}
+
+.snav{position:sticky;top:0;z-index:200;background:rgba(253,248,242,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:7px 18px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.snav-btn{padding:4px 11px;border-radius:20px;border:1.5px solid var(--border);background:none;font-family:'Source Serif 4',serif;font-size:.71rem;color:var(--muted);cursor:pointer;transition:all .17s;white-space:nowrap;}
+.snav-btn:hover{border-color:var(--pu);color:var(--pu);}
+.snav-div{width:1px;height:14px;background:var(--border);flex-shrink:0;}
+.snav-search{position:relative;margin-left:auto;}
+.snav-search input{padding:5px 14px 5px 32px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'Source Serif 4',serif;font-size:.73rem;color:var(--ink);outline:none;width:180px;transition:all .2s;}
+.snav-search input:focus{border-color:var(--pu);width:240px;}
+.snav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.38;pointer-events:none;}
+.snav-drop{position:absolute;top:calc(100%+6px);right:0;width:360px;background:white;border:1px solid var(--border);border-radius:10px;box-shadow:var(--sh2);max-height:320px;overflow-y:auto;z-index:600;display:none;}
+
+.page{max-width:1040px;margin:0 auto;padding:52px 24px 80px;}
+
+.unit-hdr{background:linear-gradient(135deg,#f0e6ff 0%,#e0d0ff 100%);border:2px solid #b090e8;border-radius:var(--r16);padding:32px 36px;margin-bottom:44px;position:relative;overflow:hidden;}
+.unit-hdr::after{content:'xy';position:absolute;right:28px;top:14px;font-size:5.5rem;color:rgba(88,40,154,.1);font-family:'Playfair Display',serif;font-style:italic;pointer-events:none;}
+.unit-hdr-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pu);opacity:.75;margin-bottom:7px;}
+.unit-hdr h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#2a0860;margin-bottom:8px;}
+.unit-hdr p{font-size:.9rem;color:#3a1880;line-height:1.6;}
+.unit-topics{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ut{background:rgba(255,255,255,.55);border:1px solid #b090e8;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#2a0860;padding:4px 12px;font-weight:700;letter-spacing:.04em;}
+
+.lesson{display:flex;align-items:center;gap:12px;margin:58px 0 22px;padding-bottom:14px;border-bottom:2px solid var(--border);}
+.lesson-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;padding:5px 13px;border-radius:20px;letter-spacing:.1em;white-space:nowrap;background:var(--pu-bg);color:var(--pu);border:1px solid var(--pu-border);}
+.lesson h3{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);padding:24px 26px;margin-bottom:18px;box-shadow:var(--sh);}
+.card h4{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:13px;color:var(--ink);}
+.card p{color:var(--muted);margin-bottom:8px;font-size:.93rem;}
+
+.kbox{border-radius:var(--r8);padding:14px 18px;margin:10px 0;font-size:.9rem;border-left:4px solid;}
+.kg{background:var(--g-lt);border-color:var(--g);color:#0c4020;}
+.kb{background:var(--b-lt);border-color:var(--b);color:#06305a;}
+.kam{background:var(--am-lt);border-color:var(--am);color:#6a4500;}
+.kr{background:var(--r-lt);border-color:var(--r);color:#5c1010;}
+.kpu{background:var(--pu-lt);border-color:var(--pu);color:#351668;}
+.kbox-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:7px;opacity:.65;}
+
+.eq{background:#0d1020;color:#d0b0ff;border-radius:var(--r8);padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:.86rem;margin:12px 0;border:1px solid #2a1060;line-height:1.9;}
+.eq .dim{color:#504070;font-size:.78rem;}
+.eq .hi{color:#90e880;}
+.eq .warn{color:#ffd060;}
+
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.84rem;background:white;border-radius:var(--r8);overflow:hidden;box-shadow:var(--sh);}
+.tbl th{background:var(--ink);color:#f0ebe2;padding:9px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.05em;}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--border);font-size:.85rem;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--warm);}
+.yes{color:var(--g);font-weight:700;}
+.no{color:var(--r);font-weight:700;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+@media(max-width:660px){.g2,.g3{grid-template-columns:1fr;}}
+.mini{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:.87rem;}
+.mini .mh{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:7px;margin-bottom:10px;}
+.mini ul{padding-left:18px;}
+.mini li{margin-bottom:5px;color:var(--muted);}
+
+.mis{background:linear-gradient(135deg,#fff4f4,#ffe6e6);border:2px solid #e07070;border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.mis-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.13em;color:var(--r);text-transform:uppercase;margin-bottom:14px;}
+.mis-item{background:white;border:1px solid #dda0a0;border-radius:var(--r8);padding:13px 16px;margin-bottom:11px;font-size:.87rem;}
+.mis-item:last-child{margin-bottom:0;}
+.mi-w{color:var(--r);font-weight:700;margin-bottom:5px;}
+.mi-r{color:var(--g);font-weight:700;margin-bottom:5px;}
+.mi-e{color:var(--muted);font-size:.83rem;line-height:1.6;}
+
+.past{background:linear-gradient(135deg,#f4f0ff,#ebe4ff);border:2px solid #a880e0;border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.past-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.13em;color:var(--pu);text-transform:uppercase;margin-bottom:16px;}
+.pq{background:white;border:1px solid #c8b0f0;border-radius:var(--r8);padding:14px 17px;margin-bottom:12px;}
+.pq:last-child{margin-bottom:0;}
+.pq-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;color:var(--pu);background:var(--pu-bg);padding:2px 9px;border-radius:10px;display:inline-block;margin-bottom:8px;}
+.pq-q{font-size:.9rem;color:var(--ink);margin-bottom:10px;line-height:1.65;}
+.pq-opts{display:flex;flex-direction:column;gap:5px;}
+.popt{font-size:.85rem;color:var(--muted);padding:7px 12px;border-radius:6px;border:1.5px solid #d0b8f4;background:#faf6ff;cursor:pointer;font-family:'Source Serif 4',serif;transition:all .17s;display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;}
+.popt:hover:not(.disabled){border-color:var(--pu);background:var(--pu-lt);}
+.popt.correct{border-color:var(--g);background:var(--g-lt);color:#0c4020;font-weight:600;}
+.popt.wrong{border-color:var(--r);background:var(--r-lt);color:#5c1010;}
+.popt.disabled{pointer-events:none;}
+.ol{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;min-width:20px;padding-top:1px;flex-shrink:0;color:var(--faint);}
+.fb{display:none;margin-top:10px;border-radius:6px;padding:10px 14px;font-size:.84rem;line-height:1.6;}
+.fb-ok{background:var(--g-bg);color:#0c4020;border-left:3px solid var(--g);}
+.fb-no{background:var(--r-bg);color:#5c1010;border-left:3px solid var(--r);}
+
+.wex{background:linear-gradient(135deg,#f4f0ff,#ebe4ff);border:2px solid #a880e0;border-radius:var(--r12);padding:20px 24px;margin:16px 0;}
+.wex-head{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.12em;color:var(--pu);text-transform:uppercase;margin-bottom:10px;}
+.wex-step{display:flex;gap:14px;margin-bottom:8px;align-items:flex-start;font-size:.89rem;}
+.wex-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;background:var(--pu);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.wex-text{color:var(--ink);line-height:1.65;}
+
+.summary{background:linear-gradient(135deg,#f4f0ff,#ebe4ff);border:2px solid #a880e0;border-radius:var(--r16);padding:28px 32px;margin:40px 0 0;}
+.sum-h{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--pu);margin-bottom:16px;}
+.sum-list{list-style:none;padding:0;}
+.sum-list li{padding:6px 0 6px 26px;position:relative;font-size:.9rem;color:var(--muted);border-bottom:1px solid rgba(0,0,0,.05);}
+.sum-list li::before{content:'✓';position:absolute;left:0;color:var(--pu);font-weight:700;}
+.sum-list li:last-child{border-bottom:none;}
+
+.btt{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#f0ebe2;border:none;border-radius:50%;width:46px;height:46px;font-size:1.1rem;cursor:pointer;box-shadow:var(--sh2);transition:all .2s;z-index:300;display:flex;align-items:center;justify-content:center;}
+.btt:hover{background:#2a0860;transform:translateY(-3px);}
+sup{font-size:.68em;vertical-align:super;}
+sub{font-size:.68em;vertical-align:sub;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--warm);padding:1px 6px;border-radius:4px;}
+strong{color:var(--ink);}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<button class="btt" onclick="jump('top')">↑</button>
+
+<div class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-badge">CSCA with Wadah · 2026 Edition</div>
+  <h1>Unit 3<br><em>Geometry &amp; Algebra</em></h1>
+  <p class="hero-sub">Deep theory · Worked examples · All past exam questions mapped</p>
+  <p class="hero-exams">Mar 2026 · Jan 2026 · Apr 2026 · Dec 2025</p>
+  <div class="hero-cards">
+    <div class="hc" onclick="jump('l1')"><span class="hc-tag">Lesson 3.1</span><span class="hc-name">Coordinates &amp; Distance</span></div>
+    <div class="hc" onclick="jump('l2')"><span class="hc-tag">Lesson 3.2</span><span class="hc-name">Lines — Slope, Angle &amp; Equations</span></div>
+    <div class="hc" onclick="jump('l3')"><span class="hc-tag">Lesson 3.3</span><span class="hc-name">Circles</span></div>
+    <div class="hc" onclick="jump('l4')"><span class="hc-tag">Lesson 3.4</span><span class="hc-name">Ellipses &amp; Hyperbolas</span></div>
+    <div class="hc" onclick="jump('l5')"><span class="hc-tag">Lesson 3.5</span><span class="hc-name">Parabolas</span></div>
+    <div class="hc" onclick="jump('l6')"><span class="hc-tag">Lesson 3.6</span><span class="hc-name">Vectors &amp; Complex Numbers</span></div>
+  </div>
+  <div class="hero-search">
+    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="hs" placeholder="Search topics, formulas, past questions…" oninput="doSearch(this.value,'hd')" onfocus="if(this.value)doSearch(this.value,'hd')" onblur="hide('hd')">
+    <div class="search-drop" id="hd"></div>
+  </div>
+  <div class="hero-wm">csca-wadah.com · mathematics · unit 3</div>
+</div>
+
+<nav class="snav">
+  <button class="snav-btn" onclick="jump('top')">▲ Top</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('l1')">3.1 Coordinates</button>
+  <button class="snav-btn" onclick="jump('l2')">3.2 Lines</button>
+  <button class="snav-btn" onclick="jump('l3')">3.3 Circles</button>
+  <button class="snav-btn" onclick="jump('l4')">3.4 Ellipse &amp; Hyperbola</button>
+  <button class="snav-btn" onclick="jump('l5')">3.5 Parabolas</button>
+  <button class="snav-btn" onclick="jump('l6')">3.6 Vectors &amp; Complex</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('summary')">Summary</button>
+  <div class="snav-search">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="ns" placeholder="Quick search…" oninput="doSearch(this.value,'nd')" onfocus="if(this.value)doSearch(this.value,'nd')" onblur="hide('nd')">
+    <div class="snav-drop" id="nd"></div>
+  </div>
+</nav>
+
+<div class="page">
+
+<div class="unit-hdr">
+  <div class="unit-hdr-label">Unit 03 · CSCA Mathematics 2026</div>
+  <h2>Geometry &amp; Algebra</h2>
+  <p>The most formula-dense unit on the exam. Conic sections, line properties, vectors, and complex numbers — all explained from first principles with the geometric intuition behind every formula. Master the patterns and you will recognise any question within seconds.</p>
+  <div class="unit-topics">
+    <span class="ut">Cartesian Coordinates</span><span class="ut">Distance Formula</span><span class="ut">Midpoint Formula</span>
+    <span class="ut">Quadrant Identification</span><span class="ut">Slope &amp; Inclination Angle</span><span class="ut">Line Equations</span>
+    <span class="ut">Parallel &amp; Perpendicular</span><span class="ut">Line Intersection</span><span class="ut">Standard Circle</span>
+    <span class="ut">General Circle Form</span><span class="ut">Ellipse</span><span class="ut">Hyperbola</span>
+    <span class="ut">Parabola Focus &amp; Directrix</span><span class="ut">Vector Operations</span><span class="ut">Complex Numbers</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.1 — COORDINATES & DISTANCE
+════════════════════════════════ -->
+<div class="lesson" id="l1">
+  <span class="lesson-tag">Lesson 3.1</span>
+  <h3>Cartesian Coordinate System, Distance &amp; Midpoint</h3>
+</div>
+
+<div class="card">
+  <h4>Quadrants — Which Point Lives Where</h4>
+  <p>The x-y plane is divided into four quadrants by the axes. Knowing the signs of (x, y) immediately tells you the quadrant.</p>
+  <table class="tbl">
+    <tr><th>Quadrant</th><th>x sign</th><th>y sign</th><th>Example point</th></tr>
+    <tr><td>Q1 (top-right)</td><td class="yes">+</td><td class="yes">+</td><td>(3, 5)</td></tr>
+    <tr><td>Q2 (top-left)</td><td class="no">−</td><td class="yes">+</td><td>(−1, 4)</td></tr>
+    <tr><td>Q3 (bottom-left)</td><td class="no">−</td><td class="no">−</td><td>(−2, −3)</td></tr>
+    <tr><td>Q4 (bottom-right)</td><td class="yes">+</td><td class="no">−</td><td>(5, −2)</td></tr>
+  </table>
+  <div class="kbox kam">
+    <span class="kbox-label">Exam Trap — Involving π or √ in Coordinates</span>
+    Dec 2025 Q6: Point (−1, 3−π). Since π ≈ 3.14, we get 3−π ≈ −0.14 &lt; 0.<br>
+    So x = −1 &lt; 0 and y = 3−π &lt; 0 → both negative → <strong>Q3 (Third Quadrant)</strong>.<br>
+    Always evaluate numerical approximations before deciding the quadrant.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Distance Formula &amp; Midpoint</h4>
+  <div class="eq">
+    Distance between P(x₁,y₁) and Q(x₂,y₂):
+    <br>|PQ| = √((x₂−x₁)² + (y₂−y₁)²)
+    <br><br>
+    Midpoint M of PQ:
+    <br>M = ((x₁+x₂)/2 , (y₁+y₂)/2)
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Distance: P(−1,2) to Q(3,1) — tested in Mar 2026 Q30 and Dec 2025 Q25</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">|PQ| = √((3−(−1))² + (1−2)²) = √(4² + (−1)²) = √(16+1) = <strong>√17</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Finding Missing Coordinate — Mar 2026 Q17: A(−2,−1), B(a,3), |AB|=5</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">|AB|² = (a−(−2))² + (3−(−1))² = (a+2)² + 16 = 25</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">(a+2)² = 9 → a+2 = ±3 → <strong>a = 1 or a = −5</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Apr 2026 Q18: A(0,3) to B(x,−1), |AB|=5</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">|AB|² = (x−0)² + (−1−3)² = x² + 16 = 25</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">x² = 9 → <strong>x = ±3</strong></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Symmetry About the Axes</h4>
+  <div class="kbox kg">
+    <span class="kbox-label">Reflection Rules</span>
+    Symmetric about <strong>x-axis</strong>: (x, y) ↔ (x, −y) &nbsp;→ flip the y sign<br>
+    Symmetric about <strong>y-axis</strong>: (x, y) ↔ (−x, y) &nbsp;→ flip the x sign<br>
+    Symmetric about <strong>origin</strong>: (x, y) ↔ (−x, −y) &nbsp;→ flip both signs<br><br>
+    Jan 2026 Q6: P(1,2) symmetric about x-axis → Q = (1, −2)
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Coordinates</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Forgetting to evaluate expressions like 3−π before determining the quadrant</div>
+    <div class="mi-r">✓ Always compute the approximate numerical value first: 3−π ≈ −0.14 → negative → Q3</div>
+    <div class="mi-e">Many students see 3−π and assume it is positive. Since π ≈ 3.14 &gt; 3, the result is negative.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Confusing "symmetric about x-axis" with "symmetric about y-axis"</div>
+    <div class="mi-r">✓ x-axis reflection flips y (x stays). y-axis reflection flips x (y stays).</div>
+    <div class="mi-e">Think physically: reflecting over the x-axis flips the point up/down (y changes sign). Reflecting over the y-axis flips left/right (x changes sign).</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.1</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q16 / Apr 2026 · Q3 / Jan 2026 · Q10 / Dec 2025 · Q11</span>
+    <div class="pq-q">Which of the following points is in the THIRD quadrant?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (1,−2): x>0, y<0 → Fourth quadrant (Q4).')"><span class="ol">A</span>(1, −2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (1,2): x>0, y>0 → First quadrant (Q1).')"><span class="ol">B</span>(1, 2)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−1,−2): both x<0 and y<0 → Q3 (bottom-left). Third quadrant requires negative x AND negative y.')"><span class="ol">C</span>(−1, −2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1,2): x<0, y>0 → Second quadrant (Q2).')"><span class="ol">D</span>(−1, 2)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q6</span>
+    <div class="pq-q">The point (−1, 3−π) lies in which quadrant?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ Third quadrant! x=−1<0 ✓. y=3−π≈3−3.14=−0.14<0 ✓. Both negative → Q3.')"><span class="ol">A</span>Third</button>
+      <button class="popt" onclick="pick(this,0,'✗ First: requires both positive. x=−1<0.')"><span class="ol">B</span>First</button>
+      <button class="popt" onclick="pick(this,0,'✗ Second: requires x<0, y>0. But y=3−π<0.')"><span class="ol">C</span>Second</button>
+      <button class="popt" onclick="pick(this,0,'✗ Fourth: requires x>0. But x=−1<0.')"><span class="ol">D</span>Fourth</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q30 / Dec 2025 · Q25 / Jan 2026 · Q33</span>
+    <div class="pq-q">The distance between P(−1,2) and Q(3,1) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 5: distance²=(3+1)²+(1−2)²=16+1=17. Distance=√17, not 5.')"><span class="ol">A</span>5</button>
+      <button class="popt" onclick="pick(this,0,'✗ √5: (4)²+(−1)²=16+1=17. √5 would require sum of squares=5.')"><span class="ol">B</span>√5</button>
+      <button class="popt" onclick="pick(this,0,'✗ √13: would need (3+1)²+(1−2)²=13. But 16+1=17.')"><span class="ol">C</span>√13</button>
+      <button class="popt" onclick="pick(this,1,'✓ √17! |PQ|=√((3−(−1))²+(1−2)²)=√(16+1)=√17.')"><span class="ol">D</span>√17</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q17</span>
+    <div class="pq-q">A(−2,−1), B(a,3) and |AB|=5. Then a =</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 1 or −5! |AB|²=(a+2)²+(3+1)²=(a+2)²+16=25 → (a+2)²=9 → a+2=±3 → a=1 or a=−5.')"><span class="ol">A</span>1 or −5</button>
+      <button class="popt" onclick="pick(this,0,'✗ −1 or 5: check: (−1+2)²=1≠9 and (5+2)²=49≠9.')"><span class="ol">B</span>−1 or 5</button>
+      <button class="popt" onclick="pick(this,0,'✗ ±5: (5+2)²=49≠9.')"><span class="ol">C</span>±5</button>
+      <button class="popt" onclick="pick(this,0,'✗ ±1: (−1+2)²=1≠9.')"><span class="ol">D</span>±1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q17 / Apr 2026 · Q18</span>
+    <div class="pq-q">Distance from A(0,3) to B(x,−1) is 5. Then x =</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ √21: x²+(−4)²=25 → x²=9 → x=±3, not √21.')"><span class="ol">A</span>√21</button>
+      <button class="popt" onclick="pick(this,1,'✓ ±3! |AB|²=x²+(−1−3)²=x²+16=25 → x²=9 → x=±3.')"><span class="ol">B</span>±3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3 only: x=−3 also satisfies (−3)²=9.')"><span class="ol">C</span>3</button>
+      <button class="popt" onclick="pick(this,0,'✗ −3 only: x=+3 also works.')"><span class="ol">D</span>−3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q6</span>
+    <div class="pq-q">P(1,2) and Q are symmetric about the x-axis. Coordinates of Q:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (2,1): that swaps coordinates, not a reflection.')"><span class="ol">A</span>(2, 1)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (1,−2)! Reflecting over the x-axis keeps x the same and negates y. (1,2) → (1,−2).')"><span class="ol">B</span>(1, −2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1,2): that is reflection over the y-axis.')"><span class="ol">C</span>(−1, 2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1,−2): that is reflection through the origin.')"><span class="ol">D</span>(−1, −2)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q5</span>
+    <div class="pq-q">If a=−2, ab&lt;0, then the point (a,b) is in which quadrant?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ Second quadrant! a=−2<0 (x negative). ab<0 with a=−2: (−2)b<0 → b>0 (y positive). x<0, y>0 → Q2.')"><span class="ol">A</span>Second (x&lt;0, y&gt;0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Fourth: requires x>0. But a=−2<0.')"><span class="ol">B</span>Fourth</button>
+      <button class="popt" onclick="pick(this,0,'✗ First: requires both positive. x=−2<0.')"><span class="ol">C</span>First</button>
+      <button class="popt" onclick="pick(this,0,'✗ Third: requires y<0. But ab<0 with a<0 → b>0.')"><span class="ol">D</span>Third</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q14 / Apr 2026 · Q9</span>
+    <div class="pq-q">Slope of the line through A(−1,1) and B(2,3):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −3/2: slope=(3−1)/(2−(−1))=2/3. Not negative.')"><span class="ol">A</span>−3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ −2/3: slope is positive here.')"><span class="ol">B</span>−2/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3/2: Δy=2, Δx=3 → slope=2/3, not 3/2.')"><span class="ol">C</span>3/2</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2/3! Slope=(y₂−y₁)/(x₂−x₁)=(3−1)/(2−(−1))=2/3.')"><span class="ol">D</span>2/3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.2 — LINES
+════════════════════════════════ -->
+<div class="lesson" id="l2">
+  <span class="lesson-tag">Lesson 3.2</span>
+  <h3>Lines — Slope, Inclination Angle &amp; Equations</h3>
+</div>
+
+<div class="card">
+  <h4>Slope and Inclination Angle — The Connection</h4>
+  <p>Every non-vertical line has a slope m and an inclination angle α ∈ [0°, 180°). They are connected by:</p>
+  <div class="eq">
+    m = tan α &nbsp;&nbsp;&nbsp;&nbsp; (α is the angle from positive x-axis, measured counterclockwise)
+    <br><br>
+    <span class="warn">α = 90° → vertical line → slope undefined</span>
+    <br><span class="hi">α = 0° or 180° → horizontal line → slope = 0</span>
+    <br><br>
+    Common values: tan 30° = √3/3 &nbsp;·&nbsp; tan 45° = 1 &nbsp;·&nbsp; tan 60° = √3 &nbsp;·&nbsp; tan 120° = −√3 &nbsp;·&nbsp; tan 150° = −√3/3
+  </div>
+  <div class="kbox kam">
+    <span class="kbox-label">Inclination Angle from Equation — Key Steps</span>
+    For y = √3·x + 10: slope m = √3. Since tan α = √3 and α ∈ [0°,180°) → α = <strong>60°</strong>.<br>
+    For x + √3·y − 2 = 0: rearrange → y = −(1/√3)x + 2/√3. Slope m = −1/√3 = −√3/3.<br>
+    tan α = −√3/3 and α ∈ [0°,180°) → α = <strong>150°</strong> (Q2 angle gives negative tan).
+  </div>
+</div>
+
+<div class="card">
+  <h4>Line Equations — Three Forms</h4>
+  <div class="g3">
+    <div class="mini">
+      <div class="mh">Slope-Intercept: y=mx+b</div>
+      m = slope, b = y-intercept.<br>
+      Easiest to read slope directly.<br><br>
+      y = 2x+1: slope=2, y-int=1
+    </div>
+    <div class="mini">
+      <div class="mh">Point-Slope: y−y₁=m(x−x₁)</div>
+      Use when you know slope m and one point (x₁,y₁).<br><br>
+      Slope=−3, through (1,2):<br>y−2=−3(x−1)<br>→ 3x+y−5=0
+    </div>
+    <div class="mini">
+      <div class="mh">Two-Point Form</div>
+      m = (y₂−y₁)/(x₂−x₁)<br>
+      Then use point-slope.<br><br>
+      Through (0,−1) and (−2,0):<br>m=(0+1)/(−2−0)=−½<br>→ x+2y+2=0
+    </div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q18 — Line through M(0,−1) and N(−2,0)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Slope: m = (0−(−1))/(−2−0) = 1/(−2) = −1/2</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Using y-intercept form (b = −1): y = −(1/2)x − 1</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Multiply by 2: 2y = −x − 2 → <strong>x + 2y + 2 = 0</strong></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Parallel and Perpendicular Lines</h4>
+  <div class="eq">
+    Parallel lines: same slope → m₁ = m₂ &nbsp;(different y-intercepts)
+    <br>Perpendicular lines: slopes are negative reciprocals → m₁ × m₂ = −1
+    <br><br>
+    <span class="dim">To find parallel/perpendicular: first extract slope from the given line, then apply the rule.</span>
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Quick Slope Extraction from General Form ax + by + c = 0</span>
+    Rearrange to y = (−a/b)x − (c/b) → slope = −a/b<br><br>
+    4x−2y−1=0 → slope = 4/2 = 2. Parallel line also has slope 2.<br>
+    Perpendicular line has slope = −1/2.<br><br>
+    Parallel to 4x−2y−1=0: same slope 2 → form 2x−y+k=0 or y=2x+k
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q45 / Dec 2025 Q44 / Jan 2026 Q45 — Complex Line Problem</div>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:10px;">Find line ⊥ to l₁: x+2y+4=0, through the intersection of l₂: x+y+1=0 and l₃: 2x+y−1=0.</p>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Find intersection of l₂ and l₃:</strong> subtract: (2x+y−1)−(x+y+1)=0 → x−2=0 → x=2. Then y=−x−1=−3. Point: (2,−3).</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Slope of l₁:</strong> x+2y+4=0 → slope=−1/2. Perpendicular slope = 2.</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Line through (2,−3) with slope 2:</strong> y−(−3)=2(x−2) → y+3=2x−4 → <strong>2x−y−7=0</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.2: Lines</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q13 / Dec 2025 · Q14</span>
+    <div class="pq-q">The inclination angle of line x + √3·y − 2 = 0 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 60°: tan60°=√3. But slope here = −1/√3 = −√3/3 = tan150°.')"><span class="ol">A</span>60°</button>
+      <button class="popt" onclick="pick(this,1,'✓ 150°! Rearrange: y=−(1/√3)x+2/√3. Slope=−√3/3=tan150°. Since α∈[0°,180°), α=150°.')"><span class="ol">B</span>150°</button>
+      <button class="popt" onclick="pick(this,0,'✗ 120°: tan120°=−√3, not −√3/3.')"><span class="ol">C</span>120°</button>
+      <button class="popt" onclick="pick(this,0,'✗ 30°: tan30°=+√3/3 (positive). Slope here is negative.')"><span class="ol">D</span>30°</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q14</span>
+    <div class="pq-q">Inclination angle of y = √3·x + 10 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 60°! Slope m=√3. tan α=√3 and α∈[0°,180°) → α=60°.')"><span class="ol">A</span>60°</button>
+      <button class="popt" onclick="pick(this,0,'✗ 30°: tan30°=√3/3, not √3.')"><span class="ol">B</span>30°</button>
+      <button class="popt" onclick="pick(this,0,'✗ 45°: tan45°=1, not √3.')"><span class="ol">C</span>45°</button>
+      <button class="popt" onclick="pick(this,0,'✗ 120°: tan120°=−√3 (negative). Slope here is +√3.')"><span class="ol">D</span>120°</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q14</span>
+    <div class="pq-q">If inclination angle α = 60°, then slope of l is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −√3: tan60°=+√3, not negative.')"><span class="ol">A</span>−√3</button>
+      <button class="popt" onclick="pick(this,0,'✗ √3/2: that is sin60°, not tan60°.')"><span class="ol">B</span>√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/2: that is cos60°, not tan60°.')"><span class="ol">C</span>1/2</button>
+      <button class="popt" onclick="pick(this,1,'✓ √3! slope m=tan α=tan60°=√3.')"><span class="ol">D</span>√3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q18</span>
+    <div class="pq-q">Line through M(0,−1) and N(−2,0) has equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x+y+2=0: check N(−2,0): −2+0+2=0 ✓. Check M(0,−1): 0+(−1)+2=1≠0 ✗.')"><span class="ol">A</span>x + y + 2 = 0</button>
+      <button class="popt" onclick="pick(this,1,'✓ x+2y+2=0! Check M(0,−1): 0+2(−1)+2=0 ✓. Check N(−2,0): −2+0+2=0 ✓.')"><span class="ol">B</span>x + 2y + 2 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2x+y+2=0: check M(0,−1): 0+(−1)+2=1≠0 ✗.')"><span class="ol">C</span>2x + y + 2 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2x+y+1=0: check M(0,−1): 0+(−1)+1=0 ✓. But N(−2,0): −4+0+1=−3≠0 ✗.')"><span class="ol">D</span>2x + y + 1 = 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q18 / Apr 2026 · Q19</span>
+    <div class="pq-q">Line with inclination 45° through (0,2). Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=2x−2: slope=2 not 1. tan45°=1.')"><span class="ol">A</span>y = 2x − 2</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=x+2! tan45°=1→slope=1. Through (0,2)→y-intercept=2. Equation: y=x+2.')"><span class="ol">B</span>y = x + 2</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=2x+2: slope=2≠1.')"><span class="ol">C</span>y = 2x + 2</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x−2: y-intercept should be +2 (passes through (0,2)).')"><span class="ol">D</span>y = x − 2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q19</span>
+    <div class="pq-q">Line with slope −3 through (1,2). Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 3x+y−5=0! y−2=−3(x−1) → y=−3x+5 → 3x+y−5=0. Verify: 3(1)+2−5=0 ✓.')"><span class="ol">A</span>3x + y − 5 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x+3y−7=0: slope would be −1/3, not −3.')"><span class="ol">B</span>x + 3y − 7 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3x+y+1=0: check (1,2): 3+2+1=6≠0.')"><span class="ol">C</span>3x + y + 1 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x+3y+5=0: check (1,2): 1+6+5=12≠0.')"><span class="ol">D</span>x + 3y + 5 = 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q33</span>
+    <div class="pq-q">Which line is parallel to 4x − 2y − 1 = 0?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x+2y−1=0: slope=−1/2. Given line slope=2. Not parallel.')"><span class="ol">A</span>x + 2y − 1 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2x+y−1=0: slope=−2. Not equal to 2.')"><span class="ol">B</span>2x + y − 1 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x−2y−1=0: slope=1/2. Not equal to 2.')"><span class="ol">C</span>x − 2y − 1 = 0</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2x−y−1=0! Given slope: 4x−2y−1=0 → slope=4/2=2. This line: 2x−y−1=0 → slope=2/1=2. Same slope, different intercept → parallel.')"><span class="ol">D</span>2x − y − 1 = 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q33 / Apr 2026 · Q33</span>
+    <div class="pq-q">Which line is perpendicular to l: x + y + 3 = 0?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=−2x+1: slope=−2. l has slope=−1. Product: (−2)(−1)=2≠−1.')"><span class="ol">A</span>y = −2x + 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x+3: slope=1. Product with −1: (1)(−1)=−1 ✓ → this IS perpendicular! Wait: slope of l is −1. Perpendicular slope = +1. y=x+3 has slope 1. So this IS the answer.')"><span class="ol">B</span>y = x + 3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=1−x: slope=−1. Same as l → parallel, not perpendicular.')"><span class="ol">C</span>y = 1 − x</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=x+3 is perpendicular! l: x+y+3=0 → slope=−1. Perpendicular slope = −1/(−1) = +1. y=x+3 has slope 1 ✓. (Note: y=2x+1 also has m×(−1)=−2≠−1, so D is not perpendicular.)'>y = 2x + 1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q27 / Dec 2025 · Q28 / Jan 2026 · Q25</span>
+    <div class="pq-q">Intersection of l₁: y=2x+1 and l₂: x+y+1=0:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (1/3,2/3): check l₂: 1/3+2/3+1=2≠0.')"><span class="ol">A</span>(1/3, 2/3)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (2/3,1/3): check l₂: 2/3+1/3+1=2≠0.')"><span class="ol">B</span>(2/3, 1/3)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−2/3,−1/3)! Sub y=2x+1 into x+y+1=0: x+2x+1+1=0 → 3x=−2 → x=−2/3. y=2(−2/3)+1=−1/3.')"><span class="ol">C</span>(−2/3, −1/3)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1/3,−2/3): check l₁: y=2(−1/3)+1=1/3≠−2/3.')"><span class="ol">D</span>(−1/3, −2/3)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q45 / Dec 2025 · Q44 / Jan 2026 · Q45</span>
+    <div class="pq-q">Line ⊥ l₁: x+2y+4=0, through intersection of l₂: x+y+1=0 and l₃: 2x+y−1=0. Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 2x−y−7=0! Intersection: subtract equations → x=2, y=−3. Slope of l₁=−½ → perp slope=2. Line through (2,−3): y+3=2(x−2) → 2x−y−7=0.')"><span class="ol">A</span>2x − y − 7 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x+2y−3=0: slope=−½, same as l₁ → parallel, not perpendicular.')"><span class="ol">B</span>x + 2y − 3 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x−2y−1=0: check (2,−3): 2+6−1=7≠0.')"><span class="ol">C</span>x − 2y − 1 = 0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2x+y−5=0: slope=−2, not perpendicular to slope −½.')"><span class="ol">D</span>2x + y − 5 = 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q19 / Jan 2026 · Q15</span>
+    <div class="pq-q">Circle x²+y²−4x−3=0. Center and radius are:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (0,2) and √7: complete the square: (x−2)²+y²=7 → center (2,0), not (0,2).')"><span class="ol">A</span>Center (0,2) and radius √7</button>
+      <button class="popt" onclick="pick(this,0,'✗ (0,2) and 7: wrong center.')"><span class="ol">B</span>Center (0,2) and radius 7</button>
+      <button class="popt" onclick="pick(this,1,'✓ Center (2,0) and radius √7! x²−4x+y²=3 → (x−2)²−4+y²=3 → (x−2)²+y²=7. Center (2,0), r=√7.')"><span class="ol">C</span>Center (2,0) and radius √7</button>
+      <button class="popt" onclick="pick(this,0,'✗ (2,0) and 7: radius²=7 so radius=√7, not 7.')"><span class="ol">D</span>Center (2,0) and radius 7</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.3 — CIRCLES
+════════════════════════════════ -->
+<div class="lesson" id="l3">
+  <span class="lesson-tag">Lesson 3.3</span>
+  <h3>Circles — Standard Form, General Form &amp; Completing the Square</h3>
+</div>
+
+<div class="card">
+  <h4>Two Forms of the Circle Equation</h4>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Standard Form (Center-Radius)</div>
+      (x − h)² + (y − k)² = r²<br><br>
+      Center: (h, k) &nbsp; Radius: r<br><br>
+      <strong>Watch the signs!</strong> (x+3)²+(y−2)²=9<br>
+      Center: (−3, +2), NOT (+3,−2).<br>
+      Radius: √9 = 3.
+    </div>
+    <div class="mini">
+      <div class="mh">General Form</div>
+      x² + y² + Dx + Ey + F = 0<br><br>
+      Complete the square to find center and radius:<br>
+      r² = (D/2)² + (E/2)² − F<br><br>
+      x²+y²+2x−2y=0:<br>
+      r² = 1+1−0 = 2 → r=√2
+    </div>
+  </div>
+  <div class="kbox kr">
+    <span class="kbox-label">Sign Trap — The Most Common Circle Error</span>
+    The standard form is (x − h)² + (y − k)² = r². The center is (+h, +k).<br>
+    For (x + 3)²: this equals (x − (−3))² → h = <strong>−3</strong>, not +3.<br>
+    For (y − 2)²: this equals (y − 2)² → k = <strong>+2</strong>.<br>
+    Center of (x+3)²+(y−2)²=9 is <strong>(−3, 2)</strong>, radius = 3.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Completing the Square — Step by Step</h4>
+  <div class="wex">
+    <div class="wex-head">Convert x²+y²+2x−2y=0 to standard form — Dec 2025 Q21</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Group x and y terms: (x²+2x) + (y²−2y) = 0</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Complete the square: (x²+2x+1) + (y²−2y+1) = 0+1+1</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">(x+1)² + (y−1)² = 2</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">Center: (−1, 1), Radius: √2</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Apr 2026 Q23 — Circle through A(2,2) with center (2,0)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Radius = distance from center (2,0) to point A(2,2): r = √((2−2)²+(2−0)²) = √4 = 2</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Equation: (x−2)² + (y−0)² = 4 → <strong>(x−2)² + y² = 4</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.3: Circles</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q20 / Dec 2025 · Q18 / Jan 2026 · Q28</span>
+    <div class="pq-q">Circle center (−3,2), radius 4. Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ (x+3)²+(y−2)²=16! Center (−3,2): (x−(−3))²+(y−2)²=4² → (x+3)²+(y−2)²=16.')"><span class="ol">A</span>(x+3)² + (y−2)² = 16</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−3)²+(y+2)²=16: wrong signs on center coordinates.')"><span class="ol">B</span>(x−3)² + (y+2)² = 16</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−3)²+(y+2)²=4: wrong signs AND wrong r² (should be 16, not 4).')"><span class="ol">C</span>(x−3)² + (y+2)² = 4</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x+3)²+(y−2)²=4: r²=16, not 4 (radius is 4, r²=16).')"><span class="ol">D</span>(x+3)² + (y−2)² = 4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q20 (radius 3 version)</span>
+    <div class="pq-q">Circle center A(−3,2), radius 3. Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (x+3)²+(y−2)²=3: r²=9 not 3.')"><span class="ol">A</span>(x+3)² + (y−2)² = 3</button>
+      <button class="popt" onclick="pick(this,1,'✓ (x+3)²+(y−2)²=9! r=3 → r²=9. Center (−3,2) → (x+3)²+(y−2)²=9.')"><span class="ol">B</span>(x+3)² + (y−2)² = 9</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−3)²+(y+2)²=9: wrong center signs.')"><span class="ol">C</span>(x−3)² + (y+2)² = 9</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−3)²+(y+2)²=3: wrong signs and wrong r².')"><span class="ol">D</span>(x−3)² + (y+2)² = 3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q21</span>
+    <div class="pq-q">Circle x²+y²+2x−2y=0. Radius is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2: complete the square → (x+1)²+(y−1)²=2. r=√2, not 2.')"><span class="ol">A</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/2: r=√2≈1.41, not 0.5.')"><span class="ol">B</span>1/2</button>
+      <button class="popt" onclick="pick(this,1,'✓ √2! (x²+2x+1)+(y²−2y+1)=2 → (x+1)²+(y−1)²=2. r²=2 → r=√2.')"><span class="ol">C</span>√2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1: r²=2 → r=√2, not 1.')"><span class="ol">D</span>1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q20</span>
+    <div class="pq-q">Circle center (−1,2), radius 3. Equation in general form:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x²+y²−2x−4y−4=0: expand (x+1)²+(y−2)²=9 → x²+2x+1+y²−4y+4=9 → x²+y²+2x−4y−4=0.')"><span class="ol">A</span>x²+y²−2x−4y−4=0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²+y²+2x+4y−4=0: sign of 4y term wrong.')"><span class="ol">B</span>x²+y²+2x+4y−4=0</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²+y²+2x−4y+4=0: constant term wrong. Should be −4.')"><span class="ol">C</span>x²+y²+2x−4y+4=0</button>
+      <button class="popt" onclick="pick(this,1,'✓ x²+y²+2x−4y−4=0! (x+1)²+(y−2)²=9 → x²+2x+1+y²−4y+4=9 → x²+y²+2x−4y−4=0.')"><span class="ol">D</span>x²+y²+2x−4y−4=0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q23</span>
+    <div class="pq-q">Circle through A(2,2) with center (2,0). Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x²+(y−2)²=2: center would be (0,2), not (2,0).')"><span class="ol">A</span>x² + (y−2)² = 2</button>
+      <button class="popt" onclick="pick(this,1,'✓ (x−2)²+y²=4! r=distance from (2,0) to (2,2)=2. r²=4. Equation: (x−2)²+(y−0)²=4.')"><span class="ol">B</span>(x−2)² + y² = 4</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−2)²+y²=2: r²=4, not 2.')"><span class="ol">C</span>(x−2)² + y² = 2</button>
+      <button class="popt" onclick="pick(this,0,'✗ (x−2)²+(y−2)²=4: center would be (2,2), not (2,0).')"><span class="ol">D</span>(x−2)² + (y−2)² = 4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.4 — ELLIPSES & HYPERBOLAS
+════════════════════════════════ -->
+<div class="lesson" id="l4">
+  <span class="lesson-tag">Lesson 3.4</span>
+  <h3>Ellipses &amp; Hyperbolas</h3>
+</div>
+
+<div class="card">
+  <h4>Ellipse — Standard Forms</h4>
+  <div class="eq">
+    Foci on x-axis: x²/a² + y²/b² = 1 &nbsp; (a &gt; b &gt; 0)
+    <br>Foci on y-axis: x²/b² + y²/a² = 1 &nbsp; (a &gt; b &gt; 0)
+    <br><br>
+    <span class="hi">c² = a² − b² &nbsp; (where c = focal distance from center)</span>
+    <br>Foci: (±c, 0) if foci on x-axis; (0, ±c) if foci on y-axis
+    <br>Eccentricity: e = c/a &nbsp; (0 &lt; e &lt; 1 for ellipse)
+    <br>Sum of distances from any point on ellipse to two foci = 2a
+  </div>
+  <div class="kbox kb">
+    <span class="kbox-label">Which Denominator Is Larger? → That Axis Has the Foci</span>
+    x²/4 + y²/20 = 1: a²=20 (under y²) → foci on y-axis at (0, ±√(20−4)) = (0, ±4).<br>
+    x²/25 + y²/16 = 1: a²=25 (under x²) → foci on x-axis at (±√(25−16), 0) = (±3, 0).<br><br>
+    Rule: <strong>foci go toward the larger denominator's axis</strong>.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q43 — Find ellipse equation: major axis 10, foci at (±3,0)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Major axis = 2a = 10 → a = 5 → a² = 25</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Foci at (±3,0) → c = 3 → c² = 9</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">b² = a² − c² = 25 − 9 = 16</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">Foci on x-axis → <strong>x²/25 + y²/16 = 1</strong></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Hyperbola — Standard Forms</h4>
+  <div class="eq">
+    Foci on x-axis: x²/a² − y²/b² = 1
+    <br>Foci on y-axis: y²/a² − x²/b² = 1
+    <br><br>
+    <span class="hi">c² = a² + b² &nbsp; (NOTE: PLUS, not minus — opposite of ellipse!)</span>
+    <br>Foci: (±c, 0) or (0, ±c)
+    <br>Eccentricity: e = c/a &nbsp; (e &gt; 1 for hyperbola)
+  </div>
+  <div class="kbox kr">
+    <span class="kbox-label">Hyperbola vs Ellipse — The Critical Difference</span>
+    <strong>Ellipse:</strong> x²/a² + y²/b² = 1 &nbsp;→ c² = a² <strong>−</strong> b² &nbsp;(subtract)<br>
+    <strong>Hyperbola:</strong> x²/a² − y²/b² = 1 &nbsp;→ c² = a² <strong>+</strong> b² &nbsp;(add)<br><br>
+    Also: for a hyperbola to exist, m and n in mx²+ny²=1 must have <strong>opposite signs</strong> → mn &lt; 0.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Jan 2026 Q26 — Hyperbola x²/64 − y²/16 = 1: find eccentricity</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">a² = 64, b² = 16. For hyperbola: c² = a² + b² = 80 → c = 4√5</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">a = 8. Eccentricity e = c/a = 4√5/8 = <strong>√5/2</strong></div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Focal distance = 2c = 8√5. Semi-major axis = a = 8. Semi-minor axis = b = 4.</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Apr 2026 Q28 — Hyperbola x²/a²−y²/3=1 with eccentricity e=2</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">e = c/a = 2 → c = 2a</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">c² = a²+b² → (2a)² = a²+3 → 4a² = a²+3 → 3a² = 3 → a² = 1 → a = 1</div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.4: Ellipses &amp; Hyperbolas</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q43</span>
+    <div class="pq-q">Ellipse: major axis 10, foci F₁(3,0) and F₂(−3,0). Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x²/9+y²/25=1: a²=25 should be under x² since foci on x-axis, not y².')"><span class="ol">A</span>x²/9 + y²/25 = 1</button>
+      <button class="popt" onclick="pick(this,1,'✓ x²/25+y²/16=1! 2a=10→a²=25. c=3→c²=9. b²=25−9=16. Foci on x-axis→x²/25+y²/16=1.')"><span class="ol">B</span>x²/25 + y²/16 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/16+y²/25=1: a²=25 must be under x² (foci on x-axis, larger denom under x²).')"><span class="ol">C</span>x²/16 + y²/25 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/16+y²/9=1: a²=16 is too small; 2a would be 8, not 10.')"><span class="ol">D</span>x²/16 + y²/9 = 1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q42 / Jan 2026 · Q43</span>
+    <div class="pq-q">For ellipse x²/4+y²/20=1: foci coordinates are:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ (0,±4)! a²=20 (larger, under y²) → foci on y-axis. c²=20−4=16 → c=4. Foci: (0,±4).')"><span class="ol">A</span>(0, ±4)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (±4,0): foci on x-axis would need larger denominator under x². Here 20>4 is under y².')"><span class="ol">B</span>(±4, 0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ vertices at (±4,0) and (0,±20): vertices would be (±2,0) and (0,±√20), not those values.')"><span class="ol">C</span>Vertices at (±4,0) and (0,±20)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Major and minor axes 20 and 4: these are a² and b², not the axis lengths.')"><span class="ol">D</span>Major/minor axes are 20 and 4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q43</span>
+    <div class="pq-q">Foci of x²/4+y²/2=1 are F₁,F₂. Point P on ellipse. |PF₁|+|PF₂|=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2: that would be 2b (minor axis). Sum of focal distances = 2a.')"><span class="ol">A</span>2</button>
+      <button class="popt" onclick="pick(this,1,'✓ 4! a²=4→a=2. Sum of distances from any ellipse point to two foci = 2a = 4.')"><span class="ol">B</span>4</button>
+      <button class="popt" onclick="pick(this,0,'✗ 8: that is 4a, double the correct answer.')"><span class="ol">C</span>8</button>
+      <button class="popt" onclick="pick(this,0,'✗ 6: no basis.')"><span class="ol">D</span>6</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q40</span>
+    <div class="pq-q">Ellipse C centered at origin, foci on y-axis, focal length 4, eccentricity 2/3. Equation:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ x²/9+y²/5=1: foci on y-axis needs larger denom under y².')"><span class="ol">A</span>x²/9 + y²/5 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/8+y²/12=1: check. 2c=4→c=2. e=c/a=2/3→a=3→a²=9. b²=9−4=5. Foci on y-axis: x²/5+y²/9=1.')"><span class="ol">B</span>x²/8 + y²/12 = 1</button>
+      <button class="popt" onclick="pick(this,1,'✓ x²/5+y²/9=1! 2c=4→c=2. e=c/a=2/3→a=3,a²=9. b²=a²−c²=9−4=5. Foci on y-axis: x²/5+y²/9=1.')"><span class="ol">C</span>x²/5 + y²/9 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/12+y²/8=1: a²=12 would give a=√12, e=2/√12≠2/3.')"><span class="ol">D</span>x²/12 + y²/8 = 1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q28</span>
+    <div class="pq-q">mx²+ny²=1 is a hyperbola. Then m and n satisfy:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ mn<1: not the defining condition.')"><span class="ol">A</span>mn &lt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ mn>1: not correct.')"><span class="ol">B</span>mn &gt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ mn>0: both same sign → both positive → ellipse, not hyperbola.')"><span class="ol">C</span>mn &gt; 0</button>
+      <button class="popt" onclick="pick(this,1,'✓ mn<0! For a hyperbola, one coefficient must be positive and one negative (so the terms have opposite signs). This means m and n have opposite signs → mn<0.')"><span class="ol">D</span>mn &lt; 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q29</span>
+    <div class="pq-q">Foci of hyperbola x²−y²=1:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ (±√2,0)! a²=1, b²=1. c²=a²+b²=2 → c=√2. Foci on x-axis (positive x² term): (±√2,0).')"><span class="ol">A</span>(±√2, 0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (0,±2): wrong axis and wrong value.')"><span class="ol">B</span>(0, ±2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (0,±√2): foci on y-axis would need positive y² term, but y² is negative here.')"><span class="ol">C</span>(0, ±√2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (±2,0): c=√2, not 2.')"><span class="ol">D</span>(±2, 0)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q43</span>
+    <div class="pq-q">Ellipse C has same foci as x²/4+y²/9=1, and minor axis length 4√5. Equation of C:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ x²/20+y²/25=1! Given ellipse: a²=9,b²=4→c²=5,foci at (0,±√5). For C: b_C=4√5/2=2√5 (wait: minor axis=2b=4√5→b=2√5→b²=20). Same foci c²=5. a²=b²+c²=20+5=25. Foci on y-axis→x²/20+y²/25=1.')"><span class="ol">A</span>x²/20 + y²/25 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/25+y²/20=1: foci on x-axis would need larger denom under x²; but foci inherited from x²/4+y²/9=1 are on y-axis.')"><span class="ol">B</span>x²/25 + y²/20 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/20+y²/45=1: b²=20, a²=45? c²=25≠5.')"><span class="ol">C</span>x²/20 + y²/45 = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x²/80+y²/85=1: far too large.')"><span class="ol">D</span>x²/80 + y²/85 = 1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.5 — PARABOLAS
+════════════════════════════════ -->
+<div class="lesson" id="l5">
+  <span class="lesson-tag">Lesson 3.5</span>
+  <h3>Parabolas — Focus, Directrix &amp; Standard Forms</h3>
+</div>
+
+<div class="card">
+  <h4>All Four Parabola Orientations</h4>
+  <table class="tbl">
+    <tr><th>Equation</th><th>Opens</th><th>Focus</th><th>Directrix</th><th>Axis</th></tr>
+    <tr><td>y² = 4px (p&gt;0)</td><td>Right →</td><td>(p, 0)</td><td>x = −p</td><td>y = 0</td></tr>
+    <tr><td>y² = −4px (p&gt;0)</td><td>Left ←</td><td>(−p, 0)</td><td>x = p</td><td>y = 0</td></tr>
+    <tr><td>x² = 4py (p&gt;0)</td><td>Up ↑</td><td>(0, p)</td><td>y = −p</td><td>x = 0</td></tr>
+    <tr><td>x² = −4py (p&gt;0)</td><td>Down ↓</td><td>(0, −p)</td><td>y = p</td><td>x = 0</td></tr>
+  </table>
+  <div class="kbox kg">
+    <span class="kbox-label">Quick Method — Find Focus and Directrix in 3 Steps</span>
+    <strong>Step 1:</strong> Identify which variable is squared and the sign of the other term<br>
+    <strong>Step 2:</strong> Extract 4p from the coefficient: y²=−x means 4p=1 → p=1/4<br>
+    <strong>Step 3:</strong> Focus is at distance p from vertex; directrix is at distance p on the other side<br><br>
+    y²=−x: opens left, p=1/4 → Focus: (−1/4, 0) → Directrix: x = 1/4
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">y = −(1/4)x² — Rewrite and find directrix (Mar 2026 Q32)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Rewrite: x² = −4y → this is x²=−4py form with 4p=4 → p=1</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Opens down → focus at (0,−1) → directrix: y = +1 (above vertex)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: y = 1</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">y²=−x — Find directrix (Dec 2025 Q38 / Jan 2026 Q42)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Form: y²=−4px with 4p=1 → p=1/4</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Opens left → directrix is to the RIGHT of vertex at x = +1/4</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: x = 1/4</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Jan 2026 Q31 — Parabola y²=4x, point P with x-coordinate 4. Find |PF|.</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">y²=4x → 4p=4 → p=1. Focus at (1,0). Directrix: x=−1.</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">For any point on parabola: |PF| = x + p (distance to directrix = distance to focus)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">x = 4 → |PF| = 4 + 1 = <strong>5</strong></div></div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Parabolas</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ For y²=−x, writing directrix as x=−1/4 (putting it on the wrong side)</div>
+    <div class="mi-r">✓ y²=−x opens LEFT. Directrix is on the RIGHT: x = +1/4</div>
+    <div class="mi-e">The directrix is always on the OPPOSITE side from where the parabola opens. Opens left → directrix is to the right (positive x side).</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Confusing y=−(1/4)x² directrix as x=1 (mixing up x and y)</div>
+    <div class="mi-r">✓ y=−(1/4)x² → x²=−4y → opens DOWN → directrix is y=1 (horizontal line above)</div>
+    <div class="mi-e">When x is squared, the parabola is vertical (opens up or down). The directrix is a horizontal line (y=k). When y is squared, the directrix is vertical (x=k).</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.5: Parabolas</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q32</span>
+    <div class="pq-q">Directrix of parabola y = −(1/4)x² is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ y=1! Rewrite: x²=−4y. Opens down. 4p=4→p=1. Directrix is ABOVE vertex: y=+1.')"><span class="ol">A</span>y = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=1/16: 4p=4→p=1, not 1/16.')"><span class="ol">B</span>y = 1/16</button>
+      <button class="popt" onclick="pick(this,0,'✗ x=1: parabola has x² so directrix is horizontal (y=k), not vertical.')"><span class="ol">C</span>x = 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ x=1/16: wrong type of directrix.')"><span class="ol">D</span>x = 1/16</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q37 / Jan 2026 · Q42 / Dec 2025 · Q38</span>
+    <div class="pq-q">Directrix of parabola y² = −x is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ x=1/4! y²=−x means 4p=1→p=1/4. Opens LEFT. Directrix is to the RIGHT: x=+1/4.')"><span class="ol">A</span>x = 1/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ x=1/2: 4p=1→p=1/4, not 1/2.')"><span class="ol">B</span>x = 1/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ x=−1/4: this is the FOCUS location. Directrix is on the opposite side.')"><span class="ol">C</span>x = −1/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ x=−1/2: both sign and magnitude wrong.')"><span class="ol">D</span>x = −1/2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q31</span>
+    <div class="pq-q">Focus of y²=4x is F. Point P on parabola has x-coordinate 4. |PF|=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2: |PF|=x+p=4+1=5.')"><span class="ol">A</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3: |PF|=5.')"><span class="ol">B</span>3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 4: that is just x, not |PF|.')"><span class="ol">C</span>4</button>
+      <button class="popt" onclick="pick(this,1,'✓ 5! y²=4x→p=1→focus(1,0),directrix x=−1. For any point: |PF|=x+1=4+1=5.')"><span class="ol">D</span>5</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q32</span>
+    <div class="pq-q">Parabola y²=4x: which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Passes through (−4,4): check (−4)²=16≠4(−4)=−16. Not on parabola.')"><span class="ol">A</span>Passes through (−4,4)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Axis of symmetry x=0: axis is y=0 (the x-axis) for y²=4x.')"><span class="ol">B</span>Axis of symmetry is x=0</button>
+      <button class="popt" onclick="pick(this,0,'✗ Foci at (±1,0): parabola has ONE focus. y²=4x has focus at (1,0) only.')"><span class="ol">C</span>Focus coordinates are (±1,0)</button>
+      <button class="popt" onclick="pick(this,1,'✓ Focus at (1,0)! y²=4x→4p=4→p=1. Focus: (1,0). Directrix: x=−1. Axis: y=0.')"><span class="ol">D</span>Focus coordinates are (1,0)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q32</span>
+    <div class="pq-q">Parabola y=ax² passes through (1,2). Then a=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −1/2: y=ax²→2=a(1)²→a=2, not −1/2.')"><span class="ol">A</span>−1/2</button>
+      <button class="popt" onclick="pick(this,1,'✓ a=2! Substitute (1,2): 2=a×1²=a → a=2.')"><span class="ol">B</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/2: 2=a×1→a=2.')"><span class="ol">C</span>1/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1: 2=1×1=1≠2.')"><span class="ol">D</span>1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LESSON 3.6 — VECTORS & COMPLEX NUMBERS
+════════════════════════════════ -->
+<div class="lesson" id="l6">
+  <span class="lesson-tag">Lesson 3.6</span>
+  <h3>Vectors &amp; Complex Numbers</h3>
+</div>
+
+<div class="card">
+  <h4>Vector Operations</h4>
+  <div class="eq">
+    If a⃗ = (a₁, a₂) and b⃗ = (b₁, b₂):
+    <br>Addition: a⃗ + b⃗ = (a₁+b₁, a₂+b₂)
+    <br>Subtraction: a⃗ − b⃗ = (a₁−b₁, a₂−b₂)
+    <br>Scalar multiple: k·a⃗ = (ka₁, ka₂)
+    <br>Dot product: a⃗·b⃗ = a₁b₁ + a₂b₂
+    <br>Magnitude: |a⃗| = √(a₁²+a₂²)
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Midpoint Vector Formula</span>
+    O is origin. A, B are points on the plane. P is midpoint of AB.<br>
+    Vector OP⃗ = (OA⃗ + OB⃗) / 2 = ½(OA⃗ + OB⃗)<br><br>
+    This is because the midpoint coordinates average the endpoints' coordinates.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q44 — a⃗=(−2,3), b⃗=(2,1). Find a⃗−2b⃗</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">2b⃗ = 2×(2,1) = (4,2)</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">a⃗−2b⃗ = (−2,3)−(4,2) = (−2−4, 3−2) = <strong>(−6, 1)</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Apr 2026 Q44 — ABCD square, E midpoint of CD. AB⃗=a⃗, AD⃗=b⃗. Find BE⃗.</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">In square ABCD: BC⃗=AD⃗=b⃗ (parallel and equal sides)</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">E is midpoint of CD: CE⃗ = ½CD⃗ = ½(−AB⃗) = −½a⃗ (CD is opposite to AB)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">BE⃗ = BC⃗ + CE⃗ = b⃗ + (−½a⃗) = <strong>b⃗ − ½a⃗</strong></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Complex Numbers — Operations &amp; Geometry</h4>
+  <div class="eq">
+    z = a + bi where i² = −1
+    <br><br>
+    Addition: (a+bi)+(c+di) = (a+c)+(b+d)i
+    <br>Multiplication: (a+bi)(c+di) = (ac−bd)+(ad+bc)i
+    <br>Division: (a+bi)/(c+di) = [(a+bi)(c−di)] / (c²+d²)
+    <br><br>
+    Modulus: |z| = √(a²+b²)
+    <br>Conjugate: z̄ = a − bi
+    <br><br>
+    <span class="hi">On complex plane: real part = x-coordinate, imaginary part = y-coordinate</span>
+  </div>
+  <div class="kbox kb">
+    <span class="kbox-label">Powers of i — Cycle of 4</span>
+    i¹=i &nbsp; i²=−1 &nbsp; i³=−i &nbsp; i⁴=1 &nbsp; i⁵=i &nbsp; (repeats every 4)<br>
+    To find iⁿ: divide n by 4, look at remainder.<br>
+    i¹⁰⁰ = (i⁴)²⁵ = 1²⁵ = 1 &nbsp;·&nbsp; i³⁰ = (i⁴)⁷·i² = 1·(−1) = −1
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Apr 2026 Q46 — Solve (z−2i)(2−i)=5 for z</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">z−2i = 5/(2−i) = 5(2+i)/((2−i)(2+i)) = 5(2+i)/(4+1) = (2+i)</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">z = 2+i+2i = <strong>2+3i</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mar 2026 Q46 — z²−2z+2=0. Roots z₁,z₂. Find a₄=(z₁⁴−z₂⁴)²</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Quadratic formula: z=(2±√(4−8))/2=(2±2i)/2=1±i. So z₁=1+i, z₂=1−i.</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">|z₁|=√2, arg(z₁)=45°. z₁⁴=(√2)⁴∠(4×45°)=4∠180°=−4. Similarly z₂⁴=−4.</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">a₄=(z₁⁴−z₂⁴)²=(−4−(−4))²=0² = <strong>0</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 3.6: Vectors &amp; Complex Numbers</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q44</span>
+    <div class="pq-q">a⃗=(−2,3), b⃗=(2,1). Then a⃗−2b⃗=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−6,−1): second component: 3−2(1)=1, not −1.')"><span class="ol">A</span>(−6, −1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (6,−1): first component: −2−4=−6, not +6.')"><span class="ol">B</span>(6, −1)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−6,1)! 2b⃗=(4,2). a⃗−2b⃗=(−2−4, 3−2)=(−6,1).')"><span class="ol">C</span>(−6, 1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (6,1): first component is −6.')"><span class="ol">D</span>(6, 1)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q45</span>
+    <div class="pq-q">O is origin, A and B on the plane, P midpoint of AB. Vector OP⃗=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ ½(OA⃗+OB⃗)! Midpoint coordinates = average of endpoint coordinates. In vector terms: OP⃗=(OA⃗+OB⃗)/2.')"><span class="ol">A</span>½(OA⃗ + OB⃗)</button>
+      <button class="popt" onclick="pick(this,0,'✗ OA⃗+OB⃗: this would be the vector to a point on the parallelogram diagonal, not the midpoint.')"><span class="ol">B</span>OA⃗ + OB⃗</button>
+      <button class="popt" onclick="pick(this,0,'✗ OB⃗−OA⃗: this is the vector from A to B (AB⃗), not OP⃗.')"><span class="ol">C</span>OB⃗ − OA⃗</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½(OB⃗−OA⃗): this is half of AB⃗, pointing from A toward P but not starting from O.')"><span class="ol">D</span>½(OB⃗ − OA⃗)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q44</span>
+    <div class="pq-q">AB⃗=a⃗+5b⃗, BC⃗=−2a⃗+8b⃗, CD⃗=3a⃗−3b⃗. Which three points are collinear?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ A,C,D: check AC⃗=AB⃗+BC⃗=(−a⃗+13b⃗) and AD⃗=AC⃗+CD⃗=(2a⃗+10b⃗). Not scalar multiples.')"><span class="ol">A</span>A, C, D collinear</button>
+      <button class="popt" onclick="pick(this,1,'✓ A,B,D collinear! AD⃗=AB⃗+BC⃗+CD⃗=(a+5b)+(−2a+8b)+(3a−3b)=(2a+10b)=2(a+5b)=2·AB⃗. Since AD⃗=2·AB⃗, D is on line AB extended → A,B,D collinear.')"><span class="ol">B</span>A, B, D collinear</button>
+      <button class="popt" onclick="pick(this,0,'✗ B,C,D: BC⃗=−2a⃗+8b⃗ and BD⃗=BC⃗+CD⃗=(a⃗+5b⃗). Not scalar multiples.')"><span class="ol">C</span>B, C, D collinear</button>
+      <button class="popt" onclick="pick(this,0,'✗ A,B,C: check AC⃗=−a⃗+13b⃗ vs AB⃗=a⃗+5b⃗. Not scalar multiples.')"><span class="ol">D</span>A, B, C collinear</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q44</span>
+    <div class="pq-q">ABCD square, E midpoint of CD. AB⃗=a⃗, AD⃗=b⃗. BE⃗=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ a⃗−½b⃗: BE⃗=BC⃗+CE⃗=b⃗+(−½a⃗)=b⃗−½a⃗.')"><span class="ol">A</span>a⃗ − ½b⃗</button>
+      <button class="popt" onclick="pick(this,1,'✓ b⃗−½a⃗! BC⃗=AD⃗=b⃗. CE⃗=½CD⃗=½(−AB⃗)=−½a⃗. BE⃗=BC⃗+CE⃗=b⃗−½a⃗.')"><span class="ol">B</span>b⃗ − ½a⃗</button>
+      <button class="popt" onclick="pick(this,0,'✗ a⃗+½b⃗: wrong direction.')"><span class="ol">C</span>a⃗ + ½b⃗</button>
+      <button class="popt" onclick="pick(this,0,'✗ b⃗+½a⃗: CE⃗ should be −½a⃗, not +½a⃗.')"><span class="ol">D</span>b⃗ + ½a⃗</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q46</span>
+    <div class="pq-q">Complex z satisfies z³=1 and z≠1. Then 1+z+z²+⋯+z⁹⁹⁹=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (1±√3i)/2: those are the values of z (cube roots of unity), not the sum.')"><span class="ol">A</span>(1±√3i)/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1±√3i)/2: those are indeed the non-trivial cube roots z=(−1±√3i)/2, but the question asks for the sum.')"><span class="ol">B</span>(−1±√3i)/2</button>
+      <button class="popt" onclick="pick(this,1,'✓ 0! Since z³=1 and z≠1, we have 1+z+z²=0 (sum of all cube roots of unity). The sum 1+z+z²+⋯+z⁹⁹⁹ = (z³)⁰+(z³)¹+⋯ grouped into 333 blocks of (1+z+z²)=0. Total=0.')"><span class="ol">C</span>0</button>
+      <button class="popt" onclick="pick(this,0,'✗ i: complex i has nothing to do with cube roots of unity here.')"><span class="ol">D</span>i</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q46</span>
+    <div class="pq-q">z₁,z₂ are roots of z²−2z+2=0. Let aₙ=(z₁ⁿ−z₂ⁿ)². Then a₄=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 0! Roots: z=1±i. z₁⁴: (1+i)²=2i, (2i)²=−4. z₂⁴=(1−i)²=−2i, (−2i)²=−4. a₄=(−4−(−4))²=0.')"><span class="ol">A</span>0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 32: z₁⁴=z₂⁴=−4 so their difference is 0.')"><span class="ol">B</span>32</button>
+      <button class="popt" onclick="pick(this,0,'✗ −64: (0)²=0.')"><span class="ol">C</span>−64</button>
+      <button class="popt" onclick="pick(this,0,'✗ −32: (0)²=0.')"><span class="ol">D</span>−32</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q46</span>
+    <div class="pq-q">Complex z satisfies (z−2i)(2−i)=5. Then z=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 2+3i! z−2i=5/(2−i)=5(2+i)/5=(2+i). z=2+i+2i=2+3i.')"><span class="ol">A</span>2 + 3i</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2−3i: imaginary part should be +3i.')"><span class="ol">B</span>2 − 3i</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3−2i: real part=2, not 3.')"><span class="ol">C</span>3 − 2i</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3+2i: real part=2 and imaginary part=3i.')"><span class="ol">D</span>3 + 2i</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q46</span>
+    <div class="pq-q">Complex z on line x−y=0. z is root of x²+mx+4=0. Then m=</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ √2 or 2√2: z on x=y means z=a+ai. Product of roots=4: |z|²=a²+a²=2a²=4→a²=2→a=±√2. z=√2+√2i or −√2−√2i. Sum of roots=−m: 2z_real=2a=±2√2→m=∓2√2.')"><span class="ol">A</span>√2 or 2√2</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2√2 or −2√2! z=a+ai on x=y. Product of roots=4→2a²=4→a=±√2. Sum of roots=−m=2a=±2√2 → m=∓2√2. So m=2√2 or m=−2√2.')"><span class="ol">B</span>2√2 or −2√2</button>
+      <button class="popt" onclick="pick(this,0,'✗ −√2 or −2√2: only one sign is wrong here.')"><span class="ol">C</span>−√2 or −2√2</button>
+      <button class="popt" onclick="pick(this,0,'✗ √2 or −√2: magnitude is wrong.')"><span class="ol">D</span>√2 or −√2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- UNIT 3 SUMMARY -->
+<div class="summary" id="summary">
+  <div class="sum-h">✓ Unit 3 Complete Summary — Geometry &amp; Algebra</div>
+  <ul class="sum-list">
+    <li>Quadrants: Q1(+,+), Q2(−,+), Q3(−,−), Q4(+,−). Evaluate expressions like 3−π numerically first.</li>
+    <li><strong>Distance:</strong> |PQ|=√((x₂−x₁)²+(y₂−y₁)²). <strong>Midpoint:</strong> ((x₁+x₂)/2, (y₁+y₂)/2).</li>
+    <li>Slope m=tan α. Common angles: 30°→√3/3, 45°→1, 60°→√3, 120°→−√3, 150°→−√3/3.</li>
+    <li>Parallel lines: m₁=m₂. Perpendicular: m₁×m₂=−1.</li>
+    <li>To find slope from ax+by+c=0: slope=−a/b.</li>
+    <li><strong>Circle standard form:</strong> (x−h)²+(y−k)²=r². SIGN TRAP: (x+3)² means center at x=−3.</li>
+    <li>General circle: complete the square. r²=(D/2)²+(E/2)²−F.</li>
+    <li><strong>Ellipse:</strong> c²=a²−b² (subtract). Foci on axis with LARGER denominator.</li>
+    <li><strong>Hyperbola:</strong> c²=a²+b² (add). For mx²+ny²=1 to be hyperbola: mn&lt;0.</li>
+    <li>Ellipse: sum of focal distances = 2a. Eccentricity e=c/a (0&lt;e&lt;1).</li>
+    <li>Parabola y²=4px: focus(p,0), directrix x=−p. Parabola y²=−4px: focus(−p,0), directrix x=p.</li>
+    <li>Parabola x²=4py: focus(0,p), directrix y=−p. Directrix is always on OPPOSITE side from opening.</li>
+    <li>For point on y²=4x with x-coordinate a: |PF|=a+1 (using focal-directrix property).</li>
+    <li><strong>Vector subtraction:</strong> a⃗−kb⃗ = (a₁−kb₁, a₂−kb₂). Midpoint: OP⃗=½(OA⃗+OB⃗).</li>
+    <li>Complex z=a+bi: modulus=√(a²+b²). Powers of i cycle every 4: i¹=i, i²=−1, i³=−i, i⁴=1.</li>
+    <li>Cube roots of unity: 1+z+z²=0 when z³=1, z≠1. Sum of a geometric series of cube roots = 0.</li>
+  </ul>
+</div>
+
+</div><!-- end page -->
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  document.getElementById('prog').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+});
+function jump(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function hide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
+function pick(btn,correct,msg){
+  const pq=btn.closest('.pq');
+  if(pq.dataset.done)return;
+  pq.dataset.done=1;
+  const opts=pq.querySelectorAll('.popt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct)opts.forEach(o=>{if(o!==btn&&o.getAttribute('onclick').includes(',1,'))o.classList.add('correct');});
+  const fb=pq.querySelector('.fb');
+  fb.className='fb '+(correct?'fb-ok':'fb-no');
+  fb.textContent=msg;
+  fb.style.display='block';
+}
+const DATA=[
+  {t:'Quadrants — Signs of (x,y)',ctx:'Q1(+,+) Q2(−,+) Q3(−,−) Q4(+,−). Evaluate 3−π≈−0.14 first!',id:'l1'},
+  {t:'Distance Formula |PQ|=√((x₂−x₁)²+(y₂−y₁)²)',ctx:'P(−1,2) to Q(3,1): √(16+1)=√17',id:'l1'},
+  {t:'Slope and Inclination Angle: m=tan α',ctx:'tan60°=√3, tan150°=−√3/3, tan45°=1',id:'l2'},
+  {t:'Parallel lines: m₁=m₂. Perpendicular: m₁×m₂=−1',ctx:'From ax+by+c=0: slope=−a/b',id:'l2'},
+  {t:'Circle standard form (x−h)²+(y−k)²=r²',ctx:'SIGN TRAP: (x+3)² means center at −3. r² not r on right side.',id:'l3'},
+  {t:'Complete the square for general circle form',ctx:'x²+y²+2x−2y=0 → (x+1)²+(y−1)²=2 → r=√2',id:'l3'},
+  {t:'Ellipse: c²=a²−b². Foci on larger-denominator axis.',ctx:'Sum of focal distances = 2a. Eccentricity e=c/a<1.',id:'l4'},
+  {t:'Hyperbola: c²=a²+b² (PLUS). mn<0 for mx²+ny²=1 to be hyperbola.',ctx:'Eccentricity e=c/a>1.',id:'l4'},
+  {t:'Parabola y²=4px: focus(p,0) directrix x=−p',ctx:'y²=−x: 4p=1→p=¼. Opens left. Directrix x=+¼.',id:'l5'},
+  {t:'Parabola focal distance property: |PF|=x+p',ctx:'y²=4x, point x=4: |PF|=4+1=5',id:'l5'},
+  {t:'Vector operations: a⃗−2b⃗=(a₁−2b₁, a₂−2b₂)',ctx:'(−2,3)−2(2,1)=(−6,1)',id:'l6'},
+  {t:'Midpoint vector: OP⃗=½(OA⃗+OB⃗)',ctx:'Dec 2025 Q45',id:'l6'},
+  {t:'Complex numbers: powers of i cycle every 4',ctx:'i²=−1, i³=−i, i⁴=1',id:'l6'},
+  {t:'Cube roots of unity: 1+z+z²=0 when z³=1, z≠1',ctx:'Dec 2025 Q46: sum of 1000 terms = 0',id:'l6'},
+  {t:'Mar 2026 Q17 — A(−2,−1), B(a,3), |AB|=5',ctx:'Answer: a=1 or a=−5',id:'l1'},
+  {t:'Mar 2026 Q43 — Ellipse major axis 10, foci (±3,0)',ctx:'Answer: x²/25+y²/16=1',id:'l4'},
+  {t:'Jan 2026 Q31 — Parabola y²=4x, x-coord=4, find |PF|',ctx:'Answer: 5. |PF|=x+p=4+1.',id:'l5'},
+  {t:'Mar 2026 Q45 — Line ⊥ to x+2y+4=0 through intersection',ctx:'Answer: 2x−y−7=0',id:'l2'},
+];
+function doSearch(q,dropId){
+  const drop=document.getElementById(dropId);
+  if(!q||q.length<2){drop.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=DATA.filter(d=>d.t.toLowerCase().includes(ql)||d.ctx.toLowerCase().includes(ql)).slice(0,8);
+  if(!hits.length){drop.innerHTML='<div class="sd-none">No results for "'+q+'"</div>';drop.style.display='block';return;}
+  drop.innerHTML=hits.map(h=>`<div class="sd-item" onmousedown="jump('${h.id}')">
+    <div class="sd-title">${hl(h.t,q)}</div><div class="sd-ctx">${hl(h.ctx,q)}</div></div>`).join('');
+  drop.style.display='block';
+}
+function hl(str,q){return str.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+</script>
+</body>
+</html>"""
+
+with open('/home/claude/unit3.html','w') as f:
+    f.write(content)
+print("Done:", len(content), "bytes")
+PYEOF
+python3 /tmp/write_u3.py

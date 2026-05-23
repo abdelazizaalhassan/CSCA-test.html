@@ -1,0 +1,1705 @@
+cat > /home/claude/unit2.html << 'ENDOFFILE'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSCA Math — Unit 2: Functions</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --ink:#1a1208;--muted:#6b5535;--faint:#a08060;
+  --paper:#fdf8f2;--warm:#f5ece0;--card:#ffffff;
+  --border:#e2d4c0;--border2:#c8b090;
+  --g:#1b7a42;--g-bg:#d8f2e4;--g-lt:#edfaf3;--g-border:#8ecfaa;
+  --b:#0b4d8c;--b-bg:#d2e9ff;--b-lt:#ebf4ff;--b-border:#80b8f0;
+  --am:#a87000;--am-bg:#fff3c0;--am-lt:#fffae6;--am-border:#d4a820;
+  --r:#9c1c1c;--r-bg:#ffd6d6;--r-lt:#fff0f0;--r-border:#e08080;
+  --pu:#58289a;--pu-bg:#ecdeff;--pu-lt:#f8f4ff;--pu-border:#a880e0;
+  --te:#0a7060;--te-bg:#c8f0e8;--te-lt:#eafaf7;--te-border:#50b898;
+  --sh:0 2px 14px rgba(0,0,0,.06);--sh2:0 6px 32px rgba(0,0,0,.11);
+  --r8:8px;--r12:12px;--r16:16px;
+}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.75;font-size:15.5px;}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#2060c0,#50a0ff);z-index:999;transition:width .1s;}
+
+/* HERO */
+.hero{min-height:100vh;background:linear-gradient(155deg,#0c1830 0%,#0f2248 55%,#091628 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 15% 25%,rgba(20,80,180,.32) 0%,transparent 58%),
+              radial-gradient(ellipse at 85% 75%,rgba(10,60,140,.22) 0%,transparent 52%);}
+.hero-noise{position:absolute;inset:0;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;}
+.hero-badge{position:relative;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+  padding:5px 20px;border-radius:30px;font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  color:#90c0ff;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;display:inline-block;}
+.hero h1{position:relative;font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);
+  color:#eef6ff;font-weight:900;line-height:1.08;margin-bottom:6px;}
+.hero h1 em{color:#5aaeff;font-style:normal;}
+.hero-sub{position:relative;font-size:.92rem;color:#80a8cc;margin-bottom:6px;}
+.hero-exams{position:relative;font-size:.76rem;color:rgba(255,255,255,.3);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:32px;}
+.hero-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;max-width:760px;margin:0 auto 32px;}
+@media(max-width:600px){.hero-cards{grid-template-columns:1fr 1fr;}}
+.hc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;
+  padding:12px 16px;cursor:pointer;transition:all .22s;text-align:left;}
+.hc:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);transform:translateY(-2px);}
+.hc-tag{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:#70a8e8;letter-spacing:.1em;display:block;margin-bottom:3px;}
+.hc-name{font-size:.8rem;color:#d8eaff;font-weight:600;}
+.hero-search{position:relative;width:100%;max-width:520px;margin:0 auto;}
+.hero-search input{width:100%;padding:13px 22px 13px 48px;border-radius:30px;
+  border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);
+  color:#eef6ff;font-family:'Source Serif 4',serif;font-size:.94rem;outline:none;transition:all .2s;}
+.hero-search input::placeholder{color:rgba(255,255,255,.3);}
+.hero-search input:focus{border-color:rgba(100,170,255,.55);background:rgba(255,255,255,.12);}
+.hero-search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none;}
+.search-drop{position:absolute;top:calc(100% + 8px);left:0;right:0;background:white;
+  border:1px solid var(--border);border-radius:var(--r12);box-shadow:var(--sh2);
+  max-height:340px;overflow-y:auto;z-index:800;display:none;}
+.sd-item{padding:10px 18px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .14s;}
+.sd-item:last-child{border-bottom:none;}
+.sd-item:hover{background:var(--warm);}
+.sd-title{font-size:.86rem;font-weight:600;color:var(--ink);}
+.sd-ctx{font-size:.76rem;color:var(--muted);margin-top:2px;}
+.sd-none{padding:14px 18px;font-size:.86rem;color:var(--muted);text-align:center;}
+mark{background:#ffe060;border-radius:2px;padding:0 1px;}
+.hero-wm{position:absolute;bottom:16px;left:0;right:0;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.1);letter-spacing:.15em;}
+
+/* STICKY NAV */
+.snav{position:sticky;top:0;z-index:200;background:rgba(253,248,242,.95);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  padding:7px 18px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.snav-btn{padding:4px 11px;border-radius:20px;border:1.5px solid var(--border);
+  background:none;font-family:'Source Serif 4',serif;font-size:.71rem;color:var(--muted);
+  cursor:pointer;transition:all .17s;white-space:nowrap;}
+.snav-btn:hover{border-color:var(--b);color:var(--b);}
+.snav-div{width:1px;height:14px;background:var(--border);flex-shrink:0;}
+.snav-search{position:relative;margin-left:auto;}
+.snav-search input{padding:5px 14px 5px 32px;border-radius:20px;border:1.5px solid var(--border);
+  background:white;font-family:'Source Serif 4',serif;font-size:.73rem;color:var(--ink);
+  outline:none;width:180px;transition:all .2s;}
+.snav-search input:focus{border-color:var(--pu);width:240px;}
+.snav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.38;pointer-events:none;}
+.snav-drop{position:absolute;top:calc(100%+6px);right:0;width:360px;background:white;
+  border:1px solid var(--border);border-radius:10px;box-shadow:var(--sh2);
+  max-height:320px;overflow-y:auto;z-index:600;display:none;}
+
+/* PAGE */
+.page{max-width:1040px;margin:0 auto;padding:52px 24px 80px;}
+
+/* UNIT HEADER */
+.unit-hdr{background:linear-gradient(135deg,#d2e8ff 0%,#bcd8ff 100%);
+  border:2px solid #80b8f0;border-radius:var(--r16);padding:32px 36px;
+  margin-bottom:44px;position:relative;overflow:hidden;}
+.unit-hdr::after{content:'f(x)';position:absolute;right:28px;top:14px;
+  font-size:5rem;color:rgba(11,77,140,.1);font-family:'Playfair Display',serif;
+  font-style:italic;pointer-events:none;}
+.unit-hdr-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--b);opacity:.75;margin-bottom:7px;}
+.unit-hdr h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;
+  color:#062e58;margin-bottom:8px;}
+.unit-hdr p{font-size:.9rem;color:#1040708;opacity:.85;line-height:1.6;color:#1a4060;}
+.unit-topics{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.ut{background:rgba(255,255,255,.55);border:1px solid #80b8f0;border-radius:20px;
+  font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#062e58;
+  padding:4px 12px;font-weight:700;letter-spacing:.04em;}
+
+/* LESSON HEADER */
+.lesson{display:flex;align-items:center;gap:12px;margin:58px 0 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--border);}
+.lesson-tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  padding:5px 13px;border-radius:20px;letter-spacing:.1em;white-space:nowrap;
+  background:var(--b-bg);color:var(--b);border:1px solid var(--b-border);}
+.lesson h3{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r12);
+  padding:24px 26px;margin-bottom:18px;box-shadow:var(--sh);}
+.card h4{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  margin-bottom:13px;color:var(--ink);}
+.card p{color:var(--muted);margin-bottom:8px;font-size:.93rem;}
+
+/* KBOX */
+.kbox{border-radius:var(--r8);padding:14px 18px;margin:10px 0;font-size:.9rem;border-left:4px solid;}
+.kg{background:var(--g-lt);border-color:var(--g);color:#0c4020;}
+.kb{background:var(--b-lt);border-color:var(--b);color:#06305a;}
+.kam{background:var(--am-lt);border-color:var(--am);color:#6a4500;}
+.kr{background:var(--r-lt);border-color:var(--r);color:#5c1010;}
+.kpu{background:var(--pu-lt);border-color:var(--pu);color:#351668;}
+.kte{background:var(--te-lt);border-color:var(--te);color:#063a30;}
+.kbox-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;display:block;margin-bottom:7px;opacity:.65;}
+
+/* EQUATION */
+.eq{background:#0d1525;color:#8ec8ff;border-radius:var(--r8);
+  padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:.86rem;
+  margin:12px 0;border:1px solid #1a3060;line-height:1.9;}
+.eq .dim{color:#405878;font-size:.78rem;}
+.eq .hi{color:#a8e8a0;}
+.eq .warn{color:#ffd060;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.84rem;
+  background:white;border-radius:var(--r8);overflow:hidden;box-shadow:var(--sh);}
+.tbl th{background:var(--ink);color:#f0ebe2;padding:9px 14px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;letter-spacing:.05em;}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--border);font-size:.85rem;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--warm);}
+.tbl .yes{color:var(--g);font-weight:700;}
+.tbl .no{color:var(--r);font-weight:700;}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0;}
+@media(max-width:660px){.g2,.g3{grid-template-columns:1fr;}}
+.mini{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-size:.87rem;}
+.mini .mh{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:7px;margin-bottom:10px;}
+.mini ul{padding-left:18px;}
+.mini li{margin-bottom:5px;color:var(--muted);}
+
+/* MISTAKE BOX */
+.mis{background:linear-gradient(135deg,#fff4f4,#ffe6e6);border:2px solid #e07070;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.mis-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--r);text-transform:uppercase;margin-bottom:14px;}
+.mis-item{background:white;border:1px solid #dda0a0;border-radius:var(--r8);
+  padding:13px 16px;margin-bottom:11px;font-size:.87rem;}
+.mis-item:last-child{margin-bottom:0;}
+.mi-w{color:var(--r);font-weight:700;margin-bottom:5px;}
+.mi-r{color:var(--g);font-weight:700;margin-bottom:5px;}
+.mi-e{color:var(--muted);font-size:.83rem;line-height:1.6;}
+
+/* PAST EXAM */
+.past{background:linear-gradient(135deg,#eef4ff,#e2ecff);border:2px solid #90b8f0;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.past-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--b);text-transform:uppercase;margin-bottom:16px;}
+.pq{background:white;border:1px solid #b8d0f4;border-radius:var(--r8);
+  padding:14px 17px;margin-bottom:12px;}
+.pq:last-child{margin-bottom:0;}
+.pq-src{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;
+  color:var(--b);background:var(--b-bg);padding:2px 9px;border-radius:10px;
+  display:inline-block;margin-bottom:8px;}
+.pq-q{font-size:.9rem;color:var(--ink);margin-bottom:10px;line-height:1.65;}
+.pq-opts{display:flex;flex-direction:column;gap:5px;}
+.popt{font-size:.85rem;color:var(--muted);padding:7px 12px;border-radius:6px;
+  border:1.5px solid #ccd8f4;background:#f5f8ff;cursor:pointer;
+  font-family:'Source Serif 4',serif;transition:all .17s;
+  display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;}
+.popt:hover:not(.disabled){border-color:var(--b);background:var(--b-lt);}
+.popt.correct{border-color:var(--g);background:var(--g-lt);color:#0c4020;font-weight:600;}
+.popt.wrong{border-color:var(--r);background:var(--r-lt);color:#5c1010;}
+.popt.disabled{pointer-events:none;}
+.ol{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;
+  min-width:20px;padding-top:1px;flex-shrink:0;color:var(--faint);}
+.fb{display:none;margin-top:10px;border-radius:6px;padding:10px 14px;font-size:.84rem;line-height:1.6;}
+.fb-ok{background:var(--g-bg);color:#0c4020;border-left:3px solid var(--g);}
+.fb-no{background:var(--r-bg);color:#5c1010;border-left:3px solid var(--r);}
+
+/* DEEP DIVE BOX */
+.deep{background:linear-gradient(135deg,#f4f0ff,#ebe4ff);border:2px solid #a880e0;
+  border-radius:var(--r12);padding:22px 26px;margin:22px 0;}
+.deep-head{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;color:var(--pu);text-transform:uppercase;margin-bottom:12px;}
+
+/* WORKED EXAMPLE */
+.wex{background:linear-gradient(135deg,#f0faf4,#e4f5ea);border:2px solid #7ec898;
+  border-radius:var(--r12);padding:20px 24px;margin:16px 0;}
+.wex-head{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.12em;color:var(--g);text-transform:uppercase;margin-bottom:10px;}
+.wex-step{display:flex;gap:14px;margin-bottom:8px;align-items:flex-start;font-size:.89rem;}
+.wex-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;
+  background:var(--g);color:white;border-radius:50%;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.wex-text{color:var(--ink);line-height:1.65;}
+
+/* SUMMARY */
+.summary{background:linear-gradient(135deg,#ebf4ff,#d8ebff);border:2px solid #70a8f0;
+  border-radius:var(--r16);padding:28px 32px;margin:40px 0 0;}
+.sum-h{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;
+  color:var(--b);margin-bottom:16px;}
+.sum-list{list-style:none;padding:0;}
+.sum-list li{padding:6px 0 6px 26px;position:relative;font-size:.9rem;
+  color:var(--muted);border-bottom:1px solid rgba(0,0,0,.05);}
+.sum-list li::before{content:'✓';position:absolute;left:0;color:var(--b);font-weight:700;}
+.sum-list li:last-child{border-bottom:none;}
+
+/* BTT */
+.btt{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#f0ebe2;
+  border:none;border-radius:50%;width:46px;height:46px;font-size:1.1rem;
+  cursor:pointer;box-shadow:var(--sh2);transition:all .2s;z-index:300;
+  display:flex;align-items:center;justify-content:center;}
+.btt:hover{background:#1a3860;transform:translateY(-3px);}
+
+/* MISC */
+sup{font-size:.68em;vertical-align:super;}
+sub{font-size:.68em;vertical-align:sub;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.88em;background:var(--warm);padding:1px 6px;border-radius:4px;}
+strong{color:var(--ink);}
+em.math{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.9em;}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<button class="btt" onclick="jump('top')">↑</button>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div class="hero-noise"></div>
+  <div class="hero-badge">CSCA with Wadah · 2026 Edition</div>
+  <h1>Unit 2<br><em>Functions</em></h1>
+  <p class="hero-sub">Deep theory · Worked examples · All past exam questions mapped</p>
+  <p class="hero-exams">Mar 2026 · Jan 2026 · Apr 2026 · Dec 2025</p>
+  <div class="hero-cards">
+    <div class="hc" onclick="jump('l1')"><span class="hc-tag">Lesson 2.1</span><span class="hc-name">Domain, Range &amp; Concepts</span></div>
+    <div class="hc" onclick="jump('l2')"><span class="hc-tag">Lesson 2.2</span><span class="hc-name">Parity — Odd &amp; Even</span></div>
+    <div class="hc" onclick="jump('l3')"><span class="hc-tag">Lesson 2.3</span><span class="hc-name">Monotonicity &amp; Inverse</span></div>
+    <div class="hc" onclick="jump('l4')"><span class="hc-tag">Lesson 2.4</span><span class="hc-name">Exponential &amp; Log Functions</span></div>
+    <div class="hc" onclick="jump('l5')"><span class="hc-tag">Lesson 2.5</span><span class="hc-name">Trigonometric Functions</span></div>
+    <div class="hc" onclick="jump('l6')"><span class="hc-tag">Lesson 2.6</span><span class="hc-name">Sequences</span></div>
+  </div>
+  <div class="hero-search">
+    <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="hs" placeholder="Search topics, formulas, past questions…" oninput="doSearch(this.value,'hd')" onfocus="if(this.value)doSearch(this.value,'hd')" onblur="hide('hd')">
+    <div class="search-drop" id="hd"></div>
+  </div>
+  <div class="hero-wm">csca-wadah.com · mathematics · unit 2</div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="snav">
+  <button class="snav-btn" onclick="jump('top')">▲ Top</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('l1')">2.1 Domain</button>
+  <button class="snav-btn" onclick="jump('l2')">2.2 Parity</button>
+  <button class="snav-btn" onclick="jump('l3')">2.3 Monotonicity</button>
+  <button class="snav-btn" onclick="jump('l4')">2.4 Exp &amp; Log</button>
+  <button class="snav-btn" onclick="jump('l5')">2.5 Trig</button>
+  <button class="snav-btn" onclick="jump('l6')">2.6 Sequences</button>
+  <div class="snav-div"></div>
+  <button class="snav-btn" onclick="jump('summary')">Summary</button>
+  <div class="snav-search">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="ns" placeholder="Quick search…" oninput="doSearch(this.value,'nd')" onfocus="if(this.value)doSearch(this.value,'nd')" onblur="hide('nd')">
+    <div class="snav-drop" id="nd"></div>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- UNIT HEADER -->
+<div class="unit-hdr">
+  <div class="unit-hdr-label">Unit 02 · CSCA Mathematics 2026</div>
+  <h2>Functions</h2>
+  <p>The largest unit on the exam. Functions appear in almost every question — understanding domain, parity, monotonicity, inverses, exponential/logarithmic behavior, trigonometry, and sequences is essential. Every concept is explained deeply with the underlying reasoning, not just the formula.</p>
+  <div class="unit-topics">
+    <span class="ut">Domain &amp; Range</span>
+    <span class="ut">Odd &amp; Even Functions</span>
+    <span class="ut">Monotonicity</span>
+    <span class="ut">Inverse Functions</span>
+    <span class="ut">Exponential Functions</span>
+    <span class="ut">Logarithmic Functions</span>
+    <span class="ut">Log Properties</span>
+    <span class="ut">Trigonometric Functions</span>
+    <span class="ut">Trig Identities</span>
+    <span class="ut">Half-Angle Formulas</span>
+    <span class="ut">Arithmetic Sequences</span>
+    <span class="ut">Geometric Sequences</span>
+    <span class="ut">General Term &amp; Sums</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.1 — DOMAIN & RANGE
+═══════════════════════════════ -->
+<div class="lesson" id="l1">
+  <span class="lesson-tag">Lesson 2.1</span>
+  <h3>Domain &amp; Range — Finding Where Functions Live</h3>
+</div>
+
+<div class="card">
+  <h4>What Is the Domain?</h4>
+  <p>The <strong>domain</strong> is the complete set of all x-values for which a function produces a valid real number output. Think of it as the "allowed inputs." Every restriction comes from a mathematical reason — you must identify all restrictions and combine them.</p>
+  <div class="kbox kb">
+    <span class="kbox-label">The Four Sources of Domain Restrictions</span>
+    <strong>1. Even roots (√, ⁴√, …)</strong> — radicand must be ≥ 0<br>
+    &nbsp;&nbsp;&nbsp;y = √(x−1) → x−1 ≥ 0 → x ≥ 1 → domain: [1, +∞)<br><br>
+    <strong>2. Denominator</strong> — cannot equal zero<br>
+    &nbsp;&nbsp;&nbsp;y = 1/(x+1) → x+1 ≠ 0 → x ≠ −1 → domain: (−∞,−1) ∪ (−1,+∞)<br><br>
+    <strong>3. Combined: 1/√(expression)</strong> — must be strictly positive (both rules apply)<br>
+    &nbsp;&nbsp;&nbsp;y = 1/√(x+1) → x+1 &gt; 0 (not ≥ 0!) → x &gt; −1 → domain: (−1, +∞)<br><br>
+    <strong>4. Logarithm</strong> — argument must be strictly positive<br>
+    &nbsp;&nbsp;&nbsp;y = ln(x−3) → x−3 &gt; 0 → x &gt; 3 → domain: (3, +∞)
+  </div>
+  <div class="kbox kam">
+    <span class="kbox-label">Critical Distinction — Odd Roots Have NO Restriction</span>
+    The cube root ³√x and all other odd roots are defined for <strong>every real number</strong>, including negatives and zero.<br>
+    ³√(−8) = −2 ✓ &nbsp;&nbsp; ³√0 = 0 ✓ &nbsp;&nbsp; ³√(x+1) is defined for all x ∈ ℝ<br><br>
+    Only even roots (√, ⁴√, ⁶√, …) require the radicand ≥ 0.
+  </div>
+</div>
+
+<div class="card">
+  <h4>When Multiple Restrictions Combine</h4>
+  <p>When a function has more than one restriction, find what each requires separately, then take the <strong>intersection</strong> (AND condition — must satisfy all).</p>
+
+  <div class="wex">
+    <div class="wex-head">Worked Example — f(x) = 1/x + √(1−x) &nbsp;(Jan 2026 Q5)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>From 1/x:</strong> denominator ≠ 0 → x ≠ 0</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>From √(1−x):</strong> even root → 1−x ≥ 0 → x ≤ 1</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Combine (AND):</strong> x ≤ 1 AND x ≠ 0 → (−∞, 0) ∪ (0, 1]</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Worked Example — y = 1/√(x+1) &nbsp;(Dec 2025 Q4)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Inside the root:</strong> x+1 ≥ 0 → x ≥ −1</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>But it's also a denominator:</strong> x+1 ≠ 0 → x ≠ −1</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Combining both:</strong> x &gt; −1 (strict) → <strong>(−1, +∞)</strong></div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>Why not [−1, +∞)?</strong> At x=−1: √(0) = 0, then 1/0 is undefined. So −1 is excluded.</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Worked Example — y = 1/lg|x−5| &nbsp;(Apr 2026 Q42)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>lg is log₁₀:</strong> argument must be &gt; 0 → |x−5| &gt; 0 → x ≠ 5</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Denominator ≠ 0:</strong> lg|x−5| ≠ 0 → |x−5| ≠ 1 → x−5 ≠ ±1 → x ≠ 4 and x ≠ 6</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>All exclusions:</strong> x ≠ 4, 5, 6 → <strong>(−∞,4) ∪ (4,5) ∪ (5,6) ∪ (6,+∞)</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Worked Example — y = f(x²−1) when f has domain (−1,0) &nbsp;(Apr 2026 Q36)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">The argument x²−1 must land inside the domain of f, which is (−1, 0).</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>So:</strong> −1 &lt; x²−1 &lt; 0</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Left inequality:</strong> x²−1 &gt; −1 → x² &gt; 0 → x ≠ 0</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>Right inequality:</strong> x²−1 &lt; 0 → x² &lt; 1 → −1 &lt; x &lt; 1</div></div>
+    <div class="wex-step"><div class="wex-num">5</div><div class="wex-text"><strong>Combine:</strong> (−1 &lt; x &lt; 1) AND (x ≠ 0) → <strong>(−1,0) ∪ (0,1)</strong></div></div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Domain</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Domain of y = 1/√(x+1) is [−1, +∞)</div>
+    <div class="mi-r">✓ Correct: (−1, +∞) — strict open bracket</div>
+    <div class="mi-e">At x = −1 the denominator becomes 1/0 which is undefined. When a square root is in the denominator, the condition upgrades from ≥ 0 to &gt; 0.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Domain of ³√(x+1) is [−1, +∞) (treating it like a square root)</div>
+    <div class="mi-r">✓ Correct: (−∞, +∞) — all real numbers</div>
+    <div class="mi-e">Cube roots (and all odd roots) are defined for every real number. ³√(−8) = −2. Only even roots require non-negative arguments.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ For y = 1/lg|x−5|, only excluding x = 5</div>
+    <div class="mi-r">✓ Must also exclude x = 4 and x = 6 (where lg|x−5| = lg(1) = 0)</div>
+    <div class="mi-e">The denominator lg|x−5| = 0 when |x−5| = 1, giving x = 4 or x = 6. These make the denominator zero — both must be excluded.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.1: Domain</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q4</span>
+    <div class="pq-q">The domain of f(x) = (1−x)/(1+x) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ (−∞,−1) ∪ (−1,+∞)! The only restriction is the denominator: 1+x ≠ 0 → x ≠ −1. At x=0: f(0)=1/1=1 ✓. At x=2: f(2)=−1/3 ✓. Exclude only x=−1.')"><span class="ol">A</span>(−∞,−1) ∪ (−1,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,0) ∪ (0,+∞) excludes x=0, but f(0)=(1−0)/(1+0)=1 is perfectly defined. No reason to exclude 0.')"><span class="ol">B</span>(−∞,0) ∪ (0,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ ℝ ignores the denominator restriction. When x=−1: denominator = 1+(−1) = 0 → undefined!')"><span class="ol">C</span>ℝ (all real numbers)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,1) ∪ (1,+∞) excludes x=1, but f(1)=(1−1)/(1+1)=0/2=0 is perfectly defined.')"><span class="ol">D</span>(−∞,1) ∪ (1,+∞)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q4</span>
+    <div class="pq-q">The domain of y = 1/√(x+1) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ [−1,+∞) would be correct for y=√(x+1) alone. But this also has a denominator — at x=−1, √0=0 and 1/0 is undefined. Must be strict.')"><span class="ol">A</span>[−1, +∞)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−1,+∞)! Two combined rules: (1) even root → x+1 ≥ 0 → x ≥ −1; (2) denominator → x+1 ≠ 0 → x ≠ −1. Combined: x &gt; −1. Open bracket at −1.')"><span class="ol">B</span>(−1, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (0,+∞) is too restrictive. For example x=0.5: √(1.5)≠0, so 1/√(1.5) is defined. The restriction is at x=−1, not x=0.')"><span class="ol">C</span>(0, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,−1) is the excluded region, not the domain. The function is defined for x strictly greater than −1.')"><span class="ol">D</span>(−∞, −1)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q20</span>
+    <div class="pq-q">The domain of y = √(x−1) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ [1,+∞)! Even root → x−1 ≥ 0 → x ≥ 1. At x=1: √0=0 ✓ (defined). There is no denominator here, so 1 IS included — closed bracket.')"><span class="ol">A</span>[1, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (1,+∞) would exclude x=1. But √(1−1)=√0=0 is perfectly defined. Unlike 1/√(x−1), there is no denominator here requiring strict inequality.')"><span class="ol">B</span>(1, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,1] is the region where x−1 ≤ 0 — i.e., where the square root is imaginary. This is the excluded region, not the domain.')"><span class="ol">C</span>(−∞, 1]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,1) is also the excluded region (where x−1 &lt; 0), just without the endpoint.')"><span class="ol">D</span>(−∞, 1)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q5</span>
+    <div class="pq-q">The domain of f(x) = 1/x + √(1−x) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,1] ignores x=0. But 1/x is undefined at x=0, so we must exclude it.')"><span class="ol">A</span>(−∞, 1]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,0)∪(0,1) misses x=1. At x=1: 1/1 + √0 = 1+0 = 1 ✓. The endpoint x=1 is defined.')"><span class="ol">B</span>(−∞,0) ∪ (0,1)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−∞,0) ∪ (0,1]! From 1/x: x≠0. From √(1−x): x≤1. Combined: x≤1 AND x≠0 → (−∞,0)∪(0,1].')"><span class="ol">C</span>(−∞,0) ∪ (0,1]</button>
+      <button class="popt" onclick="pick(this,0,'✗ [1,+∞): at x=2: 1/2+√(−1) — √ of negative is undefined. Wrong direction entirely.')"><span class="ol">D</span>[1, +∞)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q5</span>
+    <div class="pq-q">The domain of f(x) = ³√(x+1) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,0] applies a restriction where none exists. Cube roots need no restriction on the radicand.')"><span class="ol">A</span>(−∞, 0]</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−∞,+∞) — all real numbers! The cube root is an odd root, defined for every real input including negatives. ³√(−9+1) = ³√(−8) = −2 ✓.')"><span class="ol">B</span>(−∞, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [1,+∞) confuses cube root with square root. This would be the domain of √(x+1) if it were a square root minus one.')"><span class="ol">C</span>[1, +∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ [0,+∞) would be the domain of ³√x if restricted like a square root. But cube roots have no such restriction.')"><span class="ol">D</span>[0, +∞)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q36</span>
+    <div class="pq-q">If y = f(x) has domain (−1,0), what is the domain of y = f(x²−1)?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ [−1,1] uses closed brackets. The original domain (−1,0) is open, so the substitution x²−1 must be strictly inside (−1,0), giving open intervals.')"><span class="ol">A</span>[−1, 1]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1,1) includes x=0. But when x=0: x²−1=−1, and −1 is NOT inside (−1,0) — it is the excluded left endpoint.')"><span class="ol">B</span>(−1, 1)</button>
+      <button class="popt" onclick="pick(this,1,'✓ (−1,0)∪(0,1)! Need −1 &lt; x²−1 &lt; 0. Left: x²&gt;0 → x≠0. Right: x²&lt;1 → −1&lt;x&lt;1. Combined: (−1,0)∪(0,1).')"><span class="ol">C</span>(−1,0) ∪ (0,1)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−1,0) only captures the negative side. By symmetry (x² is even), x∈(0,1) also maps x²−1 into (−1,0).')"><span class="ol">D</span>(−1, 0)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q42</span>
+    <div class="pq-q">The domain of y = 1/lg|x−5| is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ (−∞,4)∪(4,5)∪(5,6)∪(6,+∞)! Exclude: x=5 (log of 0 undefined); x=4 and x=6 (|x−5|=1 → lg(1)=0 → denominator=0). Three points excluded from ℝ.')"><span class="ol">A</span>(−∞,4) ∪ (4,5) ∪ (5,6) ∪ (6,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,4)∪(4,+∞) only excludes x=4 but misses x=5 (lg|0| undefined) and x=6 (lg|1|=0, denominator zero).')"><span class="ol">B</span>(−∞,4) ∪ (4,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,5)∪(5,6)∪(6,+∞) misses x=4. At x=4: |4−5|=1, lg(1)=0 → denominator zero → undefined.')"><span class="ol">C</span>(−∞,5) ∪ (5,6) ∪ (6,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,5)∪(5,+∞) only excludes x=5 but misses x=4 and x=6 where the denominator becomes zero.')"><span class="ol">D</span>(−∞,5) ∪ (5,+∞)</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.2 — PARITY (ODD & EVEN)
+═══════════════════════════════ -->
+<div class="lesson" id="l2">
+  <span class="lesson-tag">Lesson 2.2</span>
+  <h3>Parity — Odd Functions, Even Functions &amp; Neither</h3>
+</div>
+
+<div class="card">
+  <h4>The Deep Idea — Symmetry</h4>
+  <p>Parity describes the symmetry of a function's graph. It is not just a formula test — it has a geometric meaning.</p>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">Even Function — f(−x) = f(x)</div>
+      <strong>Geometry:</strong> mirror symmetry about the y-axis.<br>
+      The right half of the graph is a mirror reflection of the left half.<br><br>
+      <strong>Examples:</strong> x², |x|, cos x, x⁴, x⁴+3, x·sin x<br><br>
+      <strong>Test:</strong> replace every x with −x; if you get back f(x) exactly → EVEN
+    </div>
+    <div class="mini">
+      <div class="mh">Odd Function — f(−x) = −f(x)</div>
+      <strong>Geometry:</strong> 180° rotational symmetry about the origin.<br>
+      If you rotate the graph 180° around (0,0) it looks the same.<br><br>
+      <strong>Examples:</strong> x, x³, sin x, tan x, x+x³, −x<br><br>
+      <strong>Test:</strong> replace every x with −x; if you get −f(x) → ODD
+    </div>
+  </div>
+  <div class="kbox km" style="background:var(--am-lt);border-color:var(--am);color:#6a4500;">
+    <span class="kbox-label">Domain Must Be Symmetric About 0</span>
+    Before testing parity, check the domain. If the domain is NOT symmetric about 0 (e.g., [0,+∞)), the function is <strong>neither odd nor even</strong> — no matter what f(−x) gives, because f(−x) might not even be defined.<br><br>
+    Example: y = √x has domain [0,+∞). Since this is not symmetric about 0 (negative values excluded), y=√x is neither odd nor even.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Complete Test Walkthrough — Every Exam Type</h4>
+
+  <div class="wex">
+    <div class="wex-head">Test: f(x) = ln(x²) — Mar 2026 Q7</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Domain:</strong> x² &gt; 0 → x ≠ 0 → domain: (−∞,0)∪(0,+∞). Symmetric about 0 ✓</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Test:</strong> f(−x) = ln((−x)²) = ln(x²) = f(x)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Since f(−x) = f(x) → EVEN.</strong> Makes sense geometrically: ln(x²) = 2ln|x|, which is symmetric about the y-axis.</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Test: f(x) = x·sin x — Dec 2025 Q8 (trap!)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Domain:</strong> all ℝ — symmetric ✓</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Test:</strong> f(−x) = (−x)·sin(−x) = (−x)·(−sin x) = x·sin x = f(x)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>EVEN! (not odd)</strong> — product of two odd functions is an even function. Many students think it must be odd because "x·sin x has two odd factors," but odd × odd = even.</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Test: f(x) = x + x³ — Dec 2025 Q8 (correct answer)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text"><strong>Domain:</strong> all ℝ — symmetric ✓</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text"><strong>Test:</strong> f(−x) = (−x) + (−x)³ = −x + (−x³) = −(x + x³) = −f(x)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>ODD.</strong> Sum of two odd functions is always odd. Both x and x³ are odd → their sum is odd.</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Test: f(x) = x³ + 1 (trap — a constant shifts parity)</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">f(−x) = (−x)³ + 1 = −x³ + 1</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Is this f(x)? f(x) = x³+1. Is −x³+1 = x³+1? No (unless x=0).</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Is this −f(x)? −f(x) = −x³−1. Is −x³+1 = −x³−1? No.</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>NEITHER odd nor even.</strong> Adding a non-zero constant to an odd function destroys its parity (it no longer passes through the origin).</div></div>
+  </div>
+
+  <div class="kbox kb">
+    <span class="kbox-label">Pattern Recognition — Shortcuts</span>
+    <strong>Even:</strong> all exponents in the polynomial are even (x², x⁴, …) plus possibly a constant &nbsp;→ y=x⁴+3, y=cos x, y=|x|<br>
+    <strong>Odd:</strong> all exponents are odd, no constant term &nbsp;→ y=x, y=x³, y=x+x³, y=sin x, y=tan x<br>
+    <strong>Neither:</strong> mixed exponents (e.g., x³+x²) OR a constant added to an odd function (x³+1) OR non-symmetric domain
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Parity</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ f(x) = x·sin x is ODD (because x is odd and sin x is odd)</div>
+    <div class="mi-r">✓ Odd × Odd = Even: f(−x) = (−x)(−sinx) = x sinx = f(x) → EVEN</div>
+    <div class="mi-e">The product of two odd functions is always EVEN, just like (−1)×(−1) = +1.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ f(x) = x³+1 is ODD because x³ is odd</div>
+    <div class="mi-r">✓ Adding the constant +1 makes it NEITHER. The graph no longer passes through the origin — it is shifted up by 1.</div>
+    <div class="mi-e">An odd function must satisfy f(0)=0 (when 0 is in the domain). Here f(0)=1≠0, so it cannot be odd.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ y = (√x)² is identical to y = |x|</div>
+    <div class="mi-r">✓ y=(√x)² has domain [0,+∞) only; y=|x| has domain ℝ. Same rule, different domain → NOT the same function.</div>
+    <div class="mi-e">Two functions are identical if and only if they have the SAME rule AND the SAME domain. Domain differences make them different functions even if the formula simplifies the same way.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.2: Parity</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q7</span>
+    <div class="pq-q">Over its domain, f(x) = ln(x²) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Odd means f(−x)=−f(x). Test: f(−x)=ln((−x)²)=ln(x²)=f(x) ≠ −f(x). Not odd.')"><span class="ol">A</span>Odd</button>
+      <button class="popt" onclick="pick(this,0,'✗ Uncertain about parity is wrong. We can definitively determine parity here.')"><span class="ol">B</span>Uncertain about parity</button>
+      <button class="popt" onclick="pick(this,0,'✗ Neither is wrong. f(−x)=f(x) clearly holds, so it IS even.')"><span class="ol">C</span>Neither odd nor even</button>
+      <button class="popt" onclick="pick(this,1,'✓ EVEN! f(−x)=ln((−x)²)=ln(x²)=f(x). Also: ln(x²)=2ln|x|, a function symmetric about the y-axis. Domain: x≠0, symmetric about 0 ✓.')"><span class="ol">D</span>Even</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q8</span>
+    <div class="pq-q">Which of the following functions is an ODD function?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=x·sinx: f(−x)=(−x)sin(−x)=(−x)(−sinx)=x sinx=f(x) → EVEN, not odd.')"><span class="ol">A</span>y = x · sin x</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x⁴: f(−x)=(−x)⁴=x⁴=f(x) → EVEN.')"><span class="ol">B</span>y = x⁴</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=cos x: f(−x)=cos(−x)=cosx=f(x) → EVEN.')"><span class="ol">C</span>y = cos x</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=x+x³ is ODD! f(−x)=(−x)+(−x)³=−x−x³=−(x+x³)=−f(x). Both terms are individually odd, and their sum is odd.')"><span class="ol">D</span>y = x + x³</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q8</span>
+    <div class="pq-q">About f(x) = x⁴ + 3, which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Odd: f(−x)=(−x)⁴+3=x⁴+3=f(x) ≠ −f(x). Not odd.')"><span class="ol">A</span>The function is odd</button>
+      <button class="popt" onclick="pick(this,0,'✗ None of the above is wrong because "even" IS correct.')"><span class="ol">B</span>None of the above</button>
+      <button class="popt" onclick="pick(this,0,'✗ Neither is wrong. f(−x)=f(x) → it IS even.')"><span class="ol">C</span>Neither odd nor even</button>
+      <button class="popt" onclick="pick(this,1,'✓ EVEN! f(−x)=(−x)⁴+3=x⁴+3=f(x). Note: x⁴ is even (even exponent), adding constant 3 does not break the even symmetry here since (−x)⁴=x⁴.')"><span class="ol">D</span>The function is even</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q8</span>
+    <div class="pq-q">Which of the following functions is an ODD function?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=³√(x+2): f(−x)=³√(−x+2). Is this −f(x)=−³√(x+2)? Only if ³√(−x+2)=−³√(x+2) → −x+2=−(x+2)=−x−2 → 2=−2. FALSE. Not odd.')"><span class="ol">A</span>y = ³√(x+2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x²+3: f(−x)=(−x)²+3=x²+3=f(x) → EVEN.')"><span class="ol">B</span>y = x²+3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x³+1: f(0)=1≠0, so it cannot be odd. f(−x)=−x³+1 ≠ −(x³+1)=−x³−1. Neither odd nor even.')"><span class="ol">C</span>y = x³+1</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=−x is ODD! f(−x)=−(−x)=x=−(−x)=−f(x) ✓. Any linear function through the origin (y=kx for any constant k) is odd.')"><span class="ol">D</span>y = −x</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.3 — MONOTONICITY & INVERSE
+═══════════════════════════════ -->
+<div class="lesson" id="l3">
+  <span class="lesson-tag">Lesson 2.3</span>
+  <h3>Monotonicity, Same Functions &amp; Inverse Functions</h3>
+</div>
+
+<div class="card">
+  <h4>Monotonicity — What It Really Means</h4>
+  <p>A function is <strong>monotonically increasing</strong> on an interval if, for any two points x₁ &lt; x₂ in that interval, we always have f(x₁) &lt; f(x₂). Moving right on the graph always means moving up.</p>
+  <table class="tbl">
+    <tr><th>Function</th><th>Behavior</th><th>Where Increasing</th><th>Where Decreasing</th></tr>
+    <tr><td>y = mx+b (m&gt;0)</td><td class="yes">Increasing everywhere</td><td>All of ℝ</td><td>—</td></tr>
+    <tr><td>y = mx+b (m&lt;0)</td><td class="no">Decreasing everywhere</td><td>—</td><td>All of ℝ</td></tr>
+    <tr><td>y = x²</td><td>Both</td><td>[0, +∞)</td><td>(−∞, 0]</td></tr>
+    <tr><td>y = x³</td><td class="yes">Increasing everywhere</td><td>All of ℝ</td><td>—</td></tr>
+    <tr><td>y = |x|</td><td>Both</td><td>[0, +∞)</td><td>(−∞, 0]</td></tr>
+    <tr><td>y = eˣ (or aˣ, a&gt;1)</td><td class="yes">Increasing everywhere</td><td>All of ℝ</td><td>—</td></tr>
+    <tr><td>y = (½)ˣ (or aˣ, 0&lt;a&lt;1)</td><td class="no">Decreasing everywhere</td><td>—</td><td>All of ℝ</td></tr>
+    <tr><td>y = sin x</td><td>Both</td><td>[−π/2+2kπ, π/2+2kπ]</td><td>[π/2+2kπ, 3π/2+2kπ]</td></tr>
+  </table>
+  <div class="kbox kam">
+    <span class="kbox-label">Critical Point — y = −1/x Is NOT Globally Monotone</span>
+    y = −1/x is increasing on (−∞, 0) and also increasing on (0, +∞) separately.<br>
+    But it is NOT increasing on all of ℝ — it is not even defined at x=0, and you cannot compare values across the gap.<br>
+    On the exam, "decreasing on (−∞,+∞)" does NOT apply to y=−1/x.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Same Function Test — Domain + Rule Both Must Match</h4>
+  <p>Two functions are the <strong>same</strong> if and only if: (1) they have identical rules, AND (2) they have identical domains. Both conditions must hold.</p>
+  <div class="g2">
+    <div class="mini">
+      <div class="mh">SAME ✓</div>
+      y = √(x²) and y = |x|<br>
+      Both: domain = ℝ, both = |x|<br><br>
+      y = (x⁴−1)/(x²+1) and y = x²−1<br>
+      Factor: (x²−1)(x²+1)/(x²+1) = x²−1<br>
+      Domain of left: x²+1≠0 always true → ℝ<br>
+      Domain of right: ℝ. Both are x²−1 on ℝ. ✓
+    </div>
+    <div class="mini">
+      <div class="mh">DIFFERENT ✗</div>
+      y = (√x)² and y = x<br>
+      Left: domain [0,+∞); Right: domain ℝ<br>
+      Different domains → NOT same ✗<br><br>
+      y = x and y = √(x²)<br>
+      Left: domain ℝ; Right: domain ℝ<br>
+      But √(x²) = |x| ≠ x for x&lt;0 → NOT same ✗
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Inverse Functions — The Method</h4>
+  <p>The inverse function "undoes" f. To find it:</p>
+  <div class="kbox kg">
+    <span class="kbox-label">4-Step Method</span>
+    <strong>Step 1:</strong> Write y = f(x)<br>
+    <strong>Step 2:</strong> Swap x and y → write x = f(y)<br>
+    <strong>Step 3:</strong> Solve for y → this gives f⁻¹(x)<br>
+    <strong>Step 4:</strong> Domain of f⁻¹ = Range of f; Range of f⁻¹ = Domain of f
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Inverse of y = x³ — Dec 2025 Q9</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Write: y = x³</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Swap: x = y³</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Solve for y: y = x^(1/3) = ³√x</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>Answer: y = ³√x, domain: all ℝ</strong> (cube root is defined everywhere)</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Inverse of y = x³ + 3 — Jan 2026 Q9</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Swap: x = y³ + 3</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Solve: y³ = x − 3 → y = ³√(x−3)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: y = ³√(x−3), x ∈ ℝ</strong> — the domain is all ℝ (cube root, no restriction)</div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Inverse of y = 10x + 3 — Apr 2026 Q10</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Swap: x = 10y + 3</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Solve: 10y = x − 3 → y = (x−3)/10</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: y = (x−3)/10</strong></div></div>
+  </div>
+</div>
+
+<div class="mis">
+  <div class="mis-head">⚠ Common Mistakes — Monotonicity &amp; Inverse</div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Inverse of y = x³ is y = 3x (confusing cube with multiplying by 3)</div>
+    <div class="mi-r">✓ Inverse of y = x³ is y = ³√x (the cube ROOT, not 3x)</div>
+    <div class="mi-e">To "undo" cubing, you cube root. To undo y=3x, you divide by 3: y=x/3. These are completely different operations.</div>
+  </div>
+  <div class="mis-item">
+    <div class="mi-w">✗ Inverse of y = x³+3 has domain x ≥ 3</div>
+    <div class="mi-r">✓ Domain is all ℝ — cube roots are defined for all real numbers</div>
+    <div class="mi-e">The domain of f⁻¹ equals the range of f. Since y=x³+3 can output any real number (all ℝ), its inverse is defined for all ℝ.</div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.3: Monotonicity &amp; Inverse</div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q9</span>
+    <div class="pq-q">The inverse function of y = x³ is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=x/3 is the inverse of y=3x. Do not confuse the exponent 3 with a coefficient 3.')"><span class="ol">A</span>y = x/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=3x is the inverse of y=x/3. Has nothing to do with undoing a cube.')"><span class="ol">B</span>y = 3x</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x³ is the same function, not its inverse.')"><span class="ol">C</span>y = x³</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=³√x! Swap: x=y³ → y=x^(1/3)=³√x. Since the cube root is defined for all ℝ, the domain is all ℝ.')"><span class="ol">D</span>y = ³√x</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q10</span>
+    <div class="pq-q">Which of the following functions is monotonically increasing?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=(1/3)ˣ: base 1/3 satisfies 0&lt;1/3&lt;1 → DECREASING exponential.')"><span class="ol">A</span>y = (1/3)ˣ</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=log₀.₅x: base 0.5 satisfies 0&lt;0.5&lt;1 → DECREASING logarithm.')"><span class="ol">B</span>y = log₀.₅x</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=2x+1 is a linear function with slope 2&gt;0 → strictly INCREASING over all ℝ.')"><span class="ol">C</span>y = 2x+1</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=sinx is NOT monotonically increasing overall. It increases on [−π/2,π/2], then decreases on [π/2,3π/2], etc.')"><span class="ol">D</span>y = sin x</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q9</span>
+    <div class="pq-q">The inverse of y = x³ + 3 (x ∈ ℝ) is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ y=³√(x−3), x∈ℝ! Swap: x=y³+3 → y³=x−3 → y=³√(x−3). Domain = range of original = ℝ.')"><span class="ol">A</span>y = ³√(x−3), x ∈ ℝ</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=³√(x+3) has wrong sign: should be x−3 not x+3.')"><span class="ol">B</span>y = ³√(x+3), x ≥ −3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=³√(x+3) again wrong sign in the radicand.')"><span class="ol">C</span>y = ³√(x+3), x ∈ ℝ</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=³√(x−3), x≥3 has correct expression but wrong domain. Cube root is defined for all ℝ, so no restriction is needed.')"><span class="ol">D</span>y = ³√(x−3), x ≥ 3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q11</span>
+    <div class="pq-q">Given y = |x|, which conclusion is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Increasing when x&lt;0 is WRONG. For x&lt;0: y=−x, which is a decreasing function (as x increases toward 0, y decreases toward 0).')"><span class="ol">A</span>When x&lt;0, the function is increasing</button>
+      <button class="popt" onclick="pick(this,1,'✓ When x&gt;0: y=|x|=x, which is the identity function — strictly increasing. As x increases, y=x increases.')"><span class="ol">B</span>When x&gt;0, the function is increasing</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=|x| is never globally decreasing. It decreases on (−∞,0) and increases on (0,+∞).')"><span class="ol">C</span>When x∈ℝ, the function is decreasing</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=|x| is not globally increasing either — it decreases for negative x.')"><span class="ol">D</span>When x∈ℝ, the function is increasing</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q10</span>
+    <div class="pq-q">The inverse function of y = 10x + 3 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ y=(x+10)/3: swap gives x=10y+3 → 10y=x−3 → y=(x−3)/10. The sign is minus, not plus.')"><span class="ol">A</span>y = (x+10)/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=(x−10)/3: denominators and numerators are in the wrong place.')"><span class="ol">B</span>y = (x−10)/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=(x+3)/10: sign error — should be −3 not +3.')"><span class="ol">C</span>y = (x+3)/10</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=(x−3)/10! Swap: x=10y+3 → 10y=x−3 → y=(x−3)/10.')"><span class="ol">D</span>y = (x−3)/10</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q11</span>
+    <div class="pq-q">Which function is decreasing on (−∞,+∞)?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ y=−x+5 has slope −1&lt;0 → strictly DECREASING everywhere on ℝ.')"><span class="ol">A</span>y = −x+5</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x³ is strictly INCREASING on all ℝ.')"><span class="ol">B</span>y = x³</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=x²+1 decreases on (−∞,0) but increases on (0,+∞). Not globally monotone.')"><span class="ol">C</span>y = x²+1</button>
+      <button class="popt" onclick="pick(this,0,'✗ y=−1/x is increasing on (−∞,0) and increasing on (0,+∞). Not decreasing — and not defined at 0.')"><span class="ol">D</span>y = −1/x</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.4 — EXP & LOG FUNCTIONS
+═══════════════════════════════ -->
+<div class="lesson" id="l4">
+  <span class="lesson-tag">Lesson 2.4</span>
+  <h3>Exponential &amp; Logarithmic Functions</h3>
+</div>
+
+<div class="card">
+  <h4>Exponential Function y = aˣ (a &gt; 0, a ≠ 1)</h4>
+  <table class="tbl">
+    <tr><th>Property</th><th>a &gt; 1 (e.g., 2ˣ, eˣ)</th><th>0 &lt; a &lt; 1 (e.g., (½)ˣ)</th></tr>
+    <tr><td>Domain</td><td colspan="2">All real numbers ℝ</td></tr>
+    <tr><td>Range</td><td colspan="2">(0, +∞) — always positive, never zero</td></tr>
+    <tr><td>Fixed point</td><td colspan="2">Always passes through (0, 1) since a⁰=1</td></tr>
+    <tr><td>Monotonicity</td><td class="yes">Increasing ↗</td><td class="no">Decreasing ↘</td></tr>
+    <tr><td>As x → +∞</td><td>→ +∞</td><td>→ 0⁺</td></tr>
+    <tr><td>As x → −∞</td><td>→ 0⁺</td><td>→ +∞</td></tr>
+    <tr><td>Symmetry</td><td colspan="2">NOT symmetric about origin or y-axis (neither odd nor even)</td></tr>
+  </table>
+  <div class="kbox kr">
+    <span class="kbox-label">Exam Trap — "The function is always increasing"</span>
+    This is INCORRECT as a general statement about y=aˣ. It is only true when a&gt;1. When 0&lt;a&lt;1, the function is DECREASING. Jan 2026 Q23 directly asks you to find the INCORRECT statement — and this is it.
+  </div>
+</div>
+
+<div class="card">
+  <h4>Logarithmic Function y = log_a(x) (a &gt; 0, a ≠ 1)</h4>
+  <table class="tbl">
+    <tr><th>Property</th><th>a &gt; 1 (e.g., log₂, ln)</th><th>0 &lt; a &lt; 1 (e.g., log₀.₅)</th></tr>
+    <tr><td>Domain</td><td colspan="2">(0, +∞) — argument must be STRICTLY positive</td></tr>
+    <tr><td>Range</td><td colspan="2">All real numbers ℝ</td></tr>
+    <tr><td>Fixed point</td><td colspan="2">Always passes through (1, 0) since log_a(1)=0</td></tr>
+    <tr><td>Monotonicity</td><td class="yes">Increasing ↗</td><td class="no">Decreasing ↘</td></tr>
+    <tr><td>log_a(a) = ?</td><td colspan="2">Always equals 1</td></tr>
+    <tr><td>When is log_a(x) &gt; 1?</td><td>When x &gt; a (base &gt;1)</td><td>When 0 &lt; x &lt; a (base &lt;1)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h4>Logarithm Laws — Must Know All Six</h4>
+  <div class="eq">
+    log_a(xy) = log_a(x) + log_a(y) &nbsp;&nbsp;<span class="dim">(product rule)</span>
+    <br>log_a(x/y) = log_a(x) − log_a(y) &nbsp;&nbsp;<span class="dim">(quotient rule)</span>
+    <br>log_a(xⁿ) = n · log_a(x) &nbsp;&nbsp;<span class="dim">(power rule)</span>
+    <br>log_a(b) = ln(b) / ln(a) &nbsp;&nbsp;<span class="dim">(change of base — numerator is the argument, denominator is the BASE)</span>
+    <br>log_a(1) = 0 &nbsp;&nbsp; log_a(a) = 1 &nbsp;&nbsp;<span class="dim">(special values)</span>
+    <br>log_{aᵏ}(bⁿ) = (n/k) · log_a(b) &nbsp;&nbsp;<span class="dim">(power in base and argument)</span>
+  </div>
+  <div class="kbox kr">
+    <span class="kbox-label">Most Common Exam Error — Change of Base Formula</span>
+    The correct formula is: log_a(b) = <strong>ln(b) / ln(a)</strong><br>
+    NOT: ln(a) / ln(b) ← this is inverted and WRONG<br><br>
+    Memory trick: the argument b goes on top, the base a goes on the bottom. "The base goes to the bottom."
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Calculation: lg4 + 2·lg5 — Mar 2026 Q29</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">a+2b = lg4 + 2·lg5 = lg4 + lg(5²) = lg4 + lg25</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">= lg(4 × 25) = lg(100) = lg(10²) = 2</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: 2</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Calculation: log₂32 + log_{½}32 — Dec 2025 Q30</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">log₂32 = log₂(2⁵) = 5</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">log_{½}32 = log_{2⁻¹}(2⁵) = 5 × (−1) = −5 &nbsp;(since log_{a⁻¹}(x) = −log_a(x))</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Sum = 5 + (−5) = 0</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Calculation: (log₃27)(log₆₄16) — Apr 2026 Q30</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">log₃27 = log₃(3³) = 3</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">log₆₄16 = log_{2⁶}(2⁴) = 4/6 = 2/3</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Product = 3 × 2/3 = 2</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.4: Exponential &amp; Logarithmic Functions</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q25</span>
+    <div class="pq-q">If y = aˣ is monotonically INCREASING on ℝ, the range of a is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ a&lt;0 or a&gt;1: a&lt;0 is not a valid base for exponential functions (aˣ becomes complex for non-integer x).')"><span class="ol">A</span>a &lt; 0 or a &gt; 1</button>
+      <button class="popt" onclick="pick(this,1,'✓ a&gt;1! For y=aˣ to be increasing, the base must exceed 1. Base between 0 and 1 gives a decreasing function.')"><span class="ol">B</span>a &gt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ 0&lt;a&lt;1 gives a DECREASING exponential — larger x → smaller aˣ.')"><span class="ol">C</span>0 &lt; a &lt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ a&gt;0 is too broad — includes both increasing (a&gt;1) and decreasing (0&lt;a&lt;1) and constant (a=1) cases.')"><span class="ol">D</span>a &gt; 0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q25</span>
+    <div class="pq-q">If y = aˣ is monotonically DECREASING, the range of a is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ a&gt;0 includes both increasing and decreasing cases. Too broad.')"><span class="ol">A</span>a &gt; 0</button>
+      <button class="popt" onclick="pick(this,1,'✓ 0&lt;a&lt;1! When the base is between 0 and 1, each unit increase in x multiplies by a fraction, making the function smaller → decreasing.')"><span class="ol">B</span>0 &lt; a &lt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ a&gt;1 gives an INCREASING exponential.')"><span class="ol">C</span>a &gt; 1</button>
+      <button class="popt" onclick="pick(this,0,'✗ a&lt;1 includes a≤0 which are invalid bases, and a=1 gives a constant function (neither increasing nor decreasing).')"><span class="ol">D</span>a &lt; 1</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q26</span>
+    <div class="pq-q">Which statement about y = (½)ˣ is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Symmetric about origin means odd. But (½)ˣ is always positive → cannot be odd (odd functions take negative values).')"><span class="ol">A</span>Symmetric about the origin</button>
+      <button class="popt" onclick="pick(this,0,'✗ Symmetric about x-axis would mean two y-values for each x — impossible for a function.')"><span class="ol">B</span>Symmetric about the x-axis</button>
+      <button class="popt" onclick="pick(this,0,'✗ Monotonically increasing: base ½ is between 0 and 1 → DECREASING, not increasing.')"><span class="ol">C</span>Monotonically increasing</button>
+      <button class="popt" onclick="pick(this,1,'✓ Monotonically DECREASING! Base = ½, satisfying 0&lt;½&lt;1. So y=(½)ˣ is a standard decreasing exponential.')"><span class="ol">D</span>Monotonically decreasing</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q23</span>
+    <div class="pq-q">About y = aˣ (a&gt;0, a≠1), which statement is INCORRECT?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Range (0,+∞) is TRUE. Exponential functions are always positive.')"><span class="ol">A</span>Range is (0,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Passes through (0,1) is TRUE. a⁰=1 for any valid base.')"><span class="ol">B</span>Passes through (0,1)</button>
+      <button class="popt" onclick="pick(this,1,'✓ "Always increasing" is INCORRECT! Only true for a&gt;1. For 0&lt;a&lt;1, the function is DECREASING. This statement is false in general.')"><span class="ol">C</span>The function is increasing over the domain</button>
+      <button class="popt" onclick="pick(this,0,'✗ Domain ℝ is TRUE. aˣ is defined for all real x.')"><span class="ol">D</span>Domain is ℝ</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q41</span>
+    <div class="pq-q">Regarding y = log_a(x), which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Domain (−∞,+∞) is FALSE. log requires strictly positive argument → domain is (0,+∞) only.')"><span class="ol">A</span>Domain is (−∞,+∞)</button>
+      <button class="popt" onclick="pick(this,0,'✗ When a&gt;1 it is decreasing is FALSE. For a&gt;1, log_a is INCREASING.')"><span class="ol">B</span>When a&gt;1, it is monotonically decreasing</button>
+      <button class="popt" onclick="pick(this,0,'✗ When a&gt;1, log_a(x)&gt;1 for ALL x&gt;0 is FALSE. log_a(1)=0 and log_a(a)=1, so only for x&gt;a does log_a(x)&gt;1.')"><span class="ol">C</span>When a&gt;1, log_a(x)&gt;1 for all x&gt;0</button>
+      <button class="popt" onclick="pick(this,1,'✓ When 0&lt;a&lt;1, it is monotonically DECREASING — TRUE! For base between 0 and 1, larger arguments give smaller log values.')"><span class="ol">D</span>When 0&lt;a&lt;1, it is monotonically decreasing</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q29</span>
+    <div class="pq-q">About logarithms (a,b&gt;0), which statement is INCORRECT?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ ln(aᵇ)=b·lna is TRUE (power rule for logs).')"><span class="ol">A</span>ln(aᵇ) = b·ln a</button>
+      <button class="popt" onclick="pick(this,1,'✓ log_a(b) = ln(a)/ln(b) is INCORRECT! The correct change of base formula is log_a(b) = ln(b)/ln(a). The argument goes on top, the base goes on the bottom.')"><span class="ol">B</span>log_a(b) = ln(a)/ln(b)</button>
+      <button class="popt" onclick="pick(this,0,'✗ ln(a/b)=lna−lnb is TRUE (quotient rule).')"><span class="ol">C</span>ln(a/b) = ln a − ln b</button>
+      <button class="popt" onclick="pick(this,0,'✗ ln(ab)=lna+lnb is TRUE (product rule).')"><span class="ol">D</span>ln(ab) = ln a + ln b</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q29</span>
+    <div class="pq-q">Let a = lg4, b = lg5. Then a + 2b = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 100: a+2b ≈ 0.60+1.40 = 2.00, not 100.')"><span class="ol">A</span>100</button>
+      <button class="popt" onclick="pick(this,0,'✗ 4: wrong value.')"><span class="ol">B</span>4</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2! a+2b = lg4+2·lg5 = lg4+lg25 = lg(100) = lg(10²) = 2.')"><span class="ol">C</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5: wrong value.')"><span class="ol">D</span>5</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q30</span>
+    <div class="pq-q">log₂32 + log_{½}32 = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −5: log₂32=5 so total is 5+(−5)=0, not −5.')"><span class="ol">A</span>−5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 10: that would be 5+5, but log_{½}32 = −5 (negative), not +5.')"><span class="ol">B</span>10</button>
+      <button class="popt" onclick="pick(this,1,'✓ 0! log₂32=5. log_{½}32: since ½=2⁻¹, log_{2⁻¹}(32)=−log₂32=−5. Sum: 5+(−5)=0.')"><span class="ol">C</span>0</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5: that is only log₂32 alone.')"><span class="ol">D</span>5</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q30</span>
+    <div class="pq-q">(log₃27)(log₆₄16) = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 1/6: log₃27=3, log₆₄16=2/3, product=2.')"><span class="ol">A</span>1/6</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2! log₃(3³)=3. log_{2⁶}(2⁴)=4/6=2/3. Product: 3×(2/3)=2.')"><span class="ol">B</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 6: that would be 3×2, but log₆₄16=2/3 not 2.')"><span class="ol">C</span>6</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5: incorrect.')"><span class="ol">D</span>5</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q42</span>
+    <div class="pq-q">Let f(x) = log₅(2x+1). Solution set of f(x) ≥ 0:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ {x|x≥1}: f(0)=log₅(1)=0≥0 ✓ so x=0 should be included.')"><span class="ol">A</span>{x | x ≥ 1}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x|x&gt;0} excludes x=0. But f(0)=0≥0 is a solution.')"><span class="ol">B</span>{x | x &gt; 0}</button>
+      <button class="popt" onclick="pick(this,0,'✗ {x|x&gt;1} too restrictive.')"><span class="ol">C</span>{x | x &gt; 1}</button>
+      <button class="popt" onclick="pick(this,1,'✓ {x|x≥0}! f(x)≥0 means log₅(2x+1)≥0=log₅(1). Base 5&gt;1 → increasing → 2x+1≥1 → x≥0. Also need 2x+1&gt;0 → x&gt;−½ (satisfied). Answer: x≥0.')"><span class="ol">D</span>{x | x ≥ 0}</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.5 — TRIGONOMETRIC FUNCTIONS
+═══════════════════════════════ -->
+<div class="lesson" id="l5">
+  <span class="lesson-tag">Lesson 2.5</span>
+  <h3>Trigonometric Functions — Deep Coverage</h3>
+</div>
+
+<div class="card">
+  <h4>Definitions, Signs by Quadrant &amp; Key Values</h4>
+  <p>For a point P(x, y) on a circle of radius r with angle α from positive x-axis:</p>
+  <div class="eq">
+    sin α = y/r &nbsp;&nbsp;&nbsp; cos α = x/r &nbsp;&nbsp;&nbsp; tan α = y/x &nbsp;(x≠0)
+  </div>
+  <table class="tbl">
+    <tr><th>Angle</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>120°</th><th>150°</th><th>180°</th></tr>
+    <tr><td><strong>sin</strong></td><td>0</td><td>½</td><td>√2/2</td><td>√3/2</td><td>1</td><td>√3/2</td><td>½</td><td>0</td></tr>
+    <tr><td><strong>cos</strong></td><td>1</td><td>√3/2</td><td>√2/2</td><td>½</td><td>0</td><td>−½</td><td>−√3/2</td><td>−1</td></tr>
+    <tr><td><strong>tan</strong></td><td>0</td><td>√3/3</td><td>1</td><td>√3</td><td>undef</td><td>−√3</td><td>−√3/3</td><td>0</td></tr>
+  </table>
+  <div class="kbox kg">
+    <span class="kbox-label">ASTC Rule — Signs by Quadrant</span>
+    Q1: <strong>A</strong>ll positive &nbsp;|&nbsp; Q2: <strong>S</strong>ine positive (cos−, tan−)<br>
+    Q3: <strong>T</strong>angent positive (sin−, cos−) &nbsp;|&nbsp; Q4: <strong>C</strong>osine positive (sin−, tan−)<br><br>
+    Memory: "<strong>A</strong>ll <strong>S</strong>tudents <strong>T</strong>ake <strong>C</strong>alculus"
+  </div>
+</div>
+
+<div class="card">
+  <h4>Essential Identities — Every One Tested</h4>
+  <div class="eq">
+    <span class="hi">Fundamental:</span>
+    sin²α + cos²α = 1 &nbsp;&nbsp; tan α = sin α / cos α
+    <br><br>
+    <span class="hi">Negative angle (parity):</span>
+    sin(−α) = −sin α &nbsp;&nbsp; cos(−α) = cos α &nbsp;&nbsp; tan(−α) = −tan α
+    <br><br>
+    <span class="hi">Shift by π (180°):</span>
+    sin(π+α) = −sin α &nbsp;&nbsp; cos(π+α) = −cos α &nbsp;&nbsp; tan(π+α) = tan α
+    <br><br>
+    <span class="hi">Shift by π/2 (90°):</span>
+    sin(π/2+α) = cos α &nbsp;&nbsp; cos(π/2+α) = −sin α
+    <br><br>
+    <span class="hi">Double angle:</span>
+    cos 2α = 1 − 2sin²α = 2cos²α − 1 = cos²α − sin²α
+    <br>sin 2α = 2 sin α cos α
+    <br><br>
+    <span class="hi">Addition formulas:</span>
+    sin(α±β) = sinα cosβ ± cosα sinβ
+    <br>cos(α±β) = cosα cosβ ∓ sinα sinβ
+  </div>
+</div>
+
+<div class="card">
+  <h4>Half-Angle Formulas — Very Heavily Tested</h4>
+  <div class="eq">
+    sin(α/2) = ±√((1 − cos α)/2)
+    <br>cos(α/2) = ±√((1 + cos α)/2)
+    <br>tan(α/2) = sin α / (1 + cos α) = (1 − cos α) / sin α
+  </div>
+  <div class="kbox kam">
+    <span class="kbox-label">The Sign Determination — 3-Step Process</span>
+    <strong>Step 1:</strong> Find the range of α (given in the problem)<br>
+    <strong>Step 2:</strong> Divide the range by 2 to find the range of α/2<br>
+    <strong>Step 3:</strong> Determine which quadrant α/2 is in → use ASTC to determine the sign<br><br>
+    Example: α ∈ (π/2, π) → divide by 2 → α/2 ∈ (π/4, π/2) → Q1 → sin(α/2) &gt; 0, cos(α/2) &gt; 0<br>
+    Example: α ∈ (π, 3π/2) → α/2 ∈ (π/2, 3π/4) → Q2 → sin(α/2) &gt; 0, cos(α/2) &lt; 0
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Half-Angle Example: cosα=−½, α∈(π/2,π) — find sin(α/2) [Mar/Dec/Jan/Apr all test this]</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">α ∈ (π/2, π) → α/2 ∈ (π/4, π/2) → Q1 → sin(α/2) &gt; 0</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">sin(α/2) = +√((1 − cos α)/2) = √((1 − (−½))/2) = √((3/2)/2) = √(3/4)</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>Answer: √(3/4) = √3/2</strong></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Function Properties — Period, Domain, Range</h4>
+  <table class="tbl">
+    <tr><th>Function</th><th>Domain</th><th>Range</th><th>Period</th><th>Parity</th><th>Monotone Increasing</th></tr>
+    <tr><td>sin x</td><td>ℝ</td><td>[−1,1]</td><td>2π</td><td>Odd</td><td>[−π/2+2kπ, π/2+2kπ]</td></tr>
+    <tr><td>cos x</td><td>ℝ</td><td>[−1,1]</td><td>2π</td><td>Even</td><td>[−π+2kπ, 2kπ]</td></tr>
+    <tr><td>tan x</td><td>x≠π/2+kπ</td><td>ℝ</td><td>π</td><td>Odd</td><td>(−π/2+kπ, π/2+kπ)</td></tr>
+  </table>
+  <div class="kbox kb">
+    <span class="kbox-label">Period Formula</span>
+    For y = A·sin(Bx+C) or y = A·cos(Bx+C): &nbsp;&nbsp; Period T = <strong>2π / |B|</strong><br>
+    For y = A·tan(Bx+C): &nbsp;&nbsp; Period T = <strong>π / |B|</strong><br><br>
+    Example: y = 3cos(4x−π/3) → T = 2π/4 = <strong>π/2</strong><br>
+    Example: y = 2tan(3x+π/4) → T = π/3
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.5: Trigonometric Functions</div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q7</span>
+    <div class="pq-q">sin 120° = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ √3/2! 120°=180°−60°. Using sin(180°−x)=sinx: sin120°=sin60°=√3/2. Q2 → sine is positive.')"><span class="ol">A</span>√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ −√3/2: sin is POSITIVE in Q2. sin120°=+√3/2.')"><span class="ol">B</span>−√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ −½=cos120°, not sin120°.')"><span class="ol">C</span>−½</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½=sin30°=sin150°, not sin120°.')"><span class="ol">D</span>½</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q6</span>
+    <div class="pq-q">Let α = 5π/6. Then cos α = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −½=cos(2π/3)=cos120°. Not cos150°.')"><span class="ol">A</span>−½</button>
+      <button class="popt" onclick="pick(this,0,'✗ √3/2=cos30°=cos(π/6). But α=5π/6 is in Q2 where cosine is negative.')"><span class="ol">B</span>√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½=cos60°. Not relevant here.')"><span class="ol">C</span>½</button>
+      <button class="popt" onclick="pick(this,1,'✓ −√3/2! 5π/6=π−π/6. cos(π−x)=−cosx. cos(π/6)=√3/2. So cos(5π/6)=−√3/2. Q2 confirms negative cosine.')"><span class="ol">D</span>−√3/2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q9</span>
+    <div class="pq-q">f(x) = sin x is monotonically increasing over:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ [−π,π]: sin x increases on [−π/2,π/2] but decreases on [π/2,π]. Not a single increasing interval.')"><span class="ol">A</span>[−π, π]</button>
+      <button class="popt" onclick="pick(this,0,'✗ [0,π]: sin increases on [0,π/2] but decreases on [π/2,π].')"><span class="ol">B</span>[0, π]</button>
+      <button class="popt" onclick="pick(this,0,'✗ (−∞,+∞): sin x is periodic — not monotone globally.')"><span class="ol">C</span>(−∞,+∞)</button>
+      <button class="popt" onclick="pick(this,1,'✓ [−π/2, π/2] is the principal increasing interval of sin x.')"><span class="ol">D</span>[−π/2, π/2]</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q21</span>
+    <div class="pq-q">Which of the following is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ tan x = sin x / cos x (cos x≠0) is the definition of tangent.')"><span class="ol">A</span>tan x = sin x / cos x (cos x≠0)</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/cos x = sec x (secant), not tangent.')"><span class="ol">B</span>tan x = 1/cos x</button>
+      <button class="popt" onclick="pick(this,0,'✗ cos x / sin x = cot x (cotangent), not tangent.')"><span class="ol">C</span>tan x = cos x / sin x</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/sin x = csc x (cosecant), not tangent.')"><span class="ol">D</span>tan x = 1/sin x</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q26</span>
+    <div class="pq-q">If sin α = √5/3, then cos 2α = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −2/9: cos2α=1−2sin²α=1−2(5/9)=1−10/9=−1/9.')"><span class="ol">A</span>−2/9</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/9: wrong sign. Calculation gives −1/9.')"><span class="ol">B</span>1/9</button>
+      <button class="popt" onclick="pick(this,1,'✓ −1/9! cos2α=1−2sin²α=1−2·(√5/3)²=1−2·(5/9)=1−10/9=−1/9.')"><span class="ol">C</span>−1/9</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2/9: wrong sign and wrong value.')"><span class="ol">D</span>2/9</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q26</span>
+    <div class="pq-q">If sin α = 3/4, then cos 2α = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 7/16: cos2α=1−2(9/16)=1−9/8=−1/8.')"><span class="ol">A</span>7/16</button>
+      <button class="popt" onclick="pick(this,0,'✗ −7/8: cos2α=1−2(3/4)²=1−2(9/16)=1−18/16=1−9/8=−1/8.')"><span class="ol">B</span>−7/8</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/8: wrong sign.')"><span class="ol">C</span>1/8</button>
+      <button class="popt" onclick="pick(this,1,'✓ −1/8! cos2α=1−2sin²α=1−2(3/4)²=1−2(9/16)=1−9/8=−1/8.')"><span class="ol">D</span>−1/8</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q31</span>
+    <div class="pq-q">Minimum positive period of f(x) = 3cos(4x−π/3):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ π/3: T=2π/|B|=2π/4=π/2.')"><span class="ol">A</span>π/3</button>
+      <button class="popt" onclick="pick(this,1,'✓ π/2! T=2π/|B|=2π/4=π/2.')"><span class="ol">B</span>π/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ π/4: T=2π/4=π/2≠π/4.')"><span class="ol">C</span>π/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2π: that would be if B=1. Here B=4.')"><span class="ol">D</span>2π</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q39</span>
+    <div class="pq-q">Minimum positive period of y = 2tan(3x+π/4):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ π/3! For tan: T=π/|B|=π/3.')"><span class="ol">A</span>π/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2π: period of sin/cos with B=1. For tan with B=3: T=π/3.')"><span class="ol">B</span>2π</button>
+      <button class="popt" onclick="pick(this,0,'✗ π/4: T=π/3≠π/4.')"><span class="ol">C</span>π/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ π: that is period of tan with B=1.')"><span class="ol">D</span>π</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q31</span>
+    <div class="pq-q">Minimum value of y = cos5x + 4:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 5 is the MAXIMUM (when cos5x=+1: y=1+4=5).')"><span class="ol">A</span>5</button>
+      <button class="popt" onclick="pick(this,1,'✓ 3! Minimum when cos5x=−1: y=−1+4=3.')"><span class="ol">B</span>3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 4 is the value when cos5x=0 (midpoint, neither max nor min).')"><span class="ol">C</span>4</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2 would require cos5x=−2, but cosine ranges from −1 to 1.')"><span class="ol">D</span>2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q34 / Dec 2025 · Q34 / Jan 2026 · Q37 / Apr 2026 · Q34</span>
+    <div class="pq-q">Given cosα = −½, α ∈ (π/2, π), find sin(α/2):</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −½: α/2∈(π/4,π/2) → Q1 → sin(α/2)&gt;0. Cannot be negative.')"><span class="ol">A</span>−½</button>
+      <button class="popt" onclick="pick(this,1,'✓ √3/2! α/2∈(π/4,π/2)→Q1→positive. sin(α/2)=√((1−cosα)/2)=√((1+½)/2)=√(3/4)=√3/2.')"><span class="ol">B</span>√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ −√3/2: negative, impossible since α/2 is in Q1.')"><span class="ol">C</span>−√3/2</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½: sin(α/2)=√(3/4)=√3/2≈0.866, not 0.5.')"><span class="ol">D</span>½</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q39</span>
+    <div class="pq-q">If sinα = 1/3, then cos(π/2 + α) = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −2√2/3: that would be cosα (from Pythagorean theorem in Q1).')"><span class="ol">A</span>−2√2/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2√2/3: positive, but cos(π/2+α)=−sinα=−1/3.')"><span class="ol">B</span>2√2/3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/3=sinα itself, not cos(π/2+α).')"><span class="ol">C</span>1/3</button>
+      <button class="popt" onclick="pick(this,1,'✓ −1/3! Reduction formula: cos(π/2+α)=−sinα=−1/3.')"><span class="ol">D</span>−1/3</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q38</span>
+    <div class="pq-q">Which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ sin(π+α)=sinα is FALSE. sin(π+α)=−sinα.')"><span class="ol">A</span>sin(π+α) = sin α</button>
+      <button class="popt" onclick="pick(this,0,'✗ cos(π+α)=cosα is FALSE. cos(π+α)=−cosα.')"><span class="ol">B</span>cos(π+α) = cos α</button>
+      <button class="popt" onclick="pick(this,0,'✗ sin(−α)=sinα is FALSE. sin(−α)=−sinα (sine is ODD).')"><span class="ol">C</span>sin(−α) = sin α</button>
+      <button class="popt" onclick="pick(this,1,'✓ cos(−α)=cosα is TRUE! Cosine is an EVEN function.')"><span class="ol">D</span>cos(−α) = cos α</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q38</span>
+    <div class="pq-q">Which equation is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ cos(π/2+α)=sinα is FALSE. cos(π/2+α)=−sinα.')"><span class="ol">A</span>cos(π/2+α) = sin α</button>
+      <button class="popt" onclick="pick(this,1,'✓ sin(π/2+α)=cosα is TRUE! Standard reduction formula.')"><span class="ol">B</span>sin(π/2+α) = cos α</button>
+      <button class="popt" onclick="pick(this,0,'✗ cos(π+α)=cosα is FALSE. cos(π+α)=−cosα.')"><span class="ol">C</span>cos(π+α) = cos α</button>
+      <button class="popt" onclick="pick(this,0,'✗ sin(π+α)=sinα is FALSE. sin(π+α)=−sinα.')"><span class="ol">D</span>sin(π+α) = sin α</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q30</span>
+    <div class="pq-q">About y = sinx, which statement is INCORRECT?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Max/min are 1 and −1 — TRUE.')"><span class="ol">A</span>Maximum and minimum are 1 and −1</button>
+      <button class="popt" onclick="pick(this,0,'✗ sin x is periodic — TRUE, period 2π.')"><span class="ol">B</span>The function is periodic</button>
+      <button class="popt" onclick="pick(this,1,'✓ "sinx is even" is INCORRECT! sinx is ODD: sin(−x)=−sinx. cos x is even, sin x is odd.')"><span class="ol">C</span>The function is even</button>
+      <button class="popt" onclick="pick(this,0,'✗ Domain ℝ — TRUE.')"><span class="ol">D</span>Domain is ℝ</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q39</span>
+    <div class="pq-q">About y = tanx, which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Range [−1,1] belongs to sin x and cos x, NOT tan x. tan x range is all of ℝ.')"><span class="ol">A</span>Range is [−1,1]</button>
+      <button class="popt" onclick="pick(this,0,'✗ Domain ℝ is WRONG. tan x is undefined at x=π/2+kπ.')"><span class="ol">B</span>Domain is ℝ</button>
+      <button class="popt" onclick="pick(this,0,'✗ Even function is WRONG. tan(−x)=−tanx → tan x is ODD.')"><span class="ol">C</span>Even function</button>
+      <button class="popt" onclick="pick(this,1,'✓ Period π is TRUE! tan x repeats every π (half the period of sin/cos).')"><span class="ol">D</span>Minimum positive period is π</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q35</span>
+    <div class="pq-q">cos 75° = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ −(√6+√2)/4: negative, but 75° is in Q1 where cosine is positive.')"><span class="ol">A</span>−(√6+√2)/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ (√2−√6)/4: this equals a negative number since √6&gt;√2. But cos75°&gt;0.')"><span class="ol">B</span>(√2−√6)/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ (√6+√2)/4: let us verify. cos75°=cos(45°+30°)=cos45°cos30°−sin45°sin30°=(√2/2)(√3/2)−(√2/2)(½)=√6/4−√2/4=(√6−√2)/4.')"><span class="ol">C</span>(√6+√2)/4</button>
+      <button class="popt" onclick="pick(this,1,'✓ (√6−√2)/4! cos(45°+30°)=cos45°cos30°−sin45°sin30°=(√2/2)(√3/2)−(√2/2)(½)=√6/4−√2/4=(√6−√2)/4≈0.259.')"><span class="ol">D</span>(√6−√2)/4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q16</span>
+    <div class="pq-q">If P(1,y) is on the terminal side of α and tanα = 2, then y = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 1: tanα=y/x=y/1=y. If tanα=2 then y=2.')"><span class="ol">A</span>1</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½: tanα=y/1=y. y=2 not ½.')"><span class="ol">B</span>½</button>
+      <button class="popt" onclick="pick(this,0,'✗ √3=tan60°. But tanα=2 here.')"><span class="ol">C</span>√3</button>
+      <button class="popt" onclick="pick(this,1,'✓ y=2! tanα=y/x=y/1=y=2.')"><span class="ol">D</span>2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q19</span>
+    <div class="pq-q">Given sinα = 3/5 in Q2, then cosα = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 4/5 is positive, but Q2 has negative cosine.')"><span class="ol">A</span>4/5</button>
+      <button class="popt" onclick="pick(this,1,'✓ −4/5! sin²α+cos²α=1 → cosα=±4/5. Q2→negative. cosα=−4/5.')"><span class="ol">B</span>−4/5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3/4: not from the Pythagorean identity.')"><span class="ol">C</span>3/4</button>
+      <button class="popt" onclick="pick(this,0,'✗ −3/4: wrong value.')"><span class="ol">D</span>−3/4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q24</span>
+    <div class="pq-q">If sinα = 3/5 in Q1, then sin2α = ?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 12/25: sin2α=2sinαcosα=2(3/5)(4/5)=24/25.')"><span class="ol">A</span>12/25</button>
+      <button class="popt" onclick="pick(this,1,'✓ 24/25! Q1→cosα=+4/5. sin2α=2sinαcosα=2(3/5)(4/5)=24/25.')"><span class="ol">B</span>24/25</button>
+      <button class="popt" onclick="pick(this,0,'✗ 18/25: not from the formula.')"><span class="ol">C</span>18/25</button>
+      <button class="popt" onclick="pick(this,0,'✗ 7/25=cos2α=cos²α−sin²α=16/25−9/25. You confused sin2α with cos2α.')"><span class="ol">D</span>7/25</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q40</span>
+    <div class="pq-q">Which description about f(x) = tanx is INCORRECT?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ f(−x)=−f(x) is TRUE — tan is an odd function.')"><span class="ol">A</span>f(−x) = −f(x) on its domain</button>
+      <button class="popt" onclick="pick(this,0,'✗ Exactly one zero on (−π/2,π/2): tan(0)=0 is the only zero. TRUE.')"><span class="ol">B</span>Has exactly one zero on (−π/2,π/2)</button>
+      <button class="popt" onclick="pick(this,0,'✗ Increasing on (−π/2,π/2): TRUE. tan x is strictly increasing on each open period interval.')"><span class="ol">C</span>Monotonically increasing on (−π/2,π/2)</button>
+      <button class="popt" onclick="pick(this,1,'✓ "f(x) is even" is INCORRECT! tan x is ODD (f(−x)=−f(x)). Even would mean f(−x)=f(x), which is false.')"><span class="ol">D</span>f(x) is even</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     LESSON 2.6 — SEQUENCES
+═══════════════════════════════ -->
+<div class="lesson" id="l6">
+  <span class="lesson-tag">Lesson 2.6</span>
+  <h3>Sequences — Arithmetic, Geometric &amp; Advanced Types</h3>
+</div>
+
+<div class="card">
+  <h4>Arithmetic Sequences — Everything You Need</h4>
+  <div class="eq">
+    General term: &nbsp; aₙ = a₁ + (n−1)d
+    <br>Sum of first n terms: &nbsp; Sₙ = n/2 · (a₁ + aₙ) = na₁ + n(n−1)d/2
+    <br>Middle term property: &nbsp; a, b, c in A.P. → <span class="hi">b = (a+c)/2</span>
+    <br>Symmetry property: &nbsp; aₘ + aₙ = aₚ + aᵩ &nbsp; when m+n = p+q
+  </div>
+  <div class="kbox kb">
+    <span class="kbox-label">a₁₀₀ with a₁=2, d=3 — Appears in 3 Different Exams!</span>
+    a₁₀₀ = a₁ + (100−1)×d = 2 + 99×3 = 2 + 297 = <strong>299</strong><br>
+    Common wrong answers:<br>
+    298 → uses wrong formula a₁+(n)d instead of a₁+(n−1)d<br>
+    302 → calculates a₁₀₁ (101st term, not 100th)<br>
+    305 → adds 101×3 to a₁<br>
+    Always use (n−1)d, not nd.
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Advanced: 3(a₂+a₆)+2(a₆+a₁₀+a₁₄)=24, find S₁₃ — Dec 2025 Q47</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">In A.P., symmetric sums: a₂+a₆ = 2a₄; &nbsp; a₆+a₁₀+a₁₄ = 3a₁₀</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Equation: 3(2a₄) + 2(3a₁₀) = 24 → 6a₄ + 6a₁₀ = 24 → a₄+a₁₀ = 4</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">Since a₄+a₁₀ = 2a₇ (they are symmetric about a₇): 2a₇ = 4 → a₇ = 2</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text">S₁₃ = 13a₇ = 13×2 = <strong>26</strong> (sum of odd-numbered terms centers on the middle term)</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h4>Geometric Sequences — Everything You Need</h4>
+  <div class="eq">
+    General term: &nbsp; aₙ = a₁ · rⁿ⁻¹
+    <br>Sum: &nbsp; Sₙ = a₁(1−rⁿ)/(1−r) &nbsp; if r≠1; &nbsp; Sₙ = na₁ &nbsp; if r=1
+    <br>Geometric mean: &nbsp; a,b,c in G.P. → <span class="hi">b² = ac</span> → b = ±√(ac)
+  </div>
+  <div class="kbox kg">
+    <span class="kbox-label">Finding Common Ratio r from Non-Consecutive Terms</span>
+    Given a₁=4, a₄=32: &nbsp; a₄ = a₁·r³ → 32 = 4r³ → r³ = 8 → r = 2<br>
+    Then: a₂ = 4×2 = 8; &nbsp; a₃ = 4×4 = 16; &nbsp; a₄ = 4×8 = 32 ✓
+  </div>
+</div>
+
+<div class="card">
+  <h4>Advanced Sequence Problems — Recursive &amp; Mixed</h4>
+
+  <div class="wex">
+    <div class="wex-head">Recursive: a₁=½, 1/aₙ₊₁ = 1/aₙ + 1 → find a₆ — Mar 2026 Q41</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Rewrite: the sequence {1/aₙ} is arithmetic with first term 1/a₁=2 and common difference 1</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">So: 1/aₙ = 2 + (n−1)×1 = n+1</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text"><strong>a₆ = 1/(6+1) = 1/7</strong></div></div>
+  </div>
+
+  <div class="wex">
+    <div class="wex-head">Mixed: aₙ = 2ⁿ⁺¹ − 3n → find Sₙ — Mar 2026 Q47</div>
+    <div class="wex-step"><div class="wex-num">1</div><div class="wex-text">Split: Sₙ = Σ(2ⁿ⁺¹) − Σ(3n) = Σ(2ⁿ⁺¹) − 3Σn</div></div>
+    <div class="wex-step"><div class="wex-num">2</div><div class="wex-text">Σ(2ⁿ⁺¹) from n=1 to n = 2²+2³+…+2ⁿ⁺¹ = geometric sum = 4(2ⁿ−1)/(2−1) = 2ⁿ⁺² − 4</div></div>
+    <div class="wex-step"><div class="wex-num">3</div><div class="wex-text">3Σn = 3×n(n+1)/2 = 3n(n+1)/2</div></div>
+    <div class="wex-step"><div class="wex-num">4</div><div class="wex-text"><strong>Sₙ = 2ⁿ⁺² − 3n(n+1)/2 − 4</strong></div></div>
+  </div>
+</div>
+
+<div class="past">
+  <div class="past-head">📋 Past Exam Questions — Lesson 2.6: Sequences</div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 Q10 / Dec 2025 Q5 / Jan 2026 Q4</span>
+    <div class="pq-q">Arithmetic sequence: a₁=2, d=3. Find a₁₀₀:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 298: that uses a₁+(n)d=2+99×3-1? No — a₁+(100)d=2+300=302. 298 is off — it would be a₁+(n−1)d with a₁=1.')"><span class="ol">A</span>298</button>
+      <button class="popt" onclick="pick(this,0,'✗ 302=2+100×3=a₁₀₁ (the 101st term). One step too far.')"><span class="ol">B</span>302</button>
+      <button class="popt" onclick="pick(this,0,'✗ 305=2+101×3. Way off.')"><span class="ol">C</span>305</button>
+      <button class="popt" onclick="pick(this,1,'✓ 299! aₙ=a₁+(n−1)d. a₁₀₀=2+(100−1)×3=2+99×3=2+297=299.')"><span class="ol">D</span>299</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q12</span>
+    <div class="pq-q">The geometric mean of 3 and 12 is:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ ±6! b²=ac=3×12=36 → b=±6. Both positive and negative values are valid geometric means.')"><span class="ol">A</span>±6</button>
+      <button class="popt" onclick="pick(this,0,'✗ ±4: 4²=16≠36.')"><span class="ol">B</span>±4</button>
+      <button class="popt" onclick="pick(this,0,'✗ ±10: 10²=100≠36.')"><span class="ol">C</span>±10</button>
+      <button class="popt" onclick="pick(this,0,'✗ ±8: 8²=64≠36.')"><span class="ol">D</span>±8</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q15</span>
+    <div class="pq-q">Geometric sequence: a₁=4, a₄=32. Find a₃:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 8=a₂: a₂=4×2=8. You found the wrong term.')"><span class="ol">A</span>8</button>
+      <button class="popt" onclick="pick(this,0,'✗ −8: r³=8→r=2 (real positive), so all terms positive.')"><span class="ol">B</span>−8</button>
+      <button class="popt" onclick="pick(this,1,'✓ 16! r³=a₄/a₁=32/4=8→r=2. a₃=a₁r²=4×4=16.')"><span class="ol">C</span>16</button>
+      <button class="popt" onclick="pick(this,0,'✗ −16: r=2>0 → all terms positive.')"><span class="ol">D</span>−16</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q22</span>
+    <div class="pq-q">Arithmetic sequence: a₁=1, d=2. Find a₁₀:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 15=1+7×2=a₈. Wrong index.')"><span class="ol">A</span>15</button>
+      <button class="popt" onclick="pick(this,1,'✓ 19! a₁₀=1+(10−1)×2=1+18=19.')"><span class="ol">B</span>19</button>
+      <button class="popt" onclick="pick(this,0,'✗ 21=1+10×2=a₁₁. One step too far.')"><span class="ol">C</span>21</button>
+      <button class="popt" onclick="pick(this,0,'✗ 17=1+8×2=a₉. Wrong index.')"><span class="ol">D</span>17</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q41</span>
+    <div class="pq-q">a₁=½, 1/aₙ₊₁=1/aₙ+1. Find a₆:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 1/7! {1/aₙ} is arithmetic: 1/a₁=2, d=1, so 1/aₙ=n+1. a₆=1/7.')"><span class="ol">A</span>1/7</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/8=a₇ since 1/a₇=7+1=8.')"><span class="ol">B</span>1/8</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/6=a₅ since 1/a₅=5+1=6.')"><span class="ol">C</span>1/6</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1/9=a₈ since 1/a₈=8+1=9.')"><span class="ol">D</span>1/9</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Mar 2026 · Q47</span>
+    <div class="pq-q">aₙ=2ⁿ⁺¹−3n. Find Sₙ:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ +4 at end: verify n=1: a₁=4−3=1. Formula A: 2³−3(2)/2+4=8−3+4=9≠1.')"><span class="ol">A</span>2ⁿ⁺² − 3n(n+1)/2 + 4</button>
+      <button class="popt" onclick="pick(this,1,'✓ B: verify n=1: 2³−3(2)/2−4=8−3−4=1✓. n=2: a₂=8−6=2, S₂=3. Formula: 2⁴−6(3)/2−4=16−9−4=3✓.')"><span class="ol">B</span>2ⁿ⁺² − 3n(n+1)/2 − 4</button>
+      <button class="popt" onclick="pick(this,0,'✗ C misses the n(n+1)/2 structure for the arithmetic part.')"><span class="ol">C</span>2ⁿ⁺² − 3n − 4</button>
+      <button class="popt" onclick="pick(this,0,'✗ D has wrong positive sign on arithmetic part.')"><span class="ol">D</span>2ⁿ⁺² + 3n(n+1)/2 − 4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q13</span>
+    <div class="pq-q">a, b, c form A.P. and a+c=20. Find b:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 10! Middle term of A.P.: b=(a+c)/2=20/2=10.')"><span class="ol">A</span>10</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5: b=(a+c)/2=10.')"><span class="ol">B</span>5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 20=a+c, not b.')"><span class="ol">C</span>20</button>
+      <button class="popt" onclick="pick(this,0,'✗ 0: no basis.')"><span class="ol">D</span>0</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q17</span>
+    <div class="pq-q">Arithmetic: a₁=1, a₂=2. Find a₂₀₂₅:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 2=a₂ only.')"><span class="ol">A</span>2</button>
+      <button class="popt" onclick="pick(this,1,'✓ 2025! d=a₂−a₁=1. a₂₀₂₅=1+(2025−1)×1=1+2024=2025.')"><span class="ol">B</span>2025</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2024=a₂₀₂₄.')"><span class="ol">C</span>2024</button>
+      <button class="popt" onclick="pick(this,0,'✗ 20: no basis.')"><span class="ol">D</span>20</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q23</span>
+    <div class="pq-q">Geometric: first three terms 1, 2, 4. General formula?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ aₙ=2n: for n=1→2≠1.')"><span class="ol">A</span>aₙ = 2n</button>
+      <button class="popt" onclick="pick(this,0,'✗ aₙ=8: constant, not a sequence.')"><span class="ol">B</span>aₙ = 8</button>
+      <button class="popt" onclick="pick(this,1,'✓ aₙ=2ⁿ⁻¹! a₁=2⁰=1✓, a₂=2¹=2✓, a₃=2²=4✓. r=2, first term 1.')"><span class="ol">C</span>aₙ = 2ⁿ⁻¹</button>
+      <button class="popt" onclick="pick(this,0,'✗ aₙ=2ⁿ: for n=1→2≠1.')"><span class="ol">D</span>aₙ = 2ⁿ</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Dec 2025 · Q47</span>
+    <div class="pq-q">Arithmetic: 3(a₂+a₆)+2(a₆+a₁₀+a₁₄)=24. Find S₁₃:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 104: S₁₃=13a₇=26.')"><span class="ol">A</span>104</button>
+      <button class="popt" onclick="pick(this,0,'✗ 52: wrong.')"><span class="ol">B</span>52</button>
+      <button class="popt" onclick="pick(this,0,'✗ 39: wrong.')"><span class="ol">C</span>39</button>
+      <button class="popt" onclick="pick(this,1,'✓ 26! a₂+a₆=2a₄; a₆+a₁₀+a₁₄=3a₁₀. Eq: 6a₄+6a₁₀=24→a₄+a₁₀=4→2a₇=4→a₇=2. S₁₃=13a₇=26.')"><span class="ol">D</span>26</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q13</span>
+    <div class="pq-q">−1, a, 15 is arithmetic. Find a:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ 9: a=(−1+15)/2=14/2=7.')"><span class="ol">A</span>9</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5: wrong.')"><span class="ol">B</span>5</button>
+      <button class="popt" onclick="pick(this,1,'✓ 7! Middle term of A.P.: a=(−1+15)/2=14/2=7.')"><span class="ol">C</span>7</button>
+      <button class="popt" onclick="pick(this,0,'✗ 11: wrong.')"><span class="ol">D</span>11</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q15</span>
+    <div class="pq-q">Arithmetic: a₁=1, a₂=3. Find a₅:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 9! d=a₂−a₁=2. a₅=1+(5−1)×2=1+8=9.')"><span class="ol">A</span>9</button>
+      <button class="popt" onclick="pick(this,0,'✗ 5=a₃: 1+2×2=5.')"><span class="ol">B</span>5</button>
+      <button class="popt" onclick="pick(this,0,'✗ 7=a₄: 1+3×2=7.')"><span class="ol">C</span>7</button>
+      <button class="popt" onclick="pick(this,0,'✗ 11=a₆: 1+5×2=11.')"><span class="ol">D</span>11</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q17</span>
+    <div class="pq-q">aₙ=2n−1. Which statement is correct?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,0,'✗ Both arithmetic and geometric: a₁=1,a₂=3,a₃=5. d=2 (arithmetic ✓). But ratio=3/1=3≠5/3 (not geometric ✗). Only arithmetic.')"><span class="ol">A</span>Both arithmetic and geometric</button>
+      <button class="popt" onclick="pick(this,0,'✗ Neither: d=aₙ₊₁−aₙ=(2(n+1)−1)−(2n−1)=2. Constant difference → arithmetic.')"><span class="ol">B</span>Neither arithmetic nor geometric</button>
+      <button class="popt" onclick="pick(this,1,'✓ Arithmetic! d=2 constant. First few terms: 1,3,5,7,9,… classic arithmetic progression.')"><span class="ol">C</span>Arithmetic sequence</button>
+      <button class="popt" onclick="pick(this,0,'✗ Geometric: ratio would need to be constant. 3/1=3, 5/3≠3. Not geometric.')"><span class="ol">D</span>Geometric sequence</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Apr 2026 · Q22</span>
+    <div class="pq-q">Geometric sequence: a₁=−48, a₄=6. Find common ratio q:</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ −½! a₄=a₁·q³→6=−48·q³→q³=−1/8→q=−½.')"><span class="ol">A</span>−½</button>
+      <button class="popt" onclick="pick(this,0,'✗ −2: (−2)³=−8. a₁·q³=−48×(−8)=384≠6.')"><span class="ol">B</span>−2</button>
+      <button class="popt" onclick="pick(this,0,'✗ ½: (½)³=1/8. −48×(1/8)=−6≠6. Sign wrong.')"><span class="ol">C</span>½</button>
+      <button class="popt" onclick="pick(this,0,'✗ 2: 2³=8. −48×8=−384≠6.')"><span class="ol">D</span>2</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+
+  <div class="pq">
+    <span class="pq-src">Jan 2026 · Q16</span>
+    <div class="pq-q">Among (1)7,13,19,25  (2)2,4,7,11  (3)−1,−3,−5,−7  (4)2,4,8,16, how many are arithmetic?</div>
+    <div class="pq-opts">
+      <button class="popt" onclick="pick(this,1,'✓ 2 arithmetic sequences: (1) d=6 ✓ and (3) d=−2 ✓. Sequence (2) differences are 2,3,4 — not constant. Sequence (4) is geometric (ratio 2).')"><span class="ol">A</span>2</button>
+      <button class="popt" onclick="pick(this,0,'✗ 3: only (1) and (3) qualify.')"><span class="ol">B</span>3</button>
+      <button class="popt" onclick="pick(this,0,'✗ 1: both (1) and (3) are arithmetic.')"><span class="ol">C</span>1</button>
+      <button class="popt" onclick="pick(this,0,'✗ 4: (2) and (4) are not arithmetic.')"><span class="ol">D</span>4</button>
+    </div>
+    <div class="fb"></div>
+  </div>
+</div>
+
+<!-- UNIT 2 SUMMARY -->
+<div class="summary" id="summary">
+  <div class="sum-h">✓ Unit 2 Complete Summary — Functions</div>
+  <ul class="sum-list">
+    <li><strong>Domain restrictions:</strong> even roots → ≥0; denominator → ≠0; 1/√(expr) → &gt;0 (strict); log → &gt;0.</li>
+    <li>Odd roots (³√, ⁵√, …) have <strong>no restriction</strong> — defined for all real numbers.</li>
+    <li>For composite domain f(g(x)): substitute g(x) into the domain condition of f and solve for x.</li>
+    <li><strong>Even function:</strong> f(−x)=f(x) — symmetric about y-axis. Examples: x², cos x, |x|, x·sin x.</li>
+    <li><strong>Odd function:</strong> f(−x)=−f(x) — symmetric about origin. Examples: x, x³, sin x, tan x, x+x³.</li>
+    <li>Odd×Odd=Even. A constant added to an odd function destroys parity. Domain must be symmetric about 0.</li>
+    <li>Two functions are identical <strong>only if</strong> they have the same rule AND same domain.</li>
+    <li>Inverse: swap x and y, solve for y. Domain of f⁻¹ = Range of f.</li>
+    <li><strong>y=aˣ is increasing</strong> when a&gt;1; <strong>decreasing</strong> when 0&lt;a&lt;1. Range is always (0,+∞).</li>
+    <li><strong>y=log_a(x) is increasing</strong> when a&gt;1; <strong>decreasing</strong> when 0&lt;a&lt;1. Domain is always (0,+∞).</li>
+    <li>Change of base: log_a(b) = ln(b)/ln(a) — argument on top, base on bottom.</li>
+    <li><strong>Period formula:</strong> y=A·sin(Bx+C) → T=2π/|B|; y=A·tan(Bx+C) → T=π/|B|.</li>
+    <li><strong>Half-angle sign:</strong> determine the quadrant of α/2, then use ASTC for the correct ± sign.</li>
+    <li>cos(2α) = 1−2sin²α. &nbsp; sin(π/2+α)=cosα. &nbsp; cos(−α)=cosα. &nbsp; sin(−α)=−sinα.</li>
+    <li><strong>Arithmetic:</strong> aₙ=a₁+(n−1)d. Use n−1 not n. Middle term b=(a+c)/2.</li>
+    <li><strong>Geometric:</strong> aₙ=a₁·rⁿ⁻¹. Geometric mean b²=ac → b=±√(ac).</li>
+    <li>For Sₙ formulas of mixed sequences: separate into geometric sum + arithmetic sum and compute each.</li>
+  </ul>
+</div>
+
+</div><!-- end page -->
+
+<script>
+window.addEventListener('scroll',()=>{
+  const d=document.documentElement;
+  document.getElementById('prog').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+});
+function jump(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function hide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
+function pick(btn,correct,msg){
+  const pq=btn.closest('.pq');
+  if(pq.dataset.done) return;
+  pq.dataset.done=1;
+  const opts=pq.querySelectorAll('.popt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct) opts.forEach(o=>{if(o!==btn&&o.getAttribute('onclick').includes(',1,'))o.classList.add('correct');});
+  const fb=pq.querySelector('.fb');
+  fb.className='fb '+(correct?'fb-ok':'fb-no');
+  fb.textContent=msg;
+  fb.style.display='block';
+}
+const DATA=[
+  {t:'Domain & Range — Lesson 2.1',ctx:'Even roots ≥0; denominator ≠0; 1/√ → strict >0; log → strict >0',id:'l1'},
+  {t:'Odd roots have no domain restriction',ctx:'³√(x+1) is defined for all real numbers — domain is ℝ',id:'l1'},
+  {t:'Composite domain f(g(x))',ctx:'Substitute g(x) into domain condition of f and solve',id:'l1'},
+  {t:'Parity — Odd & Even Functions — Lesson 2.2',ctx:'f(−x)=f(x) → even; f(−x)=−f(x) → odd; domain must be symmetric',id:'l2'},
+  {t:'Odd×Odd=Even (x·sinx is even, not odd)',ctx:'Product of two odd functions is always even',id:'l2'},
+  {t:'Constant term destroys odd parity',ctx:'x³+1 is neither odd nor even — shifts graph off origin',id:'l2'},
+  {t:'Monotonicity & Inverse Functions — Lesson 2.3',ctx:'Swap x and y, solve for y. Domain of f⁻¹ = Range of f',id:'l3'},
+  {t:'Same function test — rule AND domain must match',ctx:'(√x)² and x are different (domains differ)',id:'l3'},
+  {t:'Exponential Function y=aˣ — Lesson 2.4',ctx:'a>1: increasing; 0<a<1: decreasing; range (0,+∞); passes through (0,1)',id:'l4'},
+  {t:'Logarithm properties — change of base',ctx:'log_a(b) = ln(b)/ln(a) — argument on top, base on bottom',id:'l4'},
+  {t:'Trigonometric Functions — Lesson 2.5',ctx:'sin, cos, tan — identities, period formula, ASTC quadrant signs',id:'l5'},
+  {t:'Half-angle formula sign determination',ctx:'Find range of α/2 → determine quadrant → use ASTC for sign',id:'l5'},
+  {t:'Period formula: T=2π/|B| for sin/cos; T=π/|B| for tan',ctx:'y=3cos(4x−π/3) → T=2π/4=π/2',id:'l5'},
+  {t:'Arithmetic Sequences — Lesson 2.6',ctx:'aₙ=a₁+(n−1)d. Middle term b=(a+c)/2. Use n−1 not n.',id:'l6'},
+  {t:'Geometric Sequences — Lesson 2.6',ctx:'aₙ=a₁·rⁿ⁻¹. Geometric mean b²=ac.',id:'l6'},
+  {t:'Mar 2026 Q4 — Domain (1−x)/(1+x)',ctx:'Answer: (−∞,−1)∪(−1,+∞)',id:'l1'},
+  {t:'Dec 2025 Q4 — Domain 1/√(x+1)',ctx:'Answer: (−1,+∞) — strict because also denominator',id:'l1'},
+  {t:'Apr 2026 Q5 — Domain ³√(x+1)',ctx:'Answer: all ℝ — cube root has no restriction',id:'l1'},
+  {t:'Apr 2026 Q42 — Domain 1/lg|x−5|',ctx:'Exclude x=4,5,6 → (−∞,4)∪(4,5)∪(5,6)∪(6,+∞)',id:'l1'},
+  {t:'Mar 2026 Q7 — Parity of ln(x²)',ctx:'Answer: EVEN — f(−x)=ln(x²)=f(x)',id:'l2'},
+  {t:'Dec 2025 Q8 — Which is odd function',ctx:'Answer: y=x+x³ (odd). Trap: x·sinx is even!',id:'l2'},
+  {t:'a₁₀₀ with a₁=2, d=3 — appears in 3 exams',ctx:'Answer: 299. Formula: 2+99×3. NOT 302.',id:'l6'},
+  {t:'Mar 2026 Q41 — Recursive sequence a₆',ctx:'Answer: 1/7. Pattern: 1/aₙ=n+1',id:'l6'},
+  {t:'Half-angle: cosα=−½, α∈(π/2,π) → sin(α/2)',ctx:'Answer: √3/2. α/2∈Q1→positive',id:'l5'},
+  {t:'cos(π/2+α)=−sinα, sin(π/2+α)=cosα',ctx:'Reduction formulas tested in Mar/Apr 2026',id:'l5'},
+  {t:'Change of base formula: log_a(b)=ln(b)/ln(a)',ctx:'Tested in Jan 2026 Q29 — inverted version is the INCORRECT statement',id:'l4'},
+];
+function doSearch(q,dropId){
+  const drop=document.getElementById(dropId);
+  if(!q||q.length<2){drop.style.display='none';return;}
+  const ql=q.toLowerCase();
+  const hits=DATA.filter(d=>d.t.toLowerCase().includes(ql)||d.ctx.toLowerCase().includes(ql)).slice(0,8);
+  if(!hits.length){drop.innerHTML='<div class="sd-none">No results for "'+q+'"</div>';drop.style.display='block';return;}
+  drop.innerHTML=hits.map(h=>`<div class="sd-item" onmousedown="jump('${h.id}')">
+    <div class="sd-title">${hl(h.t,q)}</div>
+    <div class="sd-ctx">${hl(h.ctx,q)}</div>
+  </div>`).join('');
+  drop.style.display='block';
+}
+function hl(str,q){return str.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+</script>
+</body>
+</html>
+ENDOFFILE
+echo "Done"
+wc -c /home/claude/unit2.html
+Output
+
+Command argument is 116_209 bytes, exceeding the 100_000-byte per-argument limit. For large content, pipe via stdin or use a file-write API instead of embedding the content inline in the command. Argument preview: 'cat > /home/claude/unit2.html << \'ENDOFFILE\'\n<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>CSCA Math — Un'
